@@ -1,4 +1,4 @@
-import { shallowMount, createLocalVue } from '@vue/test-utils'
+import { createLocalVue, shallowMount } from '@vue/test-utils'
 import Vue from 'vue'
 import Vuex from 'vuex'
 import Vuetify from 'vuetify'
@@ -45,5 +45,4 @@ describe('Column', () => {
   test('columnProperties is correct', () => {
     expect(wrapper.vm.columnProperties).toStrictEqual(columnProperties)
   })
-
 })

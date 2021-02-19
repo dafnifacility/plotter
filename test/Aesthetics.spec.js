@@ -1,4 +1,4 @@
-import { mount, createLocalVue } from '@vue/test-utils'
+import { createLocalVue, mount } from '@vue/test-utils'
 import Vue from 'vue'
 import Vuex from 'vuex'
 import Vuetify from 'vuetify'
@@ -74,5 +74,4 @@ describe('Aesthetics', () => {
     await Vue.nextTick()
     expect(wrapper.text()).toContain('y2')
   })
-
 })

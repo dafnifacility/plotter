@@ -1,4 +1,4 @@
-import { mount, createLocalVue } from '@vue/test-utils'
+import { createLocalVue, mount } from '@vue/test-utils'
 import Vue from 'vue'
 import Vuex from 'vuex'
 import Vuetify from 'vuetify'
@@ -25,7 +25,7 @@ describe('Columns', () => {
 
   beforeEach(async () => {
     store = await NuxtStore.createStore()
-    let defaultProps = defaultColumn()
+    const defaultProps = defaultColumn()
     defaultProps.type = 'quantitative'
     store.commit('dataset/setColumns', [{ name: 'col1', ...defaultProps }])
     store.commit('dataset/setColumnsInDatafile', [
