@@ -1,8 +1,8 @@
 import { createLocalVue, mount } from '@vue/test-utils'
-import Vue from 'vue'
-import Vuex from 'vuex'
-import Vuetify from 'vuetify'
 import Aesthetic from '@/components/Aesthetic.vue'
+import Vue from 'vue'
+import Vuetify from 'vuetify'
+import Vuex from 'vuex'
 
 Vue.use(Vuetify)
 const localVue = createLocalVue()

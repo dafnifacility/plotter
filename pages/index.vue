@@ -32,16 +32,16 @@
 </template>
 
 <script>
-import Columns from '~/components/Columns'
-import Aesthetics from '~/components/Aesthetics'
-import Geometries from '~/components/Geometries'
-import PlotView from '~/components/PlotView'
-import Spec from '~/components/Spec'
 import {
   getInstanceId,
   setDefaultInstanceId,
   setInstanceId,
 } from '~/plugins/instanceId'
+import Aesthetics from '~/components/Aesthetics'
+import Columns from '~/components/Columns'
+import Geometries from '~/components/Geometries'
+import PlotView from '~/components/PlotView'
+import Spec from '~/components/Spec'
 
 export default {
   name: 'Homepage',

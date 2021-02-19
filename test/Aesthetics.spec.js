@@ -1,11 +1,11 @@
 import { createLocalVue, mount } from '@vue/test-utils'
-import Vue from 'vue'
-import Vuex from 'vuex'
-import Vuetify from 'vuetify'
 import Aesthetics from '@/components/Aesthetics.vue'
+import { aesthetics } from '@/constants/aesthetics'
 import { defaultGeometry } from '@/store/geometries'
 import { geometries } from '@/constants/geometries'
-import { aesthetics } from '@/constants/aesthetics'
+import Vue from 'vue'
+import Vuetify from 'vuetify'
+import Vuex from 'vuex'
 
 Vue.use(Vuetify)
 const localVue = createLocalVue()

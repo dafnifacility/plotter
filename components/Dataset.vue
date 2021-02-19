@@ -31,10 +31,10 @@
 </template>
 
 <script>
-import draggable from 'vuedraggable'
 import Aesthetic from '~/components/Dataset'
-import Column from '~/components/Column'
 import { aestheticsNames } from '~/constants/aesthetics'
+import Column from '~/components/Column'
+import draggable from 'vuedraggable'
 
 export default {
   name: 'Dataset',

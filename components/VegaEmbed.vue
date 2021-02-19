@@ -5,8 +5,8 @@
 </template>
 
 <script>
-import embed from 'vega-embed'
 import axios from 'axios'
+import embed from 'vega-embed'
 import { uploadPlot } from '~/api/NIVS'
 
 export default {

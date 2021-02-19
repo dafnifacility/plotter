@@ -106,9 +106,9 @@
 </template>
 
 <script>
+import { aggregateOps } from '~/constants/aggregate'
 import axios from 'axios'
 import fileDownload from 'js-file-download'
-import { aggregateOps } from '~/constants/aggregate'
 
 export default {
   name: 'Data',

@@ -1,4 +1,3 @@
-import _ from 'lodash'
 import { Builder, Nuxt } from 'nuxt'
 import nuxtConfig from './nuxt.config'
 

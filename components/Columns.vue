@@ -42,8 +42,8 @@
       v-model="calculateExpression"
       label="Calculate new field"
       prepend-icon="mdi-plus"
-      hint='for example: "2*datum.fieldName" <a
-      href="https://vega.github.io/vega/docs/expressions">(syntax}</a>'
+      hint="for example: '2*datum.fieldName' <a
+      href='https://vega.github.io/vega/docs/expressions'>(syntax}</a>"
       filled
       @click:prepend="addCalculateField"
     >
@@ -54,8 +54,8 @@
     <v-text-field
       v-model="filterExpression"
       label="Filter data"
-      hint='for example: "datum.fieldName > 60" <a
-      href="https://vega.github.io/vega/docs/expressions">(syntax}</a>'
+      hint="for example: 'datum.fieldName > 60' <a
+      href='https://vega.github.io/vega/docs/expressions'>(syntax}</a>"
       filled
       persistent-hint
     >
@@ -67,8 +67,8 @@
 </template>
 
 <script>
-import draggable from 'vuedraggable'
 import Column from '~/components/Column'
+import draggable from 'vuedraggable'
 
 export default {
   name: 'Columns',

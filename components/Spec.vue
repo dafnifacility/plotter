@@ -13,8 +13,8 @@
       </v-row>
     </v-card-title>
     <pre>
-    {{ vegaSpecString }}
-  </pre>
+      {{ vegaSpecString }}
+    </pre>
   </v-card>
 </template>
 

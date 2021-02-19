@@ -36,9 +36,9 @@
 </template>
 
 <script>
-import draggable from 'vuedraggable'
-import Column from './Column'
 import { aesthetics } from '~/constants/aesthetics'
+import Column from './Column'
+import draggable from 'vuedraggable'
 
 export default {
   name: 'Aesthetic',
