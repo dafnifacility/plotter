@@ -1,6 +1,6 @@
 <template>
   <div ref="box">
-    <div id="viz"></div>
+    <div id="viz" />
   </div>
 </template>
 

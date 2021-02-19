@@ -2,7 +2,7 @@
   <v-row>
     <v-col cols="6" class="pt-0 pb-0">
       <h2>Columns</h2>
-      <v-divider></v-divider>
+      <v-divider />
       <draggable
         v-model="columns"
         class="list-group"
@@ -12,21 +12,20 @@
         <transition-group type="transition">
           <Column
             v-for="(column, i) in columns"
+            :key="column.name"
             :name="column.name"
             :index="i"
-            :key="column.name"
             class="list-group-item"
-          >
-          </Column>
+          />
         </transition-group>
       </draggable>
     </v-col>
     <v-col cols="6" class="pt-0 pb-0">
       <Aesthetic
         v-for="aesthetic in aestheticsNames"
-        v-bind:name="aesthetic"
-        v-bind:key="aesthetic"
-      ></Aesthetic>
+        :key="aesthetic"
+        :name="aesthetic"
+      />
     </v-col>
   </v-row>
 </template>

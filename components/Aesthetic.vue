@@ -2,9 +2,9 @@
   <v-row align="center" no-gutters>
     <v-col cols="3">
       <v-tooltip top>
-        <template v-slot:activator="{ on, attrs }">
+        <template #activator="{ on, attrs }">
           <span v-bind="attrs" v-on="on">
-            <v-icon v-text="aesthetic.icon"></v-icon>
+            <v-icon v-text="aesthetic.icon" />
             {{ name }}
           </span>
         </template>
@@ -26,8 +26,7 @@
           :index="i"
           :aesthetic="name"
           type="aesthetic"
-        >
-        </Column>
+        />
         <v-card-text v-if="aesMap.length == 0" slot="footer" class="c-grey">
           Add
         </v-card-text>

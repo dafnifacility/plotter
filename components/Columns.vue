@@ -6,7 +6,9 @@
           Columns
         </v-col>
         <v-col cols="2">
-          <v-icon color="primary">mdi-table</v-icon>
+          <v-icon color="primary">
+            mdi-table
+          </v-icon>
         </v-col>
       </v-row>
     </v-card-title>
@@ -25,8 +27,7 @@
         :name="column.name"
         :index="i"
         type="column"
-      >
-      </Column>
+      />
     </draggable>
     <v-overflow-btn
       v-model="addColumnSelected"
@@ -36,8 +37,7 @@
       filled
       prepend-icon="mdi-plus"
       @input="addColumn"
-    >
-    </v-overflow-btn>
+    />
     <v-text-field
       v-model="calculateExpression"
       label="Calculate new field"
@@ -47,8 +47,8 @@
       filled
       @click:prepend="addCalculateField"
     >
-      <template v-slot:message="{ message }">
-        <span v-html="message"></span>
+      <template #message="{ message }">
+        <span v-html="message" />
       </template>
     </v-text-field>
     <v-text-field
@@ -59,8 +59,8 @@
       filled
       persistent-hint
     >
-      <template v-slot:message="{ message }">
-        <span v-html="message"></span>
+      <template #message="{ message }">
+        <span v-html="message" />
       </template>
     </v-text-field>
   </v-card>
