@@ -1,5 +1,5 @@
 <template>
-  <v-card outlined class="bg-grey">
+  <v-card outlined>
     <v-card-title class="py-3 text-h6 font-weight-bold bg-grey">
       <v-icon :color="primaryBlue" class="pr-1">
         mdi-image-filter-vintage
@@ -9,7 +9,7 @@
     <v-divider />
     <v-card-subtitle>Map columns to visual properies</v-card-subtitle>
     <v-card-text>
-      <v-list class="bg-grey">
+      <v-list>
         <Aesthetic
           v-for="aesthetic in currentAesthetics"
           :key="aesthetic"
