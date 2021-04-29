@@ -1,9 +1,13 @@
 <template>
   <v-expansion-panel
     prepend-icon="mdi-chart-scatter-plot"
+    style="border: 1px solid #e0e0e0;"
     @click="selectGeometry"
   >
-    <v-expansion-panel-header :class="headerClass" disable-icon-rotate>
+    <v-expansion-panel-header
+      :class="['px-3 py-2', headerClass]"
+      disable-icon-rotate
+    >
       <span>
         <v-icon v-text="geometry.icon" />
         {{ geometry.name }}
@@ -59,11 +63,7 @@ export default {
       })
     },
     headerClass() {
-      if (this.index === this.selectedIndex) {
-        return 'bg-grey'
-      } else {
-        return null
-      }
+      return this.index === this.selectedIndex && 'bg-grey'
     },
     selectedIndex() {
       return this.$store.state.geometries.selectedGeometry
