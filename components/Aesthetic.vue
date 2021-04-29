@@ -16,7 +16,7 @@
           <span>{{ aesthetic.text }}</span>
         </v-tooltip>
       </v-col>
-      <v-col cols="auto">
+      <v-col>
         <draggable
           v-model="aesMap"
           :group="{ name: 'aesthetics', put: true }"
