@@ -13,7 +13,7 @@
         {{ geometry.name }}
       </span>
       <template #actions>
-        <v-icon v-if="index == selectedIndex" color="accent">
+        <v-icon v-if="index == selectedIndex" :color="primaryBlue">
           mdi-image-filter-vintage
         </v-icon>
         <v-btn icon @click="removeGeometry">
@@ -39,6 +39,7 @@
 
 <script>
 import { geometries } from '~/constants/geometries'
+import { primaryBlue } from '~/static/js/colours'
 
 export default {
   name: 'Geometry',
@@ -49,7 +50,7 @@ export default {
     },
   },
   data() {
-    return {}
+    return { primaryBlue }
   },
   computed: {
     geometry() {

@@ -1,7 +1,7 @@
 <template>
   <v-card outlined class="bg-grey">
     <v-card-title class="py-3 text-h6 font-weight-bold bg-grey">
-      <v-icon color="primary" class="pr-1">
+      <v-icon :color="primaryBlue" class="pr-1">
         mdi-image-filter-vintage
       </v-icon>
       Aesthetics
@@ -28,17 +28,15 @@
         @input="addAesthetic"
       >
         <template #item="{ item, attrs, on }">
-          <v-list-item v-bind="attrs" v-on="on">
-            <v-list-item-content>
-              <v-list-item-icon>
-                <v-icon v-text="item.icon" />
-              </v-list-item-icon>
-              <v-list-item-title
-                :id="attrs['aria-labelledby']"
-                v-text="item.name"
-              />
+          <v-list-item v-bind="attrs" style="max-width: 600px;" v-on="on">
+            <v-list-item-icon>
+              <v-icon :color="primaryBlue" v-text="item.icon" />
+            </v-list-item-icon>
 
-              <v-list-item-subtitle v-text="item.text" />
+            <v-list-item-content :id="attrs['aria-labelledby']">
+              <span>
+                <strong>{{ item.name }}</strong> - {{ item.text }}
+              </span>
             </v-list-item-content>
           </v-list-item>
         </template>
@@ -50,6 +48,7 @@
 <script>
 import Aesthetic from '~/components/Aesthetic'
 import { aesthetics } from '~/constants/aesthetics'
+import { primaryBlue } from '~/static/js/colours'
 
 export default {
   name: 'Dataset',
@@ -57,7 +56,7 @@ export default {
     Aesthetic,
   },
   data() {
-    return { addAestheticSelected: null }
+    return { primaryBlue, addAestheticSelected: null }
   },
   computed: {
     currentAesthetics() {

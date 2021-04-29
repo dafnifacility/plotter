@@ -1,7 +1,7 @@
 <template>
   <v-card outlined>
     <v-card-title class="py-3 text-h6 font-weight-bold bg-grey">
-      <v-icon color="primary" class="pr-1">
+      <v-icon :color="primaryBlue" class="pr-1">
         mdi-shape-plus
       </v-icon>
       Geometries
@@ -31,17 +31,14 @@
         @input="addGeometry"
       >
         <template #item="{ item, attrs, on }">
-          <v-list-item v-bind="attrs" v-on="on">
-            <v-list-item-content>
-              <v-list-item-icon>
-                <v-icon v-text="item.icon" />
-              </v-list-item-icon>
-              <v-list-item-title
-                :id="attrs['aria-labelledby']"
-                v-text="item.name"
-              />
-
-              <v-list-item-subtitle v-text="item.text" />
+          <v-list-item v-bind="attrs" style="max-width: 600px;" v-on="on">
+            <v-list-item-icon>
+              <v-icon :color="primaryBlue" v-text="item.icon" />
+            </v-list-item-icon>
+            <v-list-item-content :id="attrs['aria-labelledby']">
+              <span>
+                <strong>{{ item.name }}</strong> - {{ item.text }}
+              </span>
             </v-list-item-content>
           </v-list-item>
         </template>
@@ -52,12 +49,13 @@
 
 <script>
 import { geometries } from '~/constants/geometries'
+import { primaryBlue } from '~/static/js/colours'
 
 export default {
   name: 'Geometries',
   components: {},
   data() {
-    return { addGeometrySelected: null }
+    return { primaryBlue, addGeometrySelected: null }
   },
   computed: {
     supportedGeometries() {

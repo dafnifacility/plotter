@@ -4,7 +4,7 @@
       <v-tooltip top>
         <template #activator="{ on, attrs }">
           <span v-bind="attrs" v-on="on">
-            <v-icon v-text="aesthetic.icon" />
+            <v-icon :color="primaryBlue" v-text="aesthetic.icon" />
             {{ name }}
           </span>
         </template>
@@ -39,6 +39,7 @@
 import { aesthetics } from '~/constants/aesthetics'
 import Column from './Column'
 import draggable from 'vuedraggable'
+import { primaryBlue } from '~/static/js/colours'
 
 export default {
   name: 'Aesthetic',
@@ -53,7 +54,7 @@ export default {
     },
   },
   data() {
-    return {}
+    return { primaryBlue }
   },
   computed: {
     aesthetics() {

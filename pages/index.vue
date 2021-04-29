@@ -35,7 +35,7 @@ import Aesthetics from '~/components/Aesthetics'
 import Columns from '~/components/Columns'
 import Geometries from '~/components/Geometries'
 import PlotView from '~/components/PlotView'
-import Spec from '~/components/Spec'
+// import Spec from '~/components/Spec'
 
 export default {
   name: 'Homepage',
@@ -44,7 +44,7 @@ export default {
     Columns,
     Geometries,
     PlotView,
-    Spec,
+    // Spec,
   },
   computed: {
     url: {

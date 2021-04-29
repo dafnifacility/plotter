@@ -25,7 +25,7 @@
       app
       clipped-right
       clipped-left
-      style="background-color: #031e2f; border: 0px !important;"
+      style="background-color: #121a24; border: 0px !important;"
     >
       <!-- <v-app-bar-nav-icon
         class="ma-0 pa-0"

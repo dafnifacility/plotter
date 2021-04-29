@@ -21,7 +21,7 @@
           label="csv file"
         >
           <template #append-outer>
-            <v-btn icon color="primary" @click="downloadFile('csv')">
+            <v-btn icon :color="primaryBlue" @click="downloadFile('csv')">
               <v-icon>mdi-download</v-icon>
             </v-btn>
           </template>
@@ -35,7 +35,7 @@
           label="topojson file"
         >
           <template #append-outer>
-            <v-btn icon color="primary" @click="downloadFile('topojson')">
+            <v-btn icon :color="primaryBlue" @click="downloadFile('topojson')">
               <v-icon>mdi-download</v-icon>
             </v-btn>
           </template>
@@ -49,7 +49,7 @@
           label="geojson file"
         >
           <template #append-outer>
-            <v-btn icon color="primary" @click="downloadFile('geojson')">
+            <v-btn icon :color="primaryBlue" @click="downloadFile('geojson')">
               <v-icon>mdi-download</v-icon>
             </v-btn>
           </template>
@@ -73,7 +73,7 @@
           label="topojson file"
         >
           <template #append-outer>
-            <v-btn icon color="primary" @click="downloadFile('topojson')">
+            <v-btn icon :color="primaryBlue" @click="downloadFile('topojson')">
               <v-icon>mdi-download</v-icon>
             </v-btn>
           </template>
@@ -87,7 +87,7 @@
           label="geojson file"
         >
           <template #append-outer>
-            <v-btn icon color="primary" @click="downloadFile('geojson')">
+            <v-btn icon :color="primaryBlue" @click="downloadFile('geojson')">
               <v-icon>mdi-download</v-icon>
             </v-btn>
           </template>
@@ -129,12 +129,13 @@
 import { aggregateOps } from '~/constants/aggregate'
 import axios from 'axios'
 import fileDownload from 'js-file-download'
+import { primaryBlue } from '~/static/js/colours'
 
 export default {
   name: 'Data',
   components: {},
   data() {
-    return {}
+    return { primaryBlue }
   },
   computed: {
     csvError() {
