@@ -55,7 +55,7 @@
           </template>
         </v-select>
       </v-col>
-      <v-col>
+      <v-col cols="2">
         <v-select
           v-if="mode == 'csv + topojson' || mode == 'csv + geojson'"
           v-model="csvId"
@@ -93,7 +93,7 @@
           </template>
         </v-select>
       </v-col>
-      <v-col>
+      <v-col cols="2">
         <v-select
           v-if="mode == 'csv + topojson' || mode == 'csv + geojson'"
           v-model="geoId"
@@ -101,25 +101,23 @@
           label="geometry id field"
         />
       </v-col>
-    </v-row>
-    <v-row dense>
-      <v-col v-if="csvError">
-        <v-alert type="error" dense>
+      <v-col v-if="csvError" cols="12">
+        <v-alert type="error" dense dismissible>
           {{ csvError }}
         </v-alert>
       </v-col>
-      <v-col v-if="topojsonError">
-        <v-alert type="error" dense>
+      <v-col v-if="topojsonError" cols="12">
+        <v-alert type="error" dense dismissible>
           {{ topojsonError }}
         </v-alert>
       </v-col>
-      <v-col v-if="geojsonError">
-        <v-alert type="error" dense>
+      <v-col v-if="geojsonError" cols="12">
+        <v-alert type="error" dense dismissible>
           {{ geojsonError }}
         </v-alert>
       </v-col>
-      <v-col v-if="syncError">
-        <v-alert type="error" dense>
+      <v-col v-if="syncError" cols="12">
+        <v-alert type="error" dense dismissible>
           {{ syncError }}
         </v-alert>
       </v-col>
