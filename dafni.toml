@@ -11,22 +11,22 @@ NODE_ENV="dev"
 [[configset]]
 environment="staging"
 
-[configset.backends]
-VISUALISATION_API_URL="https://dafni-nivs-nivs-api.staging.dafni.rl.ac.uk"
-LOGIN_URL="https://login.staging.dafni.rl.ac.uk"
-DISCOVERY_API_URL="https://dafni-search-and-discovery-api.staging.dafni.rl.ac.uk"
-DSS_AUTH="https://dafni-dss-dssauth.staging.dafni.rl.ac.uk"
-NODE_ENV="production"
+  [configset.backends]
+  VISUALISATION_API_URL="https://dafni-nivs-nivs-api.staging.dafni.rl.ac.uk"
+  LOGIN_URL="https://login.staging.dafni.rl.ac.uk"
+  DISCOVERY_API_URL="https://dafni-search-and-discovery-api.staging.dafni.rl.ac.uk"
+  DSS_AUTH="https://dafni-dss-dssauth.staging.dafni.rl.ac.uk"
+  NODE_ENV="production"
 
 [[configset]]
 environment="production"
 
-[configset.autokube]
-ingressClass="haproxysecure"
+  [configset.autokube]
+  ingressClass="haproxysecure"
 
-[configset.backends]
-VISUALISATION_API_URL="https://dafni-nivs-nivs-api.secure.dafni.rl.ac.uk"
-LOGIN_URL="https://login.secure.dafni.rl.ac.uk"
-DISCOVERY_API_URL="https://dafni-search-and-discovery-api.secure.dafni.rl.ac.uk"
-DSS_AUTH="https://dafni-dss-dssauth.secure.dafni.rl.ac.uk"
-NODE_ENV="production"
+  [configset.backends]
+  VISUALISATION_API_URL="https://dafni-nivs-nivs-api.secure.dafni.rl.ac.uk"
+  LOGIN_URL="https://login.secure.dafni.rl.ac.uk"
+  DISCOVERY_API_URL="https://dafni-search-and-discovery-api.secure.dafni.rl.ac.uk"
+  DSS_AUTH="https://dafni-dss-dssauth.secure.dafni.rl.ac.uk"
+  NODE_ENV="production"
