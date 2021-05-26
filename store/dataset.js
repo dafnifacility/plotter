@@ -151,25 +151,21 @@ function guessColumnType(data) {
 }
 
 export const actions = {
-  loadStore(context, state) {
-    const commit = context.commit
-    commit('setMode', state.mode)
-    commit('setCsvIndex', state.csvIndex)
-    commit('setGeoIndex', state.geoIndex)
-    commit('setGeoProperties', state.geoProperties)
-    commit('setGeoProperties', state.geoProperties)
-    commit('setGeoId', state.geoId)
-    commit('setTopjsonObject', state.topjsonObject)
-    commit('setPrelookupAgregate', state.preLookupAgregate)
-    commit('setCsvId', state.csvId)
-    commit('setColumns', state.columns)
-    commit('setFilter', state.filter)
+  loadStore({ commit }, newState) {
+    commit('setMode', newState.mode)
+    commit('setCsvIndex', newState.csvIndex)
+    commit('setGeoIndex', newState.geoIndex)
+    commit('setGeoProperties', newState.geoProperties)
+    commit('setGeoProperties', newState.geoProperties)
+    commit('setGeoId', newState.geoId)
+    commit('setTopjsonObject', newState.topjsonObject)
+    commit('setPrelookupAgregate', newState.preLookupAgregate)
+    commit('setCsvId', newState.csvId)
+    commit('setColumns', newState.columns)
+    commit('setFilter', newState.filter)
   },
-  async loadData(context) {
-    const commit = context.commit
-    const dispatch = context.dispatch
-    const state = context.state
-    await getDatasets()
+  async loadData({ state, commit, dispatch }) {
+    await dispatch('discovery/getDatasetIds', null, { root: true })
     commit('setCsvFiles', getCsvFiles())
     commit('setTopjsonFiles', getTopojsonFiles())
     commit('setGeojsonFiles', getGeojsonFiles())

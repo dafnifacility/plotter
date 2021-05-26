@@ -1,100 +1,47 @@
-import {
-  backendsPromise,
-  discoveryApiUrl,
-  visualisationApiUrl,
-} from '~/api/backends/'
+import { backendsPromise, visualisationApiUrl } from '~/api/backends/'
 import axios from 'axios'
 import { instanceId } from '~/constants/localUUIDs'
 
 const stateFileName = 'state.json'
-
 const builderId = 'a734e3e7-ca10-41f2-9638-a19710d6430d'
 
-async function getDatasetUrlAndType() {
-  await backendsPromise
-  const response = await getDatasetIds()
-  console.log(response)
-  const ids = [response.data.visualisation_assets[0].asset_id]
-  return axios
-    .post(`${discoveryApiUrl}/version/metadata/`, {
-      version_uuids: ids,
-    })
-    .then(response => {
-      const urlsAndTypes = ids.map(id => {
-        return {
-          filename: response.data[id]['dcat:distribution'][0]['spdx:fileName'],
-          url: response.data[id]['dcat:distribution'][0]['dcat:downloadURL'],
-          type: response.data[id]['dcat:distribution'][0]['dcat:mediaType'],
-        }
-      })
-      return urlsAndTypes
-    })
-}
-
-async function setupSyncStore() {
+export async function setupSyncStore() {
   return await Promise.all([getPresignedURLforGET(), getPresignedURLforPUT()])
 }
 
-async function getDatasetIds() {
+export async function getInstance() {
   await backendsPromise
   return axios.get(`${visualisationApiUrl}/instances/${instanceId}`)
 }
 
-async function getPresignedURLforGET() {
-  await backendsPromise
-  return axios
-    .get(`${visualisationApiUrl}/instances/${instanceId}/state-sync`, {})
-    .then(response => {
-      const listOfFiles = response.data
-      const correctFile = listOfFiles.find(e => e.file_name === stateFileName)
-      if (correctFile) {
-        return correctFile.presigned_url
-      }
-    })
+function getStateFileUrl(listOfFiles) {
+  const correctFile = listOfFiles.find(e => e.file_name === stateFileName)
+  if (correctFile) {
+    return correctFile.presigned_url
+  }
+  return null
 }
 
-async function getPresignedURLforPUT() {
+export async function getPresignedURLforGET() {
   await backendsPromise
-  return axios
-    .post(`${visualisationApiUrl}/instances/${instanceId}/state-sync`, {
+  const response = await axios.get(
+    `${visualisationApiUrl}/instances/${instanceId}/state-sync`
+  )
+  return getStateFileUrl(response.data)
+}
+
+export async function getPresignedURLforPUT() {
+  await backendsPromise
+  const response = await axios.post(
+    `${visualisationApiUrl}/instances/${instanceId}/state-sync`,
+    {
       files: [stateFileName],
-    })
-    .then(response => {
-      return response.data[0].presigned_url
-    })
-}
-
-async function uploadState(presignedUrl, state) {
-  await backendsPromise
-  return fetch(presignedUrl, {
-    method: 'PUT',
-    body: JSON.stringify(state),
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  }).then(response => {
-    if (!response.ok) {
-      throw response.statusText
     }
-  })
+  )
+  return getStateFileUrl(response.data)
 }
 
-async function downloadState(presignedUrl) {
-  await backendsPromise
-  return fetch(presignedUrl, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  }).then(response => {
-    if (!response.ok) {
-      throw response.statusText
-    }
-    return response.json()
-  })
-}
-
-async function downloadPlot(plotId) {
+export async function downloadPlot(plotId) {
   await backendsPromise
   return axios
     .get(`${visualisationApiUrl}/plots/${plotId}`)
@@ -112,7 +59,7 @@ async function downloadPlot(plotId) {
     })
 }
 
-async function uploadPlot(plotTitle, plotDescription, filename, file) {
+export async function uploadPlot(plotTitle, plotDescription, filename, file) {
   await backendsPromise
   let plotId = null
   return axios
@@ -146,7 +93,7 @@ async function uploadPlot(plotTitle, plotDescription, filename, file) {
     })
 }
 
-async function downloadTemplate(templateId) {
+export async function downloadTemplate(templateId) {
   await backendsPromise
   return axios
     .get(`${visualisationApiUrl}/templates/${templateId}`)
@@ -164,7 +111,7 @@ async function downloadTemplate(templateId) {
     })
 }
 
-async function uploadTemplate(
+export async function uploadTemplate(
   templateTitle,
   templateDescription,
   filename,
@@ -203,13 +150,11 @@ async function uploadTemplate(
     })
 }
 
-export {
+export default {
+  getInstance,
   setupSyncStore,
-  uploadState,
-  downloadState,
   uploadPlot,
   downloadPlot,
   uploadTemplate,
   downloadTemplate,
-  getDatasetUrlAndType,
 }

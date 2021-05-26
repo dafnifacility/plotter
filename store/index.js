@@ -1,5 +1,6 @@
-import { downloadState, setupSyncStore, uploadState } from '~/api/nivs/nivs'
+import { downloadState, uploadState } from '~/api/minio'
 import { columnProperties } from '~/constants/aesthetics'
+import { setupSyncStore } from '~/api/nivs'
 
 export const state = () => ({
   vegaSpec: null,
@@ -266,29 +267,21 @@ export const mutations = {
 }
 
 export const actions = {
-  loadStore(context) {
-    setupSyncStore()
-      .then(presignedUrls => {
-        context.commit('setPresignedUrlForUpload', presignedUrls[1])
-        const presignedUrlForDownload = presignedUrls[0]
-        return downloadState(presignedUrlForDownload)
-      })
-      .then(newState => {
-        context.dispatch('geometries/loadStore', newState.geometries)
-        context.dispatch('dataset/loadStore', newState.dataset)
-        context.dispatch('dataset/loadData')
-      })
-      .then(() => {
-        console.log('successfully synced state from NIVS backend')
-      })
-      .catch(e => {
-        context.commit(
-          'setSyncError',
-          'Error syncing state with NIVS backend. ' + e
-        )
-        // whatever happens we need to load the datafiles
-        context.dispatch('dataset/loadData')
-      })
+  async loadStore({ commit, dispatch }) {
+    try {
+      const presignedUrls = await setupSyncStore()
+      const presignedUrlForDownload = presignedUrls[0]
+      commit('setPresignedUrlForUpload', presignedUrls[1])
+
+      const newState = await downloadState(presignedUrlForDownload)
+      await dispatch('geometries/loadStore', newState.geometries)
+      await dispatch('dataset/loadStore', newState.dataset)
+      await dispatch('dataset/loadData')
+      console.log('Successfully synced state from NIVS backend')
+    } catch (e) {
+      console.error(e)
+      commit('setSyncError', `Error syncing state with NIVS backend. ${e}`)
+    }
   },
   uploadState(context) {
     const presignedUrlForUpload = context.state.presignedUrlForUpload

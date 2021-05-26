@@ -45,10 +45,11 @@ export default {
   computed: {
     ...mapState({
       authenticated: state => state.auth.authenticated,
+      getUrl: state => state.dataset.url,
     }),
     url: {
       get() {
-        return this.$store.state.dataset.url
+        return this.getUrl
       },
       set(value) {
         this.setUrl(value)

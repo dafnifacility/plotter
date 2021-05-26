@@ -7,7 +7,7 @@
 <script>
 import axios from 'axios'
 import embed from 'vega-embed'
-import { uploadPlot } from '~/api/nivs/nivs'
+import { uploadPlot } from '~/api/nivs'
 
 export default {
   props: {

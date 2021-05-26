@@ -23,20 +23,19 @@ export const state = () => ({
   geometries: [defaultGeometry()],
 })
 
-export const actions = {
-  loadStore({ commit }, state) {
-    commit('setSelectedGeometry', state.selectedGeometry)
-    commit('setGeometries', state.geometries)
-  },
-  removeGeometry({ commit, state }, index) {
-    if (state.selectedGeometry === index) {
-      if (index >= state.geometries.length - 1) {
-        commit('setSelectedGeometry', index - 1)
-      } else {
-        commit('setSelectedGeometry', index)
+export const getters = {
+  geometry(state) {
+    if (
+      state.selectedGeometry >= state.geometries.length ||
+      state.selectedGeometry < 0
+    ) {
+      return {
+        type: 'None',
+        aesthetics: {},
+        options: {},
       }
     }
-    commit('removeGeometry', index)
+    return state.geometries[state.selectedGeometry]
   },
 }
 
@@ -103,18 +102,19 @@ export const mutations = {
   },
 }
 
-export const getters = {
-  geometry(state) {
-    if (
-      state.selectedGeometry >= state.geometries.length ||
-      state.selectedGeometry < 0
-    ) {
-      return {
-        type: 'None',
-        aesthetics: {},
-        options: {},
+export const actions = {
+  loadStore({ commit }, newState) {
+    commit('setSelectedGeometry', newState.selectedGeometry)
+    commit('setGeometries', newState.geometries)
+  },
+  removeGeometry({ commit, state }, index) {
+    if (state.selectedGeometry === index) {
+      if (index >= state.geometries.length - 1) {
+        commit('setSelectedGeometry', index - 1)
+      } else {
+        commit('setSelectedGeometry', index)
       }
     }
-    return state.geometries[state.selectedGeometry]
+    commit('removeGeometry', index)
   },
 }

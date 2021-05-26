@@ -25,7 +25,7 @@ export default {
     keycloakRealm: process.env.KEYCLOAK_REALM,
     keycloakClient: process.env.KEYCLOAK_CLIENT,
     INSTANCE_ID:
-      process.env.INSTANCE_ID || '88e27f8a-019f-42e3-addf-8fe7525c6089',
+      process.env.INSTANCE_ID || '01f8840d-b1ae-4498-9845-82f188ab2d2a',
   },
 
   /*
