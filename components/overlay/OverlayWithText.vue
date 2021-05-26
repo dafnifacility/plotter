@@ -13,7 +13,7 @@
 /**
  * Create an overly with DAFNI loading image and text in the centre
  */
-import loading from '~/components/overlay/loading'
+import loading from '~/components/overlay/Loading'
 export default {
   components: {
     loading,

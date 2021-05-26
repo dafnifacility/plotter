@@ -9,7 +9,7 @@
       disable-resize-watcher
       fixed
       right
-      style="background-color: #f4f4f4;"
+      style="background-color: #f4f4f4"
     >
       <div class="pa-4">
         <h2 class="mb-3">Help</h2>
@@ -23,7 +23,7 @@
       app
       clipped-right
       clipped-left
-      style="background-color: #121a24; border: 0px !important;"
+      style="background-color: #121a24; border: 0px !important"
     >
       <!-- <v-app-bar-nav-icon
         class="ma-0 pa-0"
@@ -61,7 +61,7 @@
       />
     </transition>
     <v-main>
-      <v-container fluid style="border: 0px;">
+      <v-container fluid style="border: 0px">
         <nuxt />
       </v-container>
     </v-main>
@@ -69,7 +69,7 @@
 </template>
 <script>
 import { mapState } from 'vuex'
-import OverlayWithText from '~/components/overlay/overlayWithText'
+import OverlayWithText from '~/components/overlay/OverlayWithText'
 
 export default {
   components: {
