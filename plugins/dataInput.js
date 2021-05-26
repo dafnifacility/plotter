@@ -15,10 +15,6 @@ let dataIds = [
   '495dc0ae-a1fc-49db-8a04-0136b71ca0fb',
   '83f32bfb-937d-4029-b206-d8bbf3a8d004',
 ]
-dataIds = [
-  '36f1ff6c-99f6-49f4-a61a-665c3a8972e7',
-  '83f32bfb-937d-4029-b206-d8bbf3a8d004',
-]
 
 export function getCsvFiles() {
   return inputCsvFiles
@@ -43,7 +39,7 @@ export async function getDatasets() {
     }
   }
   try {
-    const dataFiles = await getDatasetUrlAndType(dataIds)
+    const dataFiles = await getDatasetUrlAndType()
     inputCsvFiles = []
     inputTopojsonFiles = []
     inputGeojsonFiles = []

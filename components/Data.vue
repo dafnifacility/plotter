@@ -267,7 +267,7 @@ export default {
       return this.$store.state.dataset.geoProperties
     },
     csvProperties() {
-      return this.$store.state.dataset.columnsInDataFile.map((c) => {
+      return this.$store.state.dataset.columnsInDataFile.map(c => {
         return c.name
       })
     },
@@ -278,7 +278,7 @@ export default {
       set(value) {
         this.$store.commit('dataset/setCsvId', value)
         const idColumn = this.$store.state.dataset.columnsInDataFile.filter(
-          (c) => {
+          c => {
             return c.name === value
           }
         )[0]
@@ -310,7 +310,7 @@ export default {
       }
 
       const filename = urlString.substring(urlString.lastIndexOf('/') + 1)
-      axios.get(urlString, {}).then((res) => {
+      axios.get(urlString, {}).then(res => {
         // topojson or geojson files will be objects
         if (typeof res.data === 'object' && res.data !== null) {
           fileDownload(JSON.stringify(res.data, null, 2), filename)

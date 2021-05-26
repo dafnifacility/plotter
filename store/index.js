@@ -2,6 +2,7 @@ import { downloadState, setupSyncStore, uploadState } from '~/api/nivs/nivs'
 import { columnProperties } from '~/constants/aesthetics'
 
 export const state = () => ({
+  vegaSpec: null,
   syncError: null,
   presignedUrlForUpload: null,
   vegaView: null,
@@ -24,7 +25,7 @@ function vegaEncoding(geometry, mode) {
     fieldNamePrepend = 'properties.'
   }
   return Object.keys(aesMap)
-    .filter((key) => {
+    .filter(key => {
       return aesMap[key].length > 0
     })
     .reduce((map, key) => {
@@ -57,84 +58,6 @@ function vegaEncoding(geometry, mode) {
       }, map)
       return map
     }, {})
-}
-
-export const mutations = {
-  setVegaView(state, value) {
-    state.vegaView = value
-  },
-  setSyncError(state, value) {
-    state.syncError = value
-  },
-  setPresignedUrlForUpload(state, value) {
-    state.presignedUrlForUpload = value
-  },
-}
-
-export const actions = {
-  loadStore(context) {
-    setupSyncStore()
-      .then((presignedUrls) => {
-        context.commit('setPresignedUrlForUpload', presignedUrls[1])
-        const presignedUrlForDownload = presignedUrls[0]
-        return downloadState(presignedUrlForDownload)
-      })
-      .then((newState) => {
-        context.dispatch('geometries/loadStore', newState.geometries)
-        context.dispatch('dataset/loadStore', newState.dataset)
-        context.dispatch('dataset/loadData')
-      })
-      .then(() => {
-        console.log('successfully synced state from NIVS backend')
-      })
-      .catch((e) => {
-        context.commit(
-          'setSyncError',
-          'Error syncing state with NIVS backend. ' + e
-        )
-        // whatever happens we need to load the datafiles
-        context.dispatch('dataset/loadData')
-      })
-  },
-  uploadState(context) {
-    const presignedUrlForUpload = context.state.presignedUrlForUpload
-    if (presignedUrlForUpload) {
-      uploadState(presignedUrlForUpload, context.state)
-        .then(() => {
-          context.commit('setSyncError', null)
-        })
-        .catch((error) => {
-          context.commit(
-            'setSyncError',
-            `Error syncing with DAFNI backend. Response status is "${error}"`
-          )
-        })
-    }
-  },
-  setOption({ commit }, [type, name, args, value]) {
-    if (type === 'column') {
-      commit('dataset/setColumn', [args.index, name, value])
-    } else if (type === 'aesthetic') {
-      const aesthetic = args.aesthetic
-      commit('geometries/setAestheticColumnProperty', [
-        aesthetic,
-        0,
-        name,
-        value,
-      ])
-    } else if (type === 'geometry') {
-      commit('geometries/setGeometryProperty', [args.index, name, value])
-    } else {
-      throw new Error(`unknown option type ${type}`)
-    }
-  },
-  removeColumn({ commit }, [type, index, aesthetic]) {
-    if (type === 'column') {
-      commit('dataset/removeColumn', [index])
-    } else if (type === 'aesthetic') {
-      commit('geometries/removeAestheticColumn', [aesthetic, 0])
-    }
-  },
 }
 
 function vegaDataTopoJson(URL, geoFeature) {
@@ -176,7 +99,7 @@ export const getters = {
   },
   vegaLayers(state) {
     const geometries = state.geometries.geometries
-    return geometries.map((geom) => {
+    return geometries.map(geom => {
       return {
         mark: vegaMark(geom),
         encoding: vegaEncoding(geom, state.dataset.mode),
@@ -218,7 +141,7 @@ export const getters = {
     const allCalculateExpressions = geometries.reduce((outerSet, geom) => {
       const aesMap = geom.aesthetics
       return Object.keys(aesMap)
-        .filter((key) => {
+        .filter(key => {
           return aesMap[key].length > 0
         })
         .reduce((innerSet, key) => {
@@ -232,7 +155,7 @@ export const getters = {
     let transformArray = []
     if (allCalculateExpressions) {
       const calcArray = Array.from(allCalculateExpressions)
-      const mappedArray = calcArray.map((expr) => {
+      const mappedArray = calcArray.map(expr => {
         return {
           calculate: expr,
           as: expr,
@@ -252,7 +175,7 @@ export const getters = {
       state.dataset.mode === 'csv + geojson'
     ) {
       const propertiesWithoutID = state.dataset.geoProperties.filter(
-        (prop) => prop !== state.dataset.geoId
+        prop => prop !== state.dataset.geoId
       )
       let dataSpec = null
       if (state.dataset.mode === 'csv + topojson') {
@@ -282,7 +205,7 @@ export const getters = {
         from: {
           data: dataSpec,
           key: 'properties.'.concat(state.dataset.geoId),
-          fields: propertiesWithoutID.map((prop) => `properties.${prop}`),
+          fields: propertiesWithoutID.map(prop => `properties.${prop}`),
         },
         as: propertiesWithoutID,
       })
@@ -324,5 +247,86 @@ export const getters = {
       }
     }
     return spec
+  },
+}
+
+export const mutations = {
+  vegaSpec(state, spec) {
+    state.vegaSpec = spec
+  },
+  setVegaView(state, view) {
+    state.vegaView = view
+  },
+  setSyncError(state, err) {
+    state.syncError = err
+  },
+  setPresignedUrlForUpload(state, url) {
+    state.presignedUrlForUpload = url
+  },
+}
+
+export const actions = {
+  loadStore(context) {
+    setupSyncStore()
+      .then(presignedUrls => {
+        context.commit('setPresignedUrlForUpload', presignedUrls[1])
+        const presignedUrlForDownload = presignedUrls[0]
+        return downloadState(presignedUrlForDownload)
+      })
+      .then(newState => {
+        context.dispatch('geometries/loadStore', newState.geometries)
+        context.dispatch('dataset/loadStore', newState.dataset)
+        context.dispatch('dataset/loadData')
+      })
+      .then(() => {
+        console.log('successfully synced state from NIVS backend')
+      })
+      .catch(e => {
+        context.commit(
+          'setSyncError',
+          'Error syncing state with NIVS backend. ' + e
+        )
+        // whatever happens we need to load the datafiles
+        context.dispatch('dataset/loadData')
+      })
+  },
+  uploadState(context) {
+    const presignedUrlForUpload = context.state.presignedUrlForUpload
+    if (presignedUrlForUpload) {
+      uploadState(presignedUrlForUpload, context.state)
+        .then(() => {
+          context.commit('setSyncError', null)
+        })
+        .catch(error => {
+          context.commit(
+            'setSyncError',
+            `Error syncing with DAFNI backend. Response status is "${error}"`
+          )
+        })
+    }
+  },
+  setOption({ commit }, [type, name, args, value]) {
+    if (type === 'column') {
+      commit('dataset/setColumn', [args.index, name, value])
+    } else if (type === 'aesthetic') {
+      const aesthetic = args.aesthetic
+      commit('geometries/setAestheticColumnProperty', [
+        aesthetic,
+        0,
+        name,
+        value,
+      ])
+    } else if (type === 'geometry') {
+      commit('geometries/setGeometryProperty', [args.index, name, value])
+    } else {
+      throw new Error(`unknown option type ${type}`)
+    }
+  },
+  removeColumn({ commit }, [type, index, aesthetic]) {
+    if (type === 'column') {
+      commit('dataset/removeColumn', [index])
+    } else if (type === 'aesthetic') {
+      commit('geometries/removeAestheticColumn', [aesthetic, 0])
+    }
   },
 }

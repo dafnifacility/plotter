@@ -11,10 +11,22 @@ file_server {
 respond /healthz 204
 @backends {
   path /backends/backends.json
+  path /backends/keycloak.json
 }
 handle @backends {
   header Cache-Control public,max-age=10800
   templates {
     mime application/json
+  }
+}
+@keycloak {
+  path /keycloak/login.html
+  path /keycloak/test/test.html
+
+}
+handle @keycloak {
+  header Cache-Control public,max-age=7200
+  templates {
+    mime text/html
   }
 }

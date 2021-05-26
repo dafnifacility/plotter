@@ -6,9 +6,7 @@
       </v-btn>
     </template>
     <v-card>
-      <v-card-title class="headline grey lighten-2">
-        Save Plot
-      </v-card-title>
+      <v-card-title class="headline grey lighten-2"> Save Plot </v-card-title>
       <v-card-text>
         <v-text-field v-model="title" label="Title" />
         <v-text-field v-model="description" label="Description" />
@@ -19,12 +17,8 @@
 
       <v-card-actions>
         <v-spacer />
-        <v-btn :color="primaryBlue" text @click="save">
-          Save
-        </v-btn>
-        <v-btn :color="primaryBlue" text @click="cancel">
-          Cancel
-        </v-btn>
+        <v-btn :color="primaryBlue" text @click="save"> Save </v-btn>
+        <v-btn :color="primaryBlue" text @click="cancel"> Cancel </v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>

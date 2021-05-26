@@ -1,6 +1,6 @@
 import { createLocalVue, mount } from '@vue/test-utils'
-import Columns from '@/components/Columns.vue'
-import { defaultColumn } from '@/store/dataset'
+import Columns from '~/components/Columns.vue'
+import { defaultColumn } from '~/store/dataset'
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import Vuex from 'vuex'

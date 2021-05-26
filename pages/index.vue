@@ -26,11 +26,7 @@
 </template>
 
 <script>
-import {
-  getInstanceId,
-  setDefaultInstanceId,
-  setInstanceId,
-} from '~/plugins/instanceId'
+import { mapActions, mapMutations, mapState } from 'vuex'
 import Aesthetics from '~/components/Aesthetics'
 import Columns from '~/components/Columns'
 import Geometries from '~/components/Geometries'
@@ -47,26 +43,39 @@ export default {
     // Spec,
   },
   computed: {
+    ...mapState({
+      authenticated: state => state.auth.authenticated,
+    }),
     url: {
       get() {
         return this.$store.state.dataset.url
       },
       set(value) {
-        this.$store.commit('dataset/setUrl', value)
-        this.$store.dispatch('dataset/loadData')
+        this.setUrl(value)
+        this.loadData()
       },
     },
   },
+  watch: {
+    authenticated() {
+      if (this.authenticated) {
+        this.loadStore()
+      }
+    },
+  },
   created() {
-    this.$store.dispatch('loadStore')
-    if (this.$route.query.instanceId) {
-      setInstanceId(this.$route.query.instanceId)
-      console.log('set instanceId via url query to', getInstanceId())
-    } else {
-      setDefaultInstanceId().then(() => {
-        console.log('using default instanceId of', getInstanceId())
-      })
+    if (this.authenticated) {
+      this.loadStore()
     }
+  },
+  methods: {
+    ...mapMutations({
+      setUrl: 'dataset/setUrl',
+    }),
+    ...mapActions({
+      loadStore: 'loadStore',
+      loadData: 'dataset/loadData',
+    }),
   },
 }
 </script>

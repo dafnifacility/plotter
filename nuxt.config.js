@@ -21,8 +21,11 @@ export default {
   target: 'static',
 
   env: {
+    keycloakUrl: process.env.KEYCLOAK_ENDPOINT_TEST,
+    keycloakRealm: process.env.KEYCLOAK_REALM,
+    keycloakClient: process.env.KEYCLOAK_CLIENT,
     INSTANCE_ID:
-      process.env.INSTANCE_ID || 'ea76a4ce-aac2-4d73-bc39-b8dc026c8ed4',
+      process.env.INSTANCE_ID || '88e27f8a-019f-42e3-addf-8fe7525c6089',
   },
 
   /*
@@ -52,9 +55,9 @@ export default {
    ** https://nuxtjs.org/guide/plugins
    */
   plugins: [
-    '~/plugins/localCookie.js',
-    '~/plugins/instanceId.js',
-    '~/plugins/authHeader.js',
+    '~/api/backends/index.js',
+    '~/plugins/axios.js',
+    { src: '~/plugins/keycloak.js', mode: 'client' },
   ],
   /*
    ** Auto import components

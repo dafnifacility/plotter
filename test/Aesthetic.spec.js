@@ -1,5 +1,5 @@
 import { createLocalVue, mount } from '@vue/test-utils'
-import Aesthetic from '@/components/Aesthetic.vue'
+import Aesthetic from '~/components/Aesthetic.vue'
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import Vuex from 'vuex'

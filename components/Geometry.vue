@@ -1,7 +1,7 @@
 <template>
   <v-expansion-panel
     prepend-icon="mdi-chart-scatter-plot"
-    style="border: 1px solid #e0e0e0;"
+    style="border: 1px solid #e0e0e0"
     @click="selectGeometry"
   >
     <v-expansion-panel-header
@@ -30,9 +30,7 @@
         :index="index"
         type="geometry"
       />
-      <v-card-text v-if="geometry.options == 0">
-        No options
-      </v-card-text>
+      <v-card-text v-if="geometry.options == 0"> No options </v-card-text>
     </v-expansion-panel-content>
   </v-expansion-panel>
 </template>
@@ -54,12 +52,12 @@ export default {
   },
   computed: {
     geometry() {
-      return geometries.filter((geo) => {
+      return geometries.filter(geo => {
         return geo.name === this.data.type
       })[0]
     },
     supportedGeometries() {
-      return geometries.map((geo) => {
+      return geometries.map(geo => {
         return geo.name
       })
     },

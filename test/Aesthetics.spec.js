@@ -1,8 +1,8 @@
 import { createLocalVue, mount } from '@vue/test-utils'
-import Aesthetics from '@/components/Aesthetics.vue'
-import { aesthetics } from '@/constants/aesthetics'
-import { defaultGeometry } from '@/store/geometries'
-import { geometries } from '@/constants/geometries'
+import Aesthetics from '~/components/Aesthetics.vue'
+import { aesthetics } from '~/constants/aesthetics'
+import { defaultGeometry } from '~/store/geometries'
+import { geometries } from '~/constants/geometries'
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import Vuex from 'vuex'
@@ -37,7 +37,7 @@ describe('Aesthetics', () => {
     const testGeo = 'arc'
     store.commit('geometries/setGeometries', [defaultGeometry(testGeo)])
     store.commit('geometries/setSelectedGeometry', 0)
-    const expectedAesthetics = geometries.filter((geo) => {
+    const expectedAesthetics = geometries.filter(geo => {
       return geo.name === testGeo
     })[0].defaultAesthetics
     expect(wrapper.vm.currentAesthetics).toStrictEqual(expectedAesthetics)
@@ -48,7 +48,7 @@ describe('Aesthetics', () => {
     store.commit('geometries/setGeometries', [defaultGeometry(testGeo)])
     store.commit('geometries/setSelectedGeometry', 0)
     await Vue.nextTick()
-    const expectedAesthetics = geometries.filter((geo) => {
+    const expectedAesthetics = geometries.filter(geo => {
       return geo.name === testGeo
     })[0].defaultAesthetics
     for (let i = 0; i < expectedAesthetics.length; i++) {

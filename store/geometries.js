@@ -2,7 +2,7 @@ import { defaultColumn } from '~/store/dataset'
 import { geometries } from '~/constants/geometries'
 
 export function defaultGeometry(name = 'line') {
-  const geo = geometries.filter((geo) => {
+  const geo = geometries.filter(geo => {
     return geo.name === name
   })[0]
   return {
@@ -68,7 +68,7 @@ export const mutations = {
   updateAesthetics(state, [name, value]) {
     const aes = state.geometries[state.selectedGeometry].aesthetics
     const oldValue = aes[name]
-    const diff = value.filter((x) => !oldValue.includes(x))
+    const diff = value.filter(x => !oldValue.includes(x))
     // should just be zero or one column in aesthetic now
     if (diff.length === 0) {
       aes[name] = []

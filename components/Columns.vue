@@ -1,9 +1,7 @@
 <template>
   <v-card outlined>
     <v-card-title class="py-3 text-h6 font-weight-bold bg-grey">
-      <v-icon :color="primaryBlue" class="pr-1">
-        mdi-table
-      </v-icon>
+      <v-icon :color="primaryBlue" class="pr-1"> mdi-table </v-icon>
       Columns
     </v-card-title>
     <v-divider />
@@ -46,7 +44,7 @@
         filled
         @click:append="addCalculateField"
       >
-        <template #message="{message}">
+        <template #message="{ message }">
           <span>
             {{ message }}
             <a
@@ -65,7 +63,7 @@
         filled
         persistent-hint
       >
-        <template #message="{message}">
+        <template #message="{ message }">
           <span>
             {{ message }}
             <a
@@ -97,7 +95,7 @@ export default {
   },
   computed: {
     columnsInDataFile() {
-      const cols = this.$store.state.dataset.columnsInDataFile.map((c) => {
+      const cols = this.$store.state.dataset.columnsInDataFile.map(c => {
         return c.name
       })
       return cols

@@ -2,14 +2,12 @@ export const aesthetics = [
   {
     name: 'x',
     icon: 'mdi-arrow-right',
-    text:
-      'X coordinates of the marks, or width of horizontal "bar" and "area" without specified x2 or width.',
+    text: 'X coordinates of the marks, or width of horizontal "bar" and "area" without specified x2 or width.',
   },
   {
     name: 'y',
     icon: 'mdi-arrow-up',
-    text:
-      'Y coordinates of the marks, or height of vertical "bar" and "area" without specified y2 or height.',
+    text: 'Y coordinates of the marks, or height of vertical "bar" and "area" without specified y2 or height.',
   },
   {
     name: 'x2',
@@ -46,8 +44,7 @@ export const aesthetics = [
   {
     name: 'theta',
     icon: 'mdi-angle-acute',
-    text:
-      'For arc marks, the arc length in radians if theta2 is not specified, otherwise the start arc angle. For text marks, polar coordinate angle in radians.',
+    text: 'For arc marks, the arc length in radians if theta2 is not specified, otherwise the start arc angle. For text marks, polar coordinate angle in radians.',
   },
   {
     name: 'radius',
@@ -57,8 +54,7 @@ export const aesthetics = [
   {
     name: 'theta2',
     icon: 'mdi-angle-obtuse',
-    text:
-      'The end angle of arc marks in radians. A value of 0 indicates up or “north”, increasing values proceed clockwise.',
+    text: 'The end angle of arc marks in radians. A value of 0 indicates up or “north”, increasing values proceed clockwise.',
   },
   {
     name: 'radius2',
@@ -81,29 +77,25 @@ export const aesthetics = [
   {
     name: 'longtitude2',
     icon: 'mdi-earth-plus',
-    text:
-      'Longitude-2 position for geographically projected ranged "area", "bar", "rect", and "rule".',
+    text: 'Longitude-2 position for geographically projected ranged "area", "bar", "rect", and "rule".',
   },
   {
     name: 'latitude2',
     icon: 'mdi-earth-minus',
-    text:
-      'Latitude-2 position for geographically projected ranged "area", "bar", "rect", and "rule".',
+    text: 'Latitude-2 position for geographically projected ranged "area", "bar", "rect", and "rule".',
   },
 
   // Mark Properties Channels
   {
     name: 'color',
     icon: 'mdi-water',
-    text:
-      'Color of the marks – either fill or stroke color based on the filled property of mark definition.',
+    text: 'Color of the marks – either fill or stroke color based on the filled property of mark definition.',
   },
   { name: 'opacity', icon: 'mdi-opacity', text: 'Opacity of the marks.' },
   {
     name: 'fill',
     icon: 'mdi-format-color-fill',
-    text:
-      'Fill color of the marks. Default value: If undefined, the default color depends on mark config’s color property.',
+    text: 'Fill color of the marks. Default value: If undefined, the default color depends on mark config’s color property.',
   },
   {
     name: 'fillOpacity',
@@ -129,8 +121,7 @@ export const aesthetics = [
   {
     name: 'size',
     icon: 'mdi-chart-bubble',
-    text:
-      'Size of the mark. For "point", "square" and "circle", – the symbol size, or pixel area of the mark. For "bar" and "tick" – the bar and tick’s size. For "text" – the text’s font size.',
+    text: 'Size of the mark. For "point", "square" and "circle", – the symbol size, or pixel area of the mark. For "bar" and "tick" – the bar and tick’s size. For "text" – the text’s font size.',
   },
   {
     name: 'angle',
@@ -140,8 +131,7 @@ export const aesthetics = [
   {
     name: 'shape',
     icon: 'mdi-shape',
-    text:
-      'Shape of the mark, "circle", "square", "cross" etc. See vega-lite docs for complete list. For geoshape marks it should be a field definition of the geojson data',
+    text: 'Shape of the mark, "circle", "square", "cross" etc. See vega-lite docs for complete list. For geoshape marks it should be a field definition of the geojson data',
   },
 
   // Text and Tooltip Channels
@@ -163,24 +153,21 @@ export const aesthetics = [
   {
     name: 'detail',
     icon: 'mdi-details',
-    text:
-      'Additional levels of detail for grouping data in aggregate views and in line, trail, and area marks without mapping data to a specific visual channel.',
+    text: 'Additional levels of detail for grouping data in aggregate views and in line, trail, and area marks without mapping data to a specific visual channel.',
   },
 
   // Order Channel
   {
     name: 'order',
     icon: 'mdi-order-numeric-ascending',
-    text:
-      'Order of the marks. Stacked marks: stack order. Line and trail marks: order of data points in the lines. Otherwise, this order channel encodes layer order of the marks.',
+    text: 'Order of the marks. Stacked marks: stack order. Line and trail marks: order of data points in the lines. Otherwise, this order channel encodes layer order of the marks.',
   },
 
   // Facet Channels
   {
     name: 'facet',
     icon: 'mdi-chart-multiple',
-    text:
-      'A field definition for the (flexible) facet of trellis plots. If either row or column is specified, this channel will be ignored.',
+    text: 'A field definition for the (flexible) facet of trellis plots. If either row or column is specified, this channel will be ignored.',
   },
   {
     name: 'row',
@@ -219,8 +206,7 @@ export const columnProperties = [
   },
   {
     name: 'aggregate',
-    hint:
-      'used to compute aggregate summary statistics (e.g., median, min, max) over groups of data',
+    hint: 'used to compute aggregate summary statistics (e.g., median, min, max) over groups of data',
     default: null,
     showInColumns: false,
     type: 'select',
@@ -244,10 +230,8 @@ export const columnProperties = [
       median: 'The median field value.',
       q1: 'The lower quartile boundary of field values.',
       q3: 'The upper quartile boundary of field values.',
-      ci0:
-        'The lower boundary of the bootstrapped 95% confidence interval of the mean field value.',
-      ci1:
-        'The upper boundary of the bootstrapped 95% confidence interval of the mean field value.',
+      ci0: 'The lower boundary of the bootstrapped 95% confidence interval of the mean field value.',
+      ci1: 'The upper boundary of the bootstrapped 95% confidence interval of the mean field value.',
       min: 'The minimum field value.',
       max: 'The maximum field value.',
       argmin:
@@ -264,8 +248,7 @@ export const columnProperties = [
     showInColumns: false,
     vegaKey: ['stack'],
     options: {
-      zero:
-        'stacking with baseline offset at zero value of the scale (for creating typical stacked bar and area chart).',
+      zero: 'stacking with baseline offset at zero value of the scale (for creating typical stacked bar and area chart).',
       normalize:
         'stacking with normalized domain (for creating normalized stacked bar and area charts.',
       center: 'stacking with center baseline (for streamgraph).',
@@ -275,8 +258,7 @@ export const columnProperties = [
   },
   {
     name: 'bin',
-    hint:
-      'Binning discretizes numeric values into a set of bins. A common use case is to create a histogram.',
+    hint: 'Binning discretizes numeric values into a set of bins. A common use case is to create a histogram.',
     vegaKey: ['bin'],
     default: false,
     showInColumns: false,
@@ -334,8 +316,7 @@ export const columnProperties = [
         'Three-month intervals, starting in one of January, April, July, and October.',
       month: 'Calendar months (January, February, etc.).',
       date: 'Calendar day of the month (January 1, January 2, etc.).',
-      week:
-        'Sunday-based weeks. Days before the first Sunday of the year are considered to be in week 0, the first Sunday of the year is the start of week 1, the second Sunday week 2, etc..',
+      week: 'Sunday-based weeks. Days before the first Sunday of the year are considered to be in week 0, the first Sunday of the year is the start of week 1, the second Sunday week 2, etc..',
       day: 'Day of the week (Sunday, Monday, etc.).',
       dayofyear: 'Day of the year (1, 2, …, 365, etc.).',
       hours: 'Hours of the day (12:00am, 1:00am, etc.).',

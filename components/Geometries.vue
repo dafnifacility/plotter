@@ -1,15 +1,11 @@
 <template>
   <v-card outlined>
     <v-card-title class="py-3 text-h6 font-weight-bold bg-grey">
-      <v-icon :color="primaryBlue" class="pr-1">
-        mdi-shape-plus
-      </v-icon>
+      <v-icon :color="primaryBlue" class="pr-1"> mdi-shape-plus </v-icon>
       Geometries
     </v-card-title>
     <v-divider />
-    <v-card-subtitle>
-      Add layers to plot
-    </v-card-subtitle>
+    <v-card-subtitle> Add layers to plot </v-card-subtitle>
     <v-card-text>
       <v-expansion-panels flat hover class="pb-2">
         <Geometry
@@ -31,7 +27,7 @@
         @input="addGeometry"
       >
         <template #item="{ item, attrs, on }">
-          <v-list-item v-bind="attrs" style="max-width: 600px;" v-on="on">
+          <v-list-item v-bind="attrs" style="max-width: 600px" v-on="on">
             <v-list-item-icon>
               <v-icon :color="primaryBlue" v-text="item.icon" />
             </v-list-item-icon>
@@ -62,7 +58,7 @@ export default {
       return geometries
     },
     supportedGeometriesNames() {
-      return geometries.map((geo) => {
+      return geometries.map(geo => {
         return geo.name
       })
     },

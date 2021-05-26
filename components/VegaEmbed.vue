@@ -7,7 +7,6 @@
 <script>
 import axios from 'axios'
 import embed from 'vega-embed'
-import { getAuthHeader } from '@/plugins/authHeader'
 import { uploadPlot } from '~/api/nivs/nivs'
 
 export default {
@@ -49,19 +48,12 @@ export default {
 
       const embedOptions = {
         actions: false,
-        loader: {
-          http: {
-            headers: {
-              Authorization: getAuthHeader(),
-            },
-          },
-        },
       }
       return embed('#viz', this.spec, embedOptions)
-        .then((res) => {
+        .then(res => {
           res.finalize()
         })
-        .catch((error) => {
+        .catch(error => {
           console.log('ERROR in vega-embed: ', error)
         })
       // this.$store.commit('setVegaView', result.view)
@@ -69,16 +61,16 @@ export default {
     uploadPlot(title, description, filename) {
       this.view
         .toImageURL('png')
-        .then((pngUrl) => {
+        .then(pngUrl => {
           return axios.get(pngUrl, { responseType: 'blob' })
         })
-        .then((response) => {
+        .then(response => {
           return uploadPlot(title, description, filename, response.data)
         })
-        .then((id) => {
+        .then(id => {
           console.log('Successfully uploaded plot', id)
         })
-        .catch((error) => {
+        .catch(error => {
           console.log('ERROR uploading image', error)
         })
     },

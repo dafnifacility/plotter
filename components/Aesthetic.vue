@@ -1,5 +1,5 @@
 <template>
-  <div style="border: 1px solid #e0e0e0;">
+  <div style="border: 1px solid #e0e0e0">
     <v-row align="center">
       <v-col cols="auto">
         <v-tooltip top>
@@ -67,7 +67,7 @@ export default {
       return aesthetics
     },
     aesthetic() {
-      return aesthetics.filter((x) => {
+      return aesthetics.filter(x => {
         return x.name === this.name
       })[0]
     },

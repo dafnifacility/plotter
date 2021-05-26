@@ -28,7 +28,7 @@
         @input="addAesthetic"
       >
         <template #item="{ item, attrs, on }">
-          <v-list-item v-bind="attrs" style="max-width: 600px;" v-on="on">
+          <v-list-item v-bind="attrs" style="max-width: 600px" v-on="on">
             <v-list-item-icon>
               <v-icon :color="primaryBlue" v-text="item.icon" />
             </v-list-item-icon>

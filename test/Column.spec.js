@@ -1,5 +1,5 @@
 import { createLocalVue, shallowMount } from '@vue/test-utils'
-import Column from '@/components/Column.vue'
+import Column from '~/components/Column.vue'
 import { columnProperties } from '~/constants/aesthetics'
 import Vue from 'vue'
 import Vuetify from 'vuetify'

@@ -19,12 +19,8 @@
 
       <v-card-actions>
         <v-spacer />
-        <v-btn :color="primaryBlue" text @click="save">
-          Save
-        </v-btn>
-        <v-btn :color="primaryBlue" text @click="cancel">
-          Cancel
-        </v-btn>
+        <v-btn :color="primaryBlue" text @click="save"> Save </v-btn>
+        <v-btn :color="primaryBlue" text @click="cancel"> Cancel </v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -49,10 +45,10 @@ export default {
       const currentState = this.$store.state
       console.log('uploading current state', currentState)
       uploadTemplate(this.title, this.description, this.filename, currentState)
-        .then((id) => {
+        .then(id => {
           console.log('Successfully uploaded template', id)
         })
-        .catch((error) => {
+        .catch(error => {
           console.log('ERROR uploading template', error)
         })
       this.dialog = false

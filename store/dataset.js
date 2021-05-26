@@ -6,9 +6,6 @@ import {
   getTopojsonFiles,
 } from '~/plugins/dataInput'
 import { columnProperties } from '~/constants/aesthetics'
-import { getAuthHeader } from '@/plugins/authHeader'
-
-const authHeader = getAuthHeader()
 
 export const state = () => {
   return {
@@ -48,7 +45,7 @@ function removeDuplicateColumns(columns) {
     }
     return map
   }, {})
-  const noDuplicatesArray = Object.keys(noDuplicates).map((key) => {
+  const noDuplicatesArray = Object.keys(noDuplicates).map(key => {
     return {
       ...noDuplicates[key],
     }
@@ -121,7 +118,7 @@ export const mutations = {
     state.columnsInDataFile = removeDuplicateColumns(value)
   },
   addColumn(state, name) {
-    const newColumn = state.columnsInDataFile.filter((c) => {
+    const newColumn = state.columnsInDataFile.filter(c => {
       return c.name === name
     })
     if (newColumn.length === 0) {
@@ -197,11 +194,8 @@ export const actions = {
     }
     return fetch(context.state.csvFiles[context.state.csvIndex].url, {
       method: 'GET',
-      headers: {
-        Authorization: authHeader,
-      },
     })
-      .then((response) => response.text())
+      .then(response => response.text())
       .then(function (text) {
         const data = CSV.parse(text)
         const columnNames = data[0]
@@ -227,11 +221,8 @@ export const actions = {
     }
     return fetch(state.topojsonFiles[state.geoIndex].url, {
       method: 'GET',
-      headers: {
-        Authorization: authHeader,
-      },
     })
-      .then((response) => response.json())
+      .then(response => response.json())
       .then(function (json) {
         if ('objects' in json) {
           const object = Object.keys(json.objects)[0]
@@ -239,7 +230,7 @@ export const actions = {
           const propertyNames = Object.keys(properties)
           commit('setTopjsonObject', object)
           commit('setGeoProperties', propertyNames)
-          const columns = propertyNames.map((columnName) => {
+          const columns = propertyNames.map(columnName => {
             const defaultProps = defaultColumn()
             defaultProps.type = guessColumnType(properties[columnName])
             return {
@@ -271,17 +262,14 @@ export const actions = {
     }
     return fetch(state.geojsonFiles[state.geoIndex].url, {
       method: 'GET',
-      headers: {
-        Authorization: authHeader,
-      },
     })
-      .then((response) => response.json())
+      .then(response => response.json())
       .then(function (json) {
         if ('features' in json) {
           const properties = json.features[0].properties
           const propertyNames = Object.keys(properties)
           commit('setGeoProperties', propertyNames)
-          const columns = propertyNames.map((columnName) => {
+          const columns = propertyNames.map(columnName => {
             const defaultProps = defaultColumn()
             defaultProps.type = guessColumnType(properties[columnName])
             return {
