@@ -1,24 +1,18 @@
 import * as CSV from 'csv-string'
-import {
-  getCsvFiles,
-  getDatasets,
-  getGeojsonFiles,
-  getTopojsonFiles,
-} from '~/plugins/dataInput'
 import { columnProperties } from '~/constants/aesthetics'
 
 export const state = () => {
   return {
     mode: 'csv',
     csvIndex: 0,
-    csvFiles: getCsvFiles(),
+    csvFiles: [],
     csvError: null,
     topojsonError: null,
     geojsonError: null,
     loadCsvProgress: 0,
     geoIndex: 0,
-    topojsonFiles: getTopojsonFiles(),
-    geojsonFiles: getGeojsonFiles(),
+    topojsonFiles: [],
+    geojsonFiles: [],
     loadGeoProgress: 0,
     geoProperties: [],
     geoId: '',
@@ -57,7 +51,7 @@ export const mutations = {
   setCsvFiles(state, value) {
     state.csvFiles = value
   },
-  setTopjsonFiles(state, value) {
+  setTopojsonFiles(state, value) {
     state.topojsonFiles = value
   },
   setGeojsonFiles(state, value) {
@@ -165,11 +159,9 @@ export const actions = {
     commit('setFilter', newState.filter)
   },
   async loadData({ state, commit, dispatch }) {
-    await dispatch('discovery/getDatasetIds', null, { root: true })
-    commit('setCsvFiles', getCsvFiles())
-    commit('setTopjsonFiles', getTopojsonFiles())
-    commit('setGeojsonFiles', getGeojsonFiles())
-    // handle missing files
+    await dispatch('discovery/getDatasetsAndPopulateFileLists', null, {
+      root: true,
+    })
     if (state.mode === 'csv') {
       dispatch('loadCsvData')
     } else if (state.mode === 'topojson') {
@@ -184,11 +176,11 @@ export const actions = {
       dispatch('loadGeojsonData')
     }
   },
-  loadCsvData(context) {
-    if (context.state.csvIndex >= context.state.csvFiles.length) {
+  loadCsvData({ state, commit }) {
+    if (state.csvIndex >= state.csvFiles.length) {
       return
     }
-    return fetch(context.state.csvFiles[context.state.csvIndex].url, {
+    return fetch(state.csvFiles[state.csvIndex].url, {
       method: 'GET',
     })
       .then(response => response.text())
@@ -203,12 +195,12 @@ export const actions = {
             ...defaultProps,
           }
         })
-        context.commit('setColumns', columns.slice(0, 5))
-        context.commit('setColumnsInDatafile', columns)
-        context.commit('setCsvError', null)
+        commit('setColumns', columns.slice(0, 5))
+        commit('setColumnsInDatafile', columns)
+        commit('setCsvError', null)
       })
       .catch(function (error) {
-        context.commit('setCsvError', 'Error loading csv: '.concat(error))
+        commit('setCsvError', 'Error loading csv: '.concat(error))
       })
   },
   loadTopojsonData({ commit, state }) {

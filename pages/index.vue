@@ -22,6 +22,9 @@
         </v-col> -->
       </v-col>
     </v-row>
+    <transition name="fade">
+      <overlay v-if="loading" loading />
+    </transition>
   </v-container>
 </template>
 
@@ -30,6 +33,7 @@ import { mapActions, mapMutations, mapState } from 'vuex'
 import Aesthetics from '~/components/Aesthetics'
 import Columns from '~/components/Columns'
 import Geometries from '~/components/Geometries'
+import overlay from '~/components/overlay/Overlay'
 import PlotView from '~/components/PlotView'
 // import Spec from '~/components/Spec'
 
@@ -39,8 +43,14 @@ export default {
     Aesthetics,
     Columns,
     Geometries,
+    overlay,
     PlotView,
     // Spec,
+  },
+  data() {
+    return {
+      loading: false,
+    }
   },
   computed: {
     ...mapState({
@@ -59,15 +69,11 @@ export default {
   },
   watch: {
     authenticated() {
-      if (this.authenticated) {
-        this.loadStore()
-      }
+      this.initialiseApp()
     },
   },
   created() {
-    if (this.authenticated) {
-      this.loadStore()
-    }
+    this.initialiseApp()
   },
   methods: {
     ...mapMutations({
@@ -77,6 +83,13 @@ export default {
       loadStore: 'loadStore',
       loadData: 'dataset/loadData',
     }),
+    async initialiseApp() {
+      if (this.authenticated) {
+        this.loading = true
+        await this.loadStore()
+        this.loading = false
+      }
+    },
   },
 }
 </script>
