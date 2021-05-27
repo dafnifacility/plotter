@@ -126,6 +126,7 @@
 </template>
 
 <script>
+import { mapActions, mapMutations, mapState } from 'vuex'
 import { aggregateOps } from '~/constants/aggregate'
 import axios from 'axios'
 import fileDownload from 'js-file-download'
@@ -138,49 +139,50 @@ export default {
     return { primaryBlue }
   },
   computed: {
-    csvError() {
-      return this.$store.state.dataset.csvError
-    },
-    topojsonError() {
-      return this.$store.state.dataset.topojsonError
-    },
-    geojsonError() {
-      return this.$store.state.dataset.geojsonError
-    },
-    syncError() {
-      return this.$store.state.syncError
-    },
+    ...mapState({
+      columnsInDataFile: state => state.dataset.columnsInDataFile,
+      csvError: state => state.dataset.csvError,
+      getCsvFiles: state => state.dataset.csvFiles,
+      getCsvId: state => state.dataset.csvId,
+      getCsvIndex: state => state.dataset.csvIndex,
+      loadCsvProgress: state => state.dataset.loadCsvProgress,
+      geojsonError: state => state.dataset.geojsonError,
+      getGeoId: state => state.dataset.geoId,
+      getGeoIndex: state => state.dataset.geoIndex,
+      getGeojsonFiles: state => state.dataset.geojsonFiles,
+      geoProperties: state => state.dataset.geoProperties,
+      loadGeoProgress: state => state.dataset.loadGeoProgress,
+      topojsonError: state => state.dataset.topojsonError,
+      getTopojsonFiles: state => state.dataset.topojsonFiles,
+      getPreLookupAggregate: state => state.dataset.preLookupAggregate,
+      getMode: state => state.dataset.mode,
+      syncError: state => state.syncError,
+    }),
     csvFiles() {
-      return this.$store.state.dataset.csvFiles.map((x, i) => {
+      return this.getCsvFiles.map((x, i) => {
+        return { ...x, index: i }
+      })
+    },
+    topojsonFiles() {
+      return this.getTopojsonFiles.map((x, i) => {
+        return { ...x, index: i }
+      })
+    },
+    geojsonFiles() {
+      return this.getGeojsonFiles.map((x, i) => {
         return { ...x, index: i }
       })
     },
     availableAggregates() {
       return Object.keys(aggregateOps)
     },
-    preLookupAgregate: {
+    preLookupAggregate: {
       get() {
-        return this.$store.state.dataset.preLookupAgregate
+        return this.getPreLookupAggregate
       },
       set(value) {
-        this.$store.commit('dataset/setPrelookupAgregate', value)
+        this.setPreLookupAggregate(value)
       },
-    },
-    topojsonFiles() {
-      return this.$store.state.dataset.topojsonFiles.map((x, i) => {
-        return { ...x, index: i }
-      })
-    },
-    geojsonFiles() {
-      return this.$store.state.dataset.geojsonFiles.map((x, i) => {
-        return { ...x, index: i }
-      })
-    },
-    loadCsvProgress() {
-      return this.$store.state.dataset.loadCsvProgress
-    },
-    loadGeoProgress() {
-      return this.$store.state.dataset.loadGeoProgress
     },
     availableModes() {
       const modes = []
@@ -203,102 +205,113 @@ export default {
     },
     mode: {
       get() {
-        return this.$store.state.dataset.mode
+        return this.getMode
       },
-      set(value) {
-        this.$store.commit('dataset/setMode', value)
-        this.$store.commit('dataset/setCsvIndex', 0)
-        this.$store.commit('dataset/setGeoIndex', 0)
+      async set(value) {
+        this.setMode(value)
+        this.setCsvIndex(0)
+        this.setGeoIndex(0)
         if (value === 'csv + topojson') {
-          this.$store.dispatch('dataset/loadCsvData').then(() => {
-            this.$store.commit('dataset/addGeoField')
-          })
-          this.$store.dispatch('dataset/loadTopojsonData')
+          await this.loadCsvData()
+          this.addGeoField()
+          this.loadTopojsonData()
         } else if (value === 'csv + geojson') {
-          this.$store.dispatch('dataset/loadCsvData').then(() => {
-            this.$store.commit('dataset/addGeoField')
-          })
-          this.$store.dispatch('dataset/loadGeojsonData')
+          await this.loadCsvData()
+          this.addGeoField()
+          this.loadGeojsonData()
         } else if (value === 'topojson') {
-          this.$store.dispatch('dataset/loadTopojsonData')
+          this.loadTopojsonData()
         } else if (value === 'geojson') {
-          this.$store.dispatch('dataset/loadGeojsonData')
+          this.loadGeojsonData()
         } else {
-          this.$store.dispatch('dataset/loadCsvData')
+          this.loadCsvData()
         }
-        this.$store.commit('geometries/setDefaultGeometries', value)
+        this.setDefaultGeometries(value)
       },
     },
     csvIndex: {
       get() {
-        return this.$store.state.dataset.csvIndex
+        return this.getCsvIndex
       },
-      set(value) {
-        this.$store.commit('dataset/setCsvIndex', value)
-        this.$store.commit('dataset/setCsvId', '')
-        this.$store.dispatch('dataset/loadCsvData').then(() => {
-          if (this.mode === 'csv + topojson') {
-            this.$store.commit('dataset/addGeoField')
-          }
-        })
+      async set(value) {
+        console.log('id', this.csvId)
+        console.log('value', value)
+        this.setCsvIndex(value)
+        this.setCsvId('')
+        await this.loadCsvData()
+        if (this.mode === 'csv + topojson') {
+          this.addGeoField()
+        }
       },
     },
     topojsonIndex: {
       get() {
-        return this.$store.state.dataset.geoIndex
+        return this.getGeoIndex
       },
       set(value) {
-        this.$store.commit('dataset/setGeoIndex', value)
-        this.$store.commit('dataset/setGeoId', '')
-        this.$store.dispatch('dataset/loadTopojsonData')
+        this.setGeoIndex(value)
+        this.setGeoId('')
+        this.loadTopojsonData()
       },
     },
     geojsonIndex: {
       get() {
-        return this.$store.state.dataset.geoIndex
+        return this.getGeoIndex
       },
       set(value) {
-        this.$store.commit('dataset/setGeoIndex', value)
-        this.$store.commit('dataset/setGeoId', '')
-        this.$store.dispatch('dataset/loadGeojsonData')
+        this.setGeoIndex(value)
+        this.setGeoId('')
+        this.loadGeojsonData()
       },
     },
-    geoProperties() {
-      return this.$store.state.dataset.geoProperties
-    },
     csvProperties() {
-      return this.$store.state.dataset.columnsInDataFile.map(c => {
+      return this.columnsInDataFile.map(c => {
         return c.name
       })
     },
     csvId: {
       get() {
-        return this.$store.state.dataset.csvId
+        console.log('getCsvId', this.getCsvId)
+        return this.getCsvId
       },
       set(value) {
-        this.$store.commit('dataset/setCsvId', value)
-        const idColumn = this.$store.state.dataset.columnsInDataFile.filter(
-          c => {
-            return c.name === value
-          }
-        )[0]
-        this.$store.commit('geometries/addAesthetic', 'detail')
-        this.$store.commit('geometries/updateAesthetics', [
-          'detail',
-          [idColumn],
-        ])
+        console.log('valuecsvid', value)
+        this.setCsvId(value)
+        const idColumn = this.columnsInDataFile.filter(c => {
+          return c.name === value
+        })[0]
+        this.addAesthetic('detail')
+        this.updateAesthetics(['detail', [idColumn]])
       },
     },
     geoId: {
       get() {
-        return this.$store.state.dataset.geoId
+        return this.getGeoId
       },
       set(value) {
-        this.$store.commit('dataset/setGeoId', value)
+        this.setGeoId(value)
       },
     },
   },
   methods: {
+    ...mapMutations({
+      addAesthetic: 'geometries/addAesthetic',
+      updateAesthetics: 'geometries/updateAesthetics',
+      addGeoField: 'dataset/addGeoField',
+      setCsvId: 'dataset/setCsvId',
+      setCsvIndex: 'dataset/setCsvIndex',
+      setGeoId: 'dataset/setGeoId',
+      setGeoIndex: 'dataset/setGeoIndex',
+      loadGeojsonData: 'dataset/loadGeojsonData',
+      setMode: 'dataset/setMode',
+      setPreLookupAggregate: 'dataset/setPreLookupAggregate',
+      setDefaultGeometries: 'geometries/setDefaultGeometries',
+    }),
+    ...mapActions({
+      loadCsvData: 'dataset/loadCsvData',
+      loadGeojsonData: 'dataset/loadGeojsonData',
+      loadTopojsonData: 'dataset/loadTopojsonData',
+    }),
     downloadFile(type) {
       let urlString = ''
       if (type === 'csv') {

@@ -14,6 +14,7 @@
   </v-card>
 </template>
 <script>
+import { mapGetters } from 'vuex'
 import { primaryBlue } from '~/static/js/colours'
 
 export default {
@@ -22,11 +23,11 @@ export default {
     return { primaryBlue }
   },
   computed: {
+    ...mapGetters({
+      vegaSpec: 'vegaSpec',
+    }),
     vegaSpecString() {
       return JSON.stringify(this.vegaSpec, null, 2)
-    },
-    vegaSpec() {
-      return this.$store.getters.vegaSpec
     },
   },
 }

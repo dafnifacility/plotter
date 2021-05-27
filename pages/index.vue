@@ -6,16 +6,16 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col cols="2">
+      <v-col cols="12" md="6" lg="2">
         <Geometries />
       </v-col>
-      <v-col cols="3">
+      <v-col cols="12" md="6" lg="3">
         <Aesthetics />
       </v-col>
-      <v-col cols="2">
+      <v-col cols="12" md="6" lg="2">
         <Columns />
       </v-col>
-      <v-col cols="5">
+      <v-col cols="12" md="6" lg="5">
         <PlotView />
         <!-- <v-col>
           <Spec />
