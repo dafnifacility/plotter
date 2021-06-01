@@ -30,9 +30,6 @@ export default {
     ...mapGetters({
       getVegaSpec: 'vegaSpec',
     }),
-    vegaSpecString() {
-      return JSON.stringify(this.vegaSpec, null, 2)
-    },
     vegaSpec() {
       // sync to backend everytime we need to regenerate the spec
       this.uploadState()

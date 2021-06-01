@@ -108,28 +108,27 @@ export const getters = {
     })
   },
   vegaData(state) {
-    if (state.dataset.mode === 'topojson') {
-      if (state.dataset.geoIndex >= state.dataset.topojsonFiles.length) {
+    const sD = state.dataset
+    if (sD.mode === 'topojson') {
+      if (sD.geoIndex >= sD.topojsonFiles.length) {
         return {}
       }
       return vegaDataTopoJson(
-        state.dataset.topojsonFiles[state.dataset.geoIndex].url,
-        state.dataset.topojsonObject
+        sD.topojsonFiles[sD.geoIndex].url,
+        sD.topojsonObject
       )
-    } else if (state.dataset.mode === 'geojson') {
-      console.log(state.dataset.geojsonFiles)
-      if (state.dataset.geoIndex >= state.dataset.geojsonFiles.length) {
+    } else if (sD.mode === 'geojson') {
+      console.log(sD.geojsonFiles)
+      if (sD.geoIndex >= sD.geojsonFiles.length) {
         return {}
       }
-      return vegaDataGeoJson(
-        state.dataset.geojsonFiles[state.dataset.geoIndex].url
-      )
+      return vegaDataGeoJson(sD.geojsonFiles[sD.geoIndex].url)
     } else {
-      if (state.dataset.csvIndex >= state.dataset.csvFiles.length) {
+      if (sD.csvIndex >= sD.csvFiles.length) {
         return {}
       }
       return {
-        url: state.dataset.csvFiles[state.dataset.csvIndex].url,
+        url: sD.csvFiles[sD.csvIndex].url,
         name: 'table',
         format: {
           type: 'csv',
@@ -283,19 +282,18 @@ export const actions = {
       commit('setSyncError', `Error syncing state with NIVS backend. ${e}`)
     }
   },
-  uploadState(context) {
-    const presignedUrlForUpload = context.state.presignedUrlForUpload
+  async uploadState({ state, commit }) {
+    const presignedUrlForUpload = state.presignedUrlForUpload
     if (presignedUrlForUpload) {
-      uploadState(presignedUrlForUpload, context.state)
-        .then(() => {
-          context.commit('setSyncError', null)
-        })
-        .catch(error => {
-          context.commit(
-            'setSyncError',
-            `Error syncing with DAFNI backend. Response status is "${error}"`
-          )
-        })
+      try {
+        await uploadState(presignedUrlForUpload, state)
+        commit('setSyncError', null)
+      } catch (error) {
+        commit(
+          'setSyncError',
+          `Error syncing with DAFNI backend. Response status is "${error}"`
+        )
+      }
     }
   },
   setOption({ commit }, [type, name, args, value]) {

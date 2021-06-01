@@ -312,25 +312,27 @@ export default {
       loadGeojsonData: 'dataset/loadGeojsonData',
       loadTopojsonData: 'dataset/loadTopojsonData',
     }),
-    downloadFile(type) {
+    async downloadFile(type) {
       let urlString = ''
+      let filename = ''
       if (type === 'csv') {
         urlString = this.csvFiles[this.csvIndex].url
+        filename = this.csvFiles[this.csvIndex].filename
       } else if (type === 'topojson') {
         urlString = this.topojsonFiles[this.topojsonIndex].url
+        filename = this.topojsonFiles[this.topojsonIndex].filename
       } else if (type === 'geojson') {
         urlString = this.geojsonFiles[this.geojsonIndex].url
+        filename = this.geojsonFiles[this.geojsonIndex].filename
       }
 
-      const filename = urlString.substring(urlString.lastIndexOf('/') + 1)
-      axios.get(urlString, {}).then(res => {
-        // topojson or geojson files will be objects
-        if (typeof res.data === 'object' && res.data !== null) {
-          fileDownload(JSON.stringify(res.data, null, 2), filename)
-        } else {
-          fileDownload(res.data, filename)
-        }
-      })
+      const res = await axios.get(urlString, {})
+      // topojson or geojson files will be objects
+      if (typeof res.data === 'object' && res.data !== null) {
+        fileDownload(JSON.stringify(res.data, null, 2), filename)
+      } else {
+        fileDownload(res.data, filename)
+      }
     },
   },
 }
