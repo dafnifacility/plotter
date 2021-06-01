@@ -32,7 +32,12 @@
             :aesthetic="name"
             type="aesthetic"
           />
-          <v-card-text v-if="aesMap.length == 0" slot="footer" class="c-grey">
+          <v-card-text
+            v-if="aesMap.length == 0"
+            slot="footer"
+            class="c-grey"
+            style="justify-content: flex-end; display: flex"
+          >
             Add
           </v-card-text>
         </draggable>
@@ -42,6 +47,7 @@
 </template>
 
 <script>
+import { mapGetters, mapMutations } from 'vuex'
 import { aesthetics } from '~/constants/aesthetics'
 import Column from './Column'
 import draggable from 'vuedraggable'
@@ -63,9 +69,9 @@ export default {
     return { primaryBlue }
   },
   computed: {
-    aesthetics() {
-      return aesthetics
-    },
+    ...mapGetters({
+      geometry: 'geometries/geometry',
+    }),
     aesthetic() {
       return aesthetics.filter(x => {
         return x.name === this.name
@@ -73,15 +79,17 @@ export default {
     },
     aesMap: {
       get() {
-        const geometry = this.$store.getters['geometries/geometry']
-        return geometry.aesthetics[this.name]
+        return this.geometry.aesthetics[this.name]
       },
       set(value) {
-        this.$store.commit('geometries/updateAesthetics', [this.name, value])
+        this.updateAesthetics([this.name, value])
       },
     },
   },
   methods: {
+    ...mapMutations({
+      updateAesthetics: 'geometries/updateAesthetics',
+    }),
     getComponentData() {
       return {
         attrs: {

@@ -17,14 +17,14 @@
       </v-expansion-panels>
       <v-overflow-btn
         v-model="addGeometrySelected"
-        :items="supportedGeometries"
+        :items="geometriesConst"
         item-value="name"
         label="Add new geometry"
         flat
         filled
         hide-details
         class="pt-2"
-        @input="addGeometry"
+        @input="selectGeometry"
       >
         <template #item="{ item, attrs, on }">
           <v-list-item v-bind="attrs" style="max-width: 600px" v-on="on">
@@ -44,6 +44,7 @@
 </template>
 
 <script>
+import { mapMutations, mapState } from 'vuex'
 import { geometries } from '~/constants/geometries'
 import { primaryBlue } from '~/static/js/colours'
 
@@ -51,32 +52,40 @@ export default {
   name: 'Geometries',
   components: {},
   data() {
-    return { primaryBlue, addGeometrySelected: null }
+    return {
+      primaryBlue,
+      geometriesConst: geometries,
+      addGeometrySelected: null,
+    }
   },
   computed: {
-    supportedGeometries() {
-      return geometries
-    },
+    ...mapState({
+      getGeometries: state => state.geometries.geometries,
+    }),
     supportedGeometriesNames() {
-      return geometries.map(geo => {
+      return this.geometriesConst.map(geo => {
         return geo.name
       })
     },
     data() {
-      return this.$store.state.geometries.geometries[this.index]
+      return this.geometries[this.index]
     },
     geometries: {
       get() {
-        return this.$store.state.geometries.geometries
+        return this.getGeometries
       },
       set(value) {
-        this.$store.commit('geometries/setGeometries', value)
+        this.setGeometries(value)
       },
     },
   },
   methods: {
-    addGeometry(name) {
-      this.$store.commit('geometries/addGeometry', name)
+    ...mapMutations({
+      setGeometries: 'geometries/setGeometries',
+      addGeometry: 'geometries/addGeometry',
+    }),
+    selectGeometry(name) {
+      this.addGeometry(name)
       this.$nextTick(() => {
         this.addGeometrySelected = null
       })

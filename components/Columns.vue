@@ -32,7 +32,7 @@
         filled
         hide-details
         class="py-2"
-        @input="addColumn"
+        @input="selectColumn"
       />
       <v-text-field
         v-model="calculateExpression"
@@ -42,7 +42,7 @@
         persistent-hint
         hint="e.g. '2*datum.fieldName'"
         filled
-        @click:append="addCalculateField"
+        @click:append="selectCalculateField"
       >
         <template #message="{ message }">
           <span>
@@ -80,6 +80,7 @@
 </template>
 
 <script>
+import { mapMutations, mapState } from 'vuex'
 import Column from '~/components/Column'
 import draggable from 'vuedraggable'
 import { primaryBlue } from '~/static/js/colours'
@@ -94,30 +95,41 @@ export default {
     return { primaryBlue, calculateExpression: null, addColumnSelected: null }
   },
   computed: {
+    ...mapState({
+      getColumnsInDataFile: state => state.dataset.columnsInDataFile,
+      getColumns: state => state.dataset.columns,
+      filter: state => state.dataset.filter,
+    }),
     columnsInDataFile() {
-      const cols = this.$store.state.dataset.columnsInDataFile.map(c => {
+      const cols = this.getColumnsInDataFile.map(c => {
         return c.name
       })
       return cols
     },
     columns: {
       get() {
-        return this.$store.state.dataset.columns
+        return this.getColumns
       },
       set(value) {
-        this.$store.commit('dataset/setColumns', value)
+        this.setColumns(value)
       },
     },
     filterExpression: {
       get() {
-        return this.$store.state.dataset.filter
+        return this.filter
       },
       set(value) {
-        this.$store.commit('dataset/setFilter', value)
+        this.setFilter(value)
       },
     },
   },
   methods: {
+    ...mapMutations({
+      addCalculateField: 'dataset/addCalculateField',
+      addColumn: 'dataset/addColumn',
+      setColumns: 'dataset/setColumns',
+      setFilter: 'dataset/setFilter',
+    }),
     getComponentData() {
       return {
         attrs: {
@@ -126,14 +138,14 @@ export default {
         },
       }
     },
-    addColumn(name) {
-      this.$store.commit('dataset/addColumn', name)
+    selectColumn(name) {
+      this.addColumn(name)
       this.$nextTick(() => {
         this.addColumnSelected = null
       })
     },
-    addCalculateField(mouseEvent) {
-      this.$store.commit('dataset/addCalculateField', this.calculateExpression)
+    selectCalculateField(mouseEvent) {
+      this.addCalculateField(this.calculateExpression)
       this.$nextTick(() => {
         this.calculateExpression = null
       })

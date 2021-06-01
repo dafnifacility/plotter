@@ -25,7 +25,7 @@
         filled
         hide-details
         class="pt-2"
-        @input="addAesthetic"
+        @input="selectAesthetic"
       >
         <template #item="{ item, attrs, on }">
           <v-list-item v-bind="attrs" style="max-width: 600px" v-on="on">
@@ -46,6 +46,7 @@
 </template>
 
 <script>
+import { mapGetters, mapMutations } from 'vuex'
 import Aesthetic from '~/components/Aesthetic'
 import { aesthetics } from '~/constants/aesthetics'
 import { primaryBlue } from '~/static/js/colours'
@@ -56,20 +57,22 @@ export default {
     Aesthetic,
   },
   data() {
-    return { primaryBlue, addAestheticSelected: null }
+    return { primaryBlue, aesthetics, addAestheticSelected: null }
   },
   computed: {
+    ...mapGetters({
+      geometry: 'geometries/geometry',
+    }),
     currentAesthetics() {
-      const geometry = this.$store.getters['geometries/geometry']
-      return Object.keys(geometry.aesthetics)
-    },
-    aesthetics() {
-      return aesthetics
+      return Object.keys(this.geometry.aesthetics)
     },
   },
   methods: {
-    addAesthetic(name) {
-      this.$store.commit('geometries/addAesthetic', name)
+    ...mapMutations({
+      addAesthetic: 'geometries/addAesthetic',
+    }),
+    selectAesthetic(name) {
+      this.addAesthetic(name)
       this.$nextTick(() => {
         this.addAestheticSelected = null
       })

@@ -3,8 +3,8 @@
     <v-expansion-panel-header disable-icon-rotate>
       {{ name }}
       <template #actions>
-        <v-btn icon @click="removeColumn">
-          <v-icon>mdi-minus</v-icon>
+        <v-btn icon @click="deleteColumn">
+          <v-icon :color="primaryBlue">mdi-delete</v-icon>
         </v-btn>
         <v-icon>$expand</v-icon>
       </template>
@@ -24,6 +24,8 @@
 
 <script>
 import { columnProperties } from '~/constants/aesthetics'
+import { mapActions } from 'vuex'
+import { primaryBlue } from '~/static/js/colours'
 
 export default {
   name: 'Column',
@@ -45,18 +47,22 @@ export default {
       default: '',
     },
   },
+  data() {
+    return {
+      primaryBlue,
+    }
+  },
   computed: {
     columnProperties() {
       return columnProperties
     },
   },
   methods: {
-    removeColumn() {
-      this.$store.dispatch('removeColumn', [
-        this.type,
-        this.index,
-        this.aesthetic,
-      ])
+    ...mapActions({
+      removeColumn: 'removeColumn',
+    }),
+    deleteColumn() {
+      this.removeColumn([this.type, this.index, this.aesthetic])
     },
   },
 }

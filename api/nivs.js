@@ -119,35 +119,23 @@ export async function uploadTemplate(
 ) {
   await backendsPromise
   let templateId = null
-  return axios
-    .post(`${visualisationApiUrl}/templates/`, {
-      title: templateTitle,
-      description: templateDescription,
-      files: [filename],
-      visualisation_builder: builderId,
-    })
-    .then(postResponse => {
-      const presignedUrl = postResponse.data.presigned_urls[0].presigned_url
-      templateId = postResponse.data.id
-      return fetch(presignedUrl, {
-        method: 'PUT',
-        body: JSON.stringify(template),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
-    })
-    .then(putResponse => {
-      if (!putResponse.ok) {
-        throw putResponse.statusText
-      }
-      return axios.patch(`${visualisationApiUrl}/templates/${templateId}`, {
-        data_committed: true,
-      })
-    })
-    .then(() => {
-      return templateId
-    })
+  const response = await axios.post(`${visualisationApiUrl}/templates/`, {
+    title: templateTitle,
+    description: templateDescription,
+    files: [filename],
+    visualisation_builder: builderId,
+  })
+  const presignedUrl = response.data.presigned_urls[0].presigned_url
+  templateId = response.data.id
+  await axios.put(presignedUrl, JSON.stringify(template), {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+  await axios.patch(`${visualisationApiUrl}/templates/${templateId}`, {
+    data_committed: true,
+  })
+  return templateId
 }
 
 export default {

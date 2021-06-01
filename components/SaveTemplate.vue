@@ -26,6 +26,7 @@
   </v-dialog>
 </template>
 <script>
+import { mapState } from 'vuex'
 import { primaryBlue } from '~/static/js/colours'
 import { uploadTemplate } from '~/api/nivs'
 
@@ -41,19 +42,26 @@ export default {
     }
   },
   methods: {
-    save(event) {
-      const currentState = this.$store.state
+    ...mapState({
+      state: state => state,
+    }),
+    async save() {
+      const currentState = this.state
       console.log('uploading current state', currentState)
-      uploadTemplate(this.title, this.description, this.filename, currentState)
-        .then(id => {
-          console.log('Successfully uploaded template', id)
-        })
-        .catch(error => {
-          console.log('ERROR uploading template', error)
-        })
+      try {
+        const id = await uploadTemplate(
+          this.title,
+          this.description,
+          this.filename,
+          currentState
+        )
+        console.log('Successfully uploaded template', id)
+      } catch (error) {
+        console.error('ERROR uploading template', error)
+      }
       this.dialog = false
     },
-    cancel(event) {
+    cancel() {
       this.dialog = false
     },
   },

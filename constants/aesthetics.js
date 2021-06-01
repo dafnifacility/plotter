@@ -327,3 +327,9 @@ export const columnProperties = [
     optional: true,
   },
 ]
+
+export default {
+  aesthetics,
+  aestheticsToScalesMapping,
+  columnProperties,
+}
