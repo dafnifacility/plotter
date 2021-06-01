@@ -43,72 +43,50 @@ export async function getPresignedURLforPUT() {
 
 export async function downloadPlot(plotId) {
   await backendsPromise
-  return axios
-    .get(`${visualisationApiUrl}/plots/${plotId}`)
-    .then(response => {
-      const presignedUrl = response.data.presigned_urls[0].presigned_url
-      return fetch(presignedUrl, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'image/png',
-        },
-      })
-    })
-    .then(response => {
-      return response.data
-    })
+  const response = await axios.get(`${visualisationApiUrl}/plots/${plotId}`)
+  const presignedUrl = response.data.presigned_urls[0].presigned_url
+  const getResponse = await axios.get(presignedUrl, {
+    headers: {
+      'Content-Type': 'image/png',
+    },
+  })
+  return getResponse.data
 }
 
 export async function uploadPlot(plotTitle, plotDescription, filename, file) {
   await backendsPromise
   let plotId = null
-  return axios
-    .post(`${visualisationApiUrl}/plots`, {
-      title: plotTitle,
-      description: plotDescription,
-      files: [filename],
-      visualisation_instance: instanceId,
-    })
-    .then(postResponse => {
-      const presignedUrl = postResponse.data.presigned_urls[0].presigned_url
-      plotId = postResponse.data.id
-      return fetch(presignedUrl, {
-        method: 'PUT',
-        body: file,
-        headers: {
-          'Content-Type': 'image/png',
-        },
-      })
-    })
-    .then(putResponse => {
-      if (!putResponse.ok) {
-        throw putResponse.statusText
-      }
-      return axios.patch(`${visualisationApiUrl}/plots/${plotId}`, {
-        data_committed: true,
-      })
-    })
-    .then(() => {
-      return plotId
-    })
+  const postResponse = await axios.post(`${visualisationApiUrl}/plots`, {
+    title: plotTitle,
+    description: plotDescription,
+    files: [filename],
+    visualisation_instance: instanceId,
+  })
+  const presignedUrl = postResponse.data.presigned_urls[0].presigned_url
+  plotId = postResponse.data.id
+  await axios.put(presignedUrl, file, {
+    headers: {
+      'Content-Type': 'image/png',
+    },
+  })
+  await axios.patch(`${visualisationApiUrl}/plots/${plotId}`, {
+    data_committed: true,
+  })
+  return plotId
 }
 
 export async function downloadTemplate(templateId) {
   await backendsPromise
-  return axios
-    .get(`${visualisationApiUrl}/templates/${templateId}`)
-    .then(response => {
-      const presignedUrl = response.data.presigned_urls[0].presigned_url
-      return fetch(presignedUrl, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
-    })
-    .then(response => {
-      return response.json()
-    })
+  const response = await axios.get(
+    `${visualisationApiUrl}/templates/${templateId}`
+  )
+  const presignedUrl = response.data.presigned_urls[0].presigned_url
+  const getResponse = await axios.get(presignedUrl, {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+  return getResponse
 }
 
 export async function uploadTemplate(
