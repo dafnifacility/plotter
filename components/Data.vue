@@ -139,7 +139,7 @@ export default {
   name: 'Data',
   components: {},
   data() {
-    return { primaryBlue }
+    return { modes, primaryBlue }
   },
   computed: {
     ...mapState({
