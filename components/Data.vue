@@ -12,7 +12,9 @@
       <v-col cols="3">
         <v-select
           v-if="
-            mode == 'csv' || mode == 'csv + topojson' || mode == 'csv + geojson'
+            mode == modes.csv ||
+            mode == modes.csvTopojson ||
+            mode == modes.csvGeojson
           "
           v-model="csvIndex"
           :items="csvFiles"
@@ -27,7 +29,7 @@
           </template>
         </v-select>
         <v-select
-          v-if="mode == 'topojson'"
+          v-if="mode == modes.topojson"
           v-model="topojsonIndex"
           :items="topojsonFiles"
           item-text="filename"
@@ -41,7 +43,7 @@
           </template>
         </v-select>
         <v-select
-          v-if="mode == 'geojson'"
+          v-if="mode == modes.geojson"
           v-model="geojsonIndex"
           :items="geojsonFiles"
           item-text="filename"
@@ -57,7 +59,7 @@
       </v-col>
       <v-col cols="2">
         <v-select
-          v-if="mode == 'csv + topojson' || mode == 'csv + geojson'"
+          v-if="mode == modes.csvTopojson || mode == modes.csvGeojson"
           v-model="csvId"
           :items="csvProperties"
           label="csv id field"
@@ -65,7 +67,7 @@
       </v-col>
       <v-col cols="3">
         <v-select
-          v-if="mode == 'csv + topojson'"
+          v-if="mode == modes.csvTopojson"
           v-model="topojsonIndex"
           :items="topojsonFiles"
           item-text="filename"
@@ -79,7 +81,7 @@
           </template>
         </v-select>
         <v-select
-          v-if="mode == 'csv + geojson'"
+          v-if="mode == modes.csvGeojson"
           v-model="geojsonIndex"
           :items="geojsonFiles"
           item-text="filename"
@@ -95,7 +97,7 @@
       </v-col>
       <v-col cols="2">
         <v-select
-          v-if="mode == 'csv + topojson' || mode == 'csv + geojson'"
+          v-if="mode == modes.csvTopojson || mode == modes.csvGeojson"
           v-model="geoId"
           :items="geoProperties"
           label="geometry id field"
@@ -130,6 +132,7 @@ import { mapActions, mapMutations, mapState } from 'vuex'
 import { aggregateOps } from '~/constants/aggregate'
 import axios from 'axios'
 import fileDownload from 'js-file-download'
+import modes from '~/constants/modes'
 import { primaryBlue } from '~/static/js/colours'
 
 export default {
@@ -185,23 +188,23 @@ export default {
       },
     },
     availableModes() {
-      const modes = []
+      const aModes = []
       if (this.csvFiles.length > 0) {
-        modes.push('csv')
+        aModes.push(modes.csv)
       }
       if (this.topojsonFiles.length > 0) {
-        modes.push('topojson')
+        aModes.push(modes.topojson)
       }
       if (this.geojsonFiles.length > 0) {
-        modes.push('geojson')
+        aModes.push(modes.geojson)
       }
-      if (this.csvFiles.length > 0 && this.topojsonFiles.length > 0) {
-        modes.push('csv + topojson')
-      }
-      if (this.csvFiles.length > 0 && this.geojsonFiles.length > 0) {
-        modes.push('csv + geojson')
-      }
-      return modes
+      // if (this.csvFiles.length > 0 && this.topojsonFiles.length > 0) {
+      //   aModes.push(modes.csvTopojson)
+      // }
+      // if (this.csvFiles.length > 0 && this.geojsonFiles.length > 0) {
+      //   aModes.push(modes.csvGeojson)
+      // }
+      return aModes
     },
     mode: {
       get() {
@@ -211,17 +214,17 @@ export default {
         this.setMode(value)
         this.setCsvIndex(0)
         this.setGeoIndex(0)
-        if (value === 'csv + topojson') {
+        if (value === modes.csvTopojson) {
           await this.loadCsvData()
           this.addGeoField()
           this.loadTopojsonData()
-        } else if (value === 'csv + geojson') {
+        } else if (value === modes.csvGeojson) {
           await this.loadCsvData()
           this.addGeoField()
           this.loadGeojsonData()
-        } else if (value === 'topojson') {
+        } else if (value === modes.topojson) {
           this.loadTopojsonData()
-        } else if (value === 'geojson') {
+        } else if (value === modes.geojson) {
           this.loadGeojsonData()
         } else {
           this.loadCsvData()
@@ -239,7 +242,7 @@ export default {
         this.setCsvIndex(value)
         this.setCsvId('')
         await this.loadCsvData()
-        if (this.mode === 'csv + topojson') {
+        if (this.mode === modes.csvTopojson) {
           this.addGeoField()
         }
       },
@@ -315,13 +318,13 @@ export default {
     async downloadFile(type) {
       let urlString = ''
       let filename = ''
-      if (type === 'csv') {
+      if (type === modes.csv) {
         urlString = this.csvFiles[this.csvIndex].url
         filename = this.csvFiles[this.csvIndex].filename
-      } else if (type === 'topojson') {
+      } else if (type === modes.topojson) {
         urlString = this.topojsonFiles[this.topojsonIndex].url
         filename = this.topojsonFiles[this.topojsonIndex].filename
-      } else if (type === 'geojson') {
+      } else if (type === modes.geojson) {
         urlString = this.geojsonFiles[this.geojsonIndex].url
         filename = this.geojsonFiles[this.geojsonIndex].filename
       }

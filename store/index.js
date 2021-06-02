@@ -1,5 +1,6 @@
 import { downloadState, uploadState } from '~/api/minio'
 import { columnProperties } from '~/constants/aesthetics'
+import modes from '~/constants/modes'
 import { setupSyncStore } from '~/api/nivs'
 
 export const state = () => ({
@@ -22,7 +23,7 @@ function vegaMark(geometry) {
 function vegaEncoding(geometry, mode) {
   const aesMap = geometry.aesthetics
   let fieldNamePrepend = ''
-  if (mode === 'topojson' || mode === 'geojson') {
+  if (mode === modes.topojson || mode === modes.geojson) {
     fieldNamePrepend = 'properties.'
   }
   return Object.keys(aesMap)
@@ -109,7 +110,7 @@ export const getters = {
   },
   vegaData(state) {
     const sD = state.dataset
-    if (sD.mode === 'topojson') {
+    if (sD.mode === modes.topojson) {
       if (sD.geoIndex >= sD.topojsonFiles.length) {
         return {}
       }
@@ -117,7 +118,7 @@ export const getters = {
         sD.topojsonFiles[sD.geoIndex].url,
         sD.topojsonObject
       )
-    } else if (sD.mode === 'geojson') {
+    } else if (sD.mode === modes.geojson) {
       console.log(sD.geojsonFiles)
       if (sD.geoIndex >= sD.geojsonFiles.length) {
         return {}
@@ -171,19 +172,26 @@ export const getters = {
     }
 
     if (
-      state.dataset.mode === 'csv + topojson' ||
-      state.dataset.mode === 'csv + geojson'
+      state.dataset.mode === modes.csvTopojson ||
+      state.dataset.mode === modes.csvGeojson
     ) {
       const propertiesWithoutID = state.dataset.geoProperties.filter(
         prop => prop !== state.dataset.geoId
       )
       let dataSpec = null
-      if (state.dataset.mode === 'csv + topojson') {
+      if (
+        state.dataset.mode === modes.csvTopojson &&
+        state.dataset.topojsonFiles.length > 0
+      ) {
         dataSpec = vegaDataTopoJson(
           state.dataset.topojsonFiles[state.dataset.geoIndex].url,
           state.dataset.topojsonObject
         )
-      } else {
+      } else if (
+        state.dataset.mode === modes.csvGeojson &&
+        state.dataset.geojsonFiles.length > 0
+      ) {
+        console.log(state.dataset.geojsonFiles)
         dataSpec = vegaDataGeoJson(
           state.dataset.geojsonFiles[state.dataset.geoIndex].url
         )
@@ -236,8 +244,8 @@ export const getters = {
       }
     }
     if (
-      state.dataset.mode === 'topojson' ||
-      state.dataset.mode === 'csv + topojson'
+      state.dataset.mode === modes.topojson ||
+      state.dataset.mode === modes.csvTopojson
     ) {
       spec = {
         ...spec,

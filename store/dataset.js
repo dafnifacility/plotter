@@ -1,10 +1,11 @@
 import * as CSV from 'csv-string'
 import { columnProperties } from '~/constants/aesthetics'
 import { downloadFile } from '~/api/minio'
+import modes from '~/constants/modes'
 
 export const state = () => {
   return {
-    mode: 'csv',
+    mode: modes.csv,
     csvId: '',
     csvIndex: 0,
     csvFiles: [],
@@ -163,18 +164,18 @@ export const actions = {
     await dispatch('discovery/getDatasetsAndPopulateFileLists', null, {
       root: true,
     })
-    if (state.mode === 'csv') {
-      dispatch('loadCsvData')
-    } else if (state.mode === 'topojson') {
-      dispatch('loadTopojsonData')
-    } else if (state.mode === 'csv + topojson') {
-      dispatch('loadCsvData')
-      dispatch('loadTopojsonData')
-    } else if (state.mode === 'geojson') {
-      dispatch('loadGeojsonData')
-    } else if (state.mode === 'csv + geojson') {
-      dispatch('loadCsvData')
-      dispatch('loadGeojsonData')
+    if (state.mode === modes.csv) {
+      await dispatch('loadCsvData')
+    } else if (state.mode === modes.topojson) {
+      await dispatch('loadTopojsonData')
+    } else if (state.mode === modes.csvTopojson) {
+      await dispatch('loadCsvData')
+      await dispatch('loadTopojsonData')
+    } else if (state.mode === modes.geojson) {
+      await dispatch('loadGeojsonData')
+    } else if (state.mode === modes.csvGeojson) {
+      await dispatch('loadCsvData')
+      await dispatch('loadGeojsonData')
     }
   },
   async loadCsvData({ state, commit }) {
@@ -220,10 +221,10 @@ export const actions = {
             ...defaultProps,
           }
         })
-        if (state.mode === 'topojson') {
+        if (state.mode === modes.topojson) {
           commit('setColumns', columns.slice(0, 5))
           commit('setColumnsInDatafile', columns)
-        } else if (state.mode === 'csv + topojson') {
+        } else if (state.mode === modes.csvTopojson) {
           commit(
             'setColumnsInDatafile',
             removeDuplicateColumns(state.columnsInDataFile.concat(columns))
@@ -255,10 +256,10 @@ export const actions = {
             ...defaultProps,
           }
         })
-        if (state.mode === 'geojson') {
+        if (state.mode === modes.geojson) {
           commit('setColumns', columns.slice(0, 5))
           commit('setColumnsInDatafile', columns)
-        } else if (state.mode === 'csv + geojson') {
+        } else if (state.mode === modes.csvGeojson) {
           commit(
             'setColumnsInDatafile',
             removeDuplicateColumns(state.columnsInDataFile.concat(columns))

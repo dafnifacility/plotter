@@ -61,9 +61,11 @@ export default {
       get() {
         return this.getUrl
       },
-      set(value) {
+      async set(value) {
+        this.loading = true
         this.setUrl(value)
-        this.loadData()
+        await this.loadData()
+        this.loading = false
       },
     },
   },

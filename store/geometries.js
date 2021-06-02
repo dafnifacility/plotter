@@ -1,5 +1,6 @@
 import { defaultColumn } from '~/store/dataset'
 import { geometries } from '~/constants/geometries'
+import modes from '~/constants/modes'
 
 export function defaultGeometry(name = 'line') {
   const geo = geometries.filter(geo => {
@@ -46,13 +47,13 @@ export const mutations = {
     state.selectedGeometry = state.geometries.length - 1
   },
   setDefaultGeometries(state, mode) {
-    if (mode === 'csv + topojson' || mode === 'csv + geojson') {
+    if (mode === modes.csvTopojson || mode === modes.csvGeojson) {
       state.geometries = [defaultGeometry('geoshape')]
       const geoField = defaultColumn()
       geoField.name = 'geo'
       geoField.type = 'geojson'
       state.geometries[0].aesthetics.shape = [geoField]
-    } else if (mode === 'topojson' || mode === 'geojson') {
+    } else if (mode === modes.topojson || mode === modes.geojson) {
       state.geometries = [defaultGeometry('geoshape')]
     } else {
       state.geometries = [defaultGeometry()]

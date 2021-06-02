@@ -11,11 +11,10 @@
         </v-col> -->
     </v-card-title>
     <v-divider />
-    <VegaEmbed ref="vegaEmbed" :spec="vegaSpec" />
+    <VegaEmbed ref="vegaEmbed" />
   </v-card>
 </template>
 <script>
-import { mapActions, mapGetters } from 'vuex'
 import { primaryBlue } from '~/static/js/colours'
 
 export default {
@@ -26,23 +25,8 @@ export default {
       vegaEmbedRef: {},
     }
   },
-  computed: {
-    ...mapGetters({
-      getVegaSpec: 'vegaSpec',
-    }),
-    vegaSpec() {
-      // sync to backend everytime we need to regenerate the spec
-      this.uploadState()
-      return this.getVegaSpec
-    },
-  },
   mounted() {
     this.vegaEmbedRef = this.$refs.vegaEmbed
-  },
-  methods: {
-    ...mapActions({
-      uploadState: 'uploadState',
-    }),
   },
 }
 </script>
