@@ -8,4 +8,8 @@ FROM caddy:2-alpine
 COPY ./Caddyfile /etc/caddy/Caddyfile
 COPY --from=builder /app/dist/ /srv/
 COPY ./backends-templates/ /srv/backends
+COPY keycloak-templates/login.html /srv/keycloak/
+COPY keycloak-templates/main.js /srv/keycloak/
+COPY keycloak-templates/test/* /srv/keycloak/test/
+
 RUN mkdir /srv/datasets && echo '[]' > /srv/datasets/datasets.json

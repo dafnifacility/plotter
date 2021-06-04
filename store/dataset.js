@@ -1,33 +1,26 @@
 import * as CSV from 'csv-string'
-import {
-  getCsvFiles,
-  getDatasets,
-  getGeojsonFiles,
-  getTopojsonFiles,
-} from '~/plugins/dataInput'
 import { columnProperties } from '~/constants/aesthetics'
-import { getAuthHeader } from '@/plugins/authHeader'
-
-const authHeader = getAuthHeader()
+import { downloadFile } from '~/api/minio'
+import modes from '~/constants/modes'
 
 export const state = () => {
   return {
-    mode: 'csv',
-    csvIndex: 0,
-    csvFiles: getCsvFiles(),
-    csvError: null,
-    topojsonError: null,
-    geojsonError: null,
-    loadCsvProgress: 0,
-    geoIndex: 0,
-    topojsonFiles: getTopojsonFiles(),
-    geojsonFiles: getGeojsonFiles(),
-    loadGeoProgress: 0,
-    geoProperties: [],
-    geoId: '',
-    topojsonObject: '',
-    preLookupAgregate: '',
+    mode: modes.csv,
     csvId: '',
+    csvIndex: 0,
+    csvFiles: [],
+    csvError: null,
+    loadCsvProgress: 0,
+    geoId: '',
+    geoIndex: 0,
+    geojsonFiles: [],
+    geojsonError: null,
+    geoProperties: [],
+    loadGeoProgress: 0,
+    topojsonFiles: [],
+    topojsonError: null,
+    topojsonObject: '',
+    preLookupAggregate: '',
     columns: [],
     columnsInDataFile: [],
     filter: null,
@@ -48,7 +41,7 @@ function removeDuplicateColumns(columns) {
     }
     return map
   }, {})
-  const noDuplicatesArray = Object.keys(noDuplicates).map((key) => {
+  const noDuplicatesArray = Object.keys(noDuplicates).map(key => {
     return {
       ...noDuplicates[key],
     }
@@ -60,7 +53,7 @@ export const mutations = {
   setCsvFiles(state, value) {
     state.csvFiles = value
   },
-  setTopjsonFiles(state, value) {
+  setTopojsonFiles(state, value) {
     state.topojsonFiles = value
   },
   setGeojsonFiles(state, value) {
@@ -105,8 +98,8 @@ export const mutations = {
   setTopjsonObject(state, value) {
     state.topojsonObject = value
   },
-  setPrelookupAgregate(state, value) {
-    state.preLookupAgregate = value
+  setPreLookupAggregate(state, value) {
+    state.preLookupAggregate = value
   },
   setCsvId(state, value) {
     state.csvId = value
@@ -121,7 +114,7 @@ export const mutations = {
     state.columnsInDataFile = removeDuplicateColumns(value)
   },
   addColumn(state, name) {
-    const newColumn = state.columnsInDataFile.filter((c) => {
+    const newColumn = state.columnsInDataFile.filter(c => {
       return c.name === name
     })
     if (newColumn.length === 0) {
@@ -154,157 +147,130 @@ function guessColumnType(data) {
 }
 
 export const actions = {
-  loadStore(context, state) {
-    const commit = context.commit
-    commit('setMode', state.mode)
-    commit('setCsvIndex', state.csvIndex)
-    commit('setGeoIndex', state.geoIndex)
-    commit('setGeoProperties', state.geoProperties)
-    commit('setGeoProperties', state.geoProperties)
-    commit('setGeoId', state.geoId)
-    commit('setTopjsonObject', state.topjsonObject)
-    commit('setPrelookupAgregate', state.preLookupAgregate)
-    commit('setCsvId', state.csvId)
-    commit('setColumns', state.columns)
-    commit('setFilter', state.filter)
+  loadStore({ commit }, newState) {
+    commit('setMode', newState.mode)
+    commit('setCsvIndex', newState.csvIndex)
+    commit('setGeoIndex', newState.geoIndex)
+    commit('setGeoProperties', newState.geoProperties)
+    commit('setGeoProperties', newState.geoProperties)
+    commit('setGeoId', newState.geoId)
+    commit('setTopjsonObject', newState.topjsonObject)
+    commit('setPreLookupAggregate', newState.preLookupAggregate)
+    commit('setCsvId', newState.csvId)
+    commit('setColumns', newState.columns)
+    commit('setFilter', newState.filter)
   },
-  async loadData(context) {
-    const commit = context.commit
-    const dispatch = context.dispatch
-    const state = context.state
-    await getDatasets()
-    commit('setCsvFiles', getCsvFiles())
-    commit('setTopjsonFiles', getTopojsonFiles())
-    commit('setGeojsonFiles', getGeojsonFiles())
-    // handle missing files
-    if (state.mode === 'csv') {
-      dispatch('loadCsvData')
-    } else if (state.mode === 'topojson') {
-      dispatch('loadTopojsonData')
-    } else if (state.mode === 'csv + topojson') {
-      dispatch('loadCsvData')
-      dispatch('loadTopojsonData')
-    } else if (state.mode === 'geojson') {
-      dispatch('loadGeojsonData')
-    } else if (state.mode === 'csv + geojson') {
-      dispatch('loadCsvData')
-      dispatch('loadGeojsonData')
+  async loadData({ state, dispatch }) {
+    await dispatch('discovery/getDatasetsAndPopulateFileLists', null, {
+      root: true,
+    })
+    if (state.mode === modes.csv) {
+      await dispatch('loadCsvData')
+    } else if (state.mode === modes.topojson) {
+      await dispatch('loadTopojsonData')
+    } else if (state.mode === modes.csvTopojson) {
+      await dispatch('loadCsvData')
+      await dispatch('loadTopojsonData')
+    } else if (state.mode === modes.geojson) {
+      await dispatch('loadGeojsonData')
+    } else if (state.mode === modes.csvGeojson) {
+      await dispatch('loadCsvData')
+      await dispatch('loadGeojsonData')
     }
   },
-  loadCsvData(context) {
-    if (context.state.csvIndex >= context.state.csvFiles.length) {
+  async loadCsvData({ state, commit }) {
+    if (state.csvIndex >= state.csvFiles.length) {
       return
     }
-    return fetch(context.state.csvFiles[context.state.csvIndex].url, {
-      method: 'GET',
-      headers: {
-        Authorization: authHeader,
-      },
-    })
-      .then((response) => response.text())
-      .then(function (text) {
-        const data = CSV.parse(text)
-        const columnNames = data[0]
-        const columns = columnNames.map((columnName, i) => {
+    try {
+      const data = await downloadFile(state.csvFiles[state.csvIndex].url)
+      const csvData = CSV.parse(data)
+      const columnNames = csvData[0]
+      const columns = columnNames.map((columnName, i) => {
+        const defaultProps = defaultColumn()
+        defaultProps.type = guessColumnType(csvData[1][i])
+        return {
+          name: columnName,
+          ...defaultProps,
+        }
+      })
+      commit('setColumns', columns.slice(0, 5))
+      commit('setColumnsInDatafile', columns)
+      commit('setCsvError', null)
+    } catch (error) {
+      commit('setCsvError', 'Error loading csv: '.concat(error))
+    }
+  },
+  async loadTopojsonData({ state, commit }) {
+    if (state.geoIndex >= state.topojsonFiles.length) {
+      return
+    }
+    try {
+      const data = await downloadFile(state.topojsonFiles[state.geoIndex].url)
+      if ('objects' in data) {
+        const object = Object.keys(data.objects)[0]
+        const properties = data.objects[object].geometries[0].properties
+        const propertyNames = Object.keys(properties)
+        commit('setTopjsonObject', object)
+        commit('setGeoProperties', propertyNames)
+        const columns = propertyNames.map(columnName => {
           const defaultProps = defaultColumn()
-          defaultProps.type = guessColumnType(data[1][i])
+          defaultProps.type = guessColumnType(properties[columnName])
           return {
             name: columnName,
             ...defaultProps,
           }
         })
-        context.commit('setColumns', columns.slice(0, 5))
-        context.commit('setColumnsInDatafile', columns)
-        context.commit('setCsvError', null)
-      })
-      .catch(function (error) {
-        context.commit('setCsvError', 'Error loading csv: '.concat(error))
-      })
-  },
-  loadTopojsonData({ commit, state }) {
-    if (state.geoIndex >= state.topojsonFiles.length) {
-      return
-    }
-    return fetch(state.topojsonFiles[state.geoIndex].url, {
-      method: 'GET',
-      headers: {
-        Authorization: authHeader,
-      },
-    })
-      .then((response) => response.json())
-      .then(function (json) {
-        if ('objects' in json) {
-          const object = Object.keys(json.objects)[0]
-          const properties = json.objects[object].geometries[0].properties
-          const propertyNames = Object.keys(properties)
-          commit('setTopjsonObject', object)
-          commit('setGeoProperties', propertyNames)
-          const columns = propertyNames.map((columnName) => {
-            const defaultProps = defaultColumn()
-            defaultProps.type = guessColumnType(properties[columnName])
-            return {
-              name: columnName,
-              ...defaultProps,
-            }
-          })
-          if (state.mode === 'topojson') {
-            commit('setColumns', columns.slice(0, 5))
-            commit('setColumnsInDatafile', columns)
-          } else if (state.mode === 'csv + topojson') {
-            commit(
-              'setColumnsInDatafile',
-              removeDuplicateColumns(state.columnsInDataFile.concat(columns))
-            )
-          }
-          commit('setTopojsonError', null)
-        } else {
-          commit('setTopojsonError', 'Error loading topojson')
+        if (state.mode === modes.topojson) {
+          commit('setColumns', columns.slice(0, 5))
+          commit('setColumnsInDatafile', columns)
+        } else if (state.mode === modes.csvTopojson) {
+          commit(
+            'setColumnsInDatafile',
+            removeDuplicateColumns(state.columnsInDataFile.concat(columns))
+          )
         }
-      })
-      .catch(function (error) {
-        commit('setTopojsonError', 'Error loading topojson: '.concat(error))
-      })
+        commit('setTopojsonError', null)
+      } else {
+        commit('setTopojsonError', 'Error loading topojson')
+      }
+    } catch (error) {
+      commit('setTopojsonError', 'Error loading topojson: '.concat(error))
+    }
   },
-  loadGeojsonData({ commit, state }) {
+  async loadGeojsonData({ state, commit }) {
     if (state.geoIndex >= state.geojsonFiles.length) {
       return
     }
-    return fetch(state.geojsonFiles[state.geoIndex].url, {
-      method: 'GET',
-      headers: {
-        Authorization: authHeader,
-      },
-    })
-      .then((response) => response.json())
-      .then(function (json) {
-        if ('features' in json) {
-          const properties = json.features[0].properties
-          const propertyNames = Object.keys(properties)
-          commit('setGeoProperties', propertyNames)
-          const columns = propertyNames.map((columnName) => {
-            const defaultProps = defaultColumn()
-            defaultProps.type = guessColumnType(properties[columnName])
-            return {
-              name: columnName,
-              ...defaultProps,
-            }
-          })
-          if (state.mode === 'geojson') {
-            commit('setColumns', columns.slice(0, 5))
-            commit('setColumnsInDatafile', columns)
-          } else if (state.mode === 'csv + geojson') {
-            commit(
-              'setColumnsInDatafile',
-              removeDuplicateColumns(state.columnsInDataFile.concat(columns))
-            )
+    try {
+      const data = await downloadFile(state.geojsonFiles[state.geoIndex].url)
+      if ('features' in data) {
+        const properties = data.features[0].properties
+        const propertyNames = Object.keys(properties)
+        commit('setGeoProperties', propertyNames)
+        const columns = propertyNames.map(columnName => {
+          const defaultProps = defaultColumn()
+          defaultProps.type = guessColumnType(properties[columnName])
+          return {
+            name: columnName,
+            ...defaultProps,
           }
-          commit('setGeojsonError', null)
-        } else {
-          commit('setGeojsonError', 'Error loading geojson')
+        })
+        if (state.mode === modes.geojson) {
+          commit('setColumns', columns.slice(0, 5))
+          commit('setColumnsInDatafile', columns)
+        } else if (state.mode === modes.csvGeojson) {
+          commit(
+            'setColumnsInDatafile',
+            removeDuplicateColumns(state.columnsInDataFile.concat(columns))
+          )
         }
-      })
-      .catch(function (error) {
-        commit('setGeojsonError', 'Error loading geojson: '.concat(error))
-      })
+        commit('setGeojsonError', null)
+      } else {
+        commit('setGeojsonError', 'Error loading geojson')
+      }
+    } catch (error) {
+      commit('setGeojsonError', 'Error loading geojson: '.concat(error))
+    }
   },
 }

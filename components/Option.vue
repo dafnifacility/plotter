@@ -44,6 +44,7 @@
 </template>
 
 <script>
+import { mapActions, mapGetters } from 'vuex'
 import { columnProperties } from '~/constants/aesthetics'
 
 export default {
@@ -72,6 +73,9 @@ export default {
     return {}
   },
   computed: {
+    ...mapGetters({
+      getOption: 'option',
+    }),
     show() {
       if (this.type === 'column') {
         return this.option.showInColumns
@@ -85,21 +89,21 @@ export default {
           index: this.index,
           aesthetic: this.aesthetic,
         }
-        return this.$store.getters.option(this.type, this.option.name, args)
+        return this.getOption(this.type, this.option.name, args)
       },
       set(value) {
         const args = {
           index: this.index,
           aesthetic: this.aesthetic,
         }
-        this.$store.dispatch('setOption', [
-          this.type,
-          this.option.name,
-          args,
-          value,
-        ])
+        this.setOption([this.type, this.option.name, args, value])
       },
     },
+  },
+  methods: {
+    ...mapActions({
+      setOption: 'setOption',
+    }),
   },
 }
 </script>

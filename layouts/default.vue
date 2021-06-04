@@ -9,12 +9,10 @@
       disable-resize-watcher
       fixed
       right
-      style="background-color: #f4f4f4;"
+      style="background-color: #f4f4f4"
     >
       <div class="pa-4">
-        <h2 class="mb-3">
-          Help
-        </h2>
+        <h2 class="mb-3">Help</h2>
         <p>For technical support please contact the DAFNI team on:</p>
         <p><a href="mailto:support@dafni.ac.uk">support@dafni.ac.uk</a></p>
       </div>
@@ -25,7 +23,7 @@
       app
       clipped-right
       clipped-left
-      style="background-color: #121a24; border: 0px !important;"
+      style="background-color: #121a24; border: 0px !important"
     >
       <!-- <v-app-bar-nav-icon
         class="ma-0 pa-0"
@@ -55,20 +53,50 @@
         </v-icon>
       </v-btn> -->
     </v-app-bar>
+    <transition name="fade">
+      <!-- Authentication check -->
+      <OverlayWithText
+        v-if="!authenticated && errorMessage === ''"
+        :text="spinnerText"
+      />
+    </transition>
     <v-main>
-      <v-container fluid style="border: 0px;">
+      <v-container fluid style="border: 0px">
         <nuxt />
       </v-container>
     </v-main>
   </v-app>
 </template>
-
 <script>
+import { mapState } from 'vuex'
+import OverlayWithText from '~/components/overlay/OverlayWithText'
+
 export default {
+  components: {
+    OverlayWithText,
+  },
   data: () => ({
+    errorMessage: '',
     drawer: true,
     drawerRight: false,
   }),
+  computed: {
+    ...mapState({
+      uuid: state => state.auth.uuid,
+      authenticated: state => state.auth.authenticated,
+      keycloakReady: state => state.auth.keycloakReady,
+      keycloakError: state => state.auth.keycloakError,
+    }),
+    spinnerText() {
+      return this.keycloakReady ? 'Contacting Auth service...' : 'Logging in...'
+    },
+  },
+  watch: {
+    keycloakError() {
+      this.errorMessage = 'Sorry, unable to log in at this time...'
+      console.warn(this.keycloakError)
+    },
+  },
 }
 </script>
 <style lang="scss">

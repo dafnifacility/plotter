@@ -6,34 +6,34 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col cols="2">
+      <v-col cols="12" md="6" lg="2">
         <Geometries />
       </v-col>
-      <v-col cols="3">
+      <v-col cols="12" md="6" lg="3">
         <Aesthetics />
       </v-col>
-      <v-col cols="2">
+      <v-col cols="12" md="6" lg="2">
         <Columns />
       </v-col>
-      <v-col cols="5">
+      <v-col cols="12" md="6" lg="5">
         <PlotView />
         <!-- <v-col>
           <Spec />
         </v-col> -->
       </v-col>
     </v-row>
+    <transition name="fade">
+      <overlay v-if="loading" loading />
+    </transition>
   </v-container>
 </template>
 
 <script>
-import {
-  getInstanceId,
-  setDefaultInstanceId,
-  setInstanceId,
-} from '~/plugins/instanceId'
+import { mapActions, mapMutations, mapState } from 'vuex'
 import Aesthetics from '~/components/Aesthetics'
 import Columns from '~/components/Columns'
 import Geometries from '~/components/Geometries'
+import overlay from '~/components/overlay/Overlay'
 import PlotView from '~/components/PlotView'
 // import Spec from '~/components/Spec'
 
@@ -43,30 +43,55 @@ export default {
     Aesthetics,
     Columns,
     Geometries,
+    overlay,
     PlotView,
     // Spec,
   },
+  data() {
+    return {
+      loading: false,
+    }
+  },
   computed: {
+    ...mapState({
+      authenticated: state => state.auth.authenticated,
+      getUrl: state => state.dataset.url,
+    }),
     url: {
       get() {
-        return this.$store.state.dataset.url
+        return this.getUrl
       },
-      set(value) {
-        this.$store.commit('dataset/setUrl', value)
-        this.$store.dispatch('dataset/loadData')
+      async set(value) {
+        this.loading = true
+        this.setUrl(value)
+        await this.loadData()
+        this.loading = false
       },
     },
   },
+  watch: {
+    authenticated() {
+      this.initialiseApp()
+    },
+  },
   created() {
-    this.$store.dispatch('loadStore')
-    if (this.$route.query.instanceId) {
-      setInstanceId(this.$route.query.instanceId)
-      console.log('set instanceId via url query to', getInstanceId())
-    } else {
-      setDefaultInstanceId().then(() => {
-        console.log('using default instanceId of', getInstanceId())
-      })
-    }
+    this.initialiseApp()
+  },
+  methods: {
+    ...mapMutations({
+      setUrl: 'dataset/setUrl',
+    }),
+    ...mapActions({
+      loadStore: 'loadStore',
+      loadData: 'dataset/loadData',
+    }),
+    async initialiseApp() {
+      if (this.authenticated) {
+        this.loading = true
+        await this.loadStore()
+        this.loading = false
+      }
+    },
   },
 }
 </script>

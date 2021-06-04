@@ -19,19 +19,16 @@
 
       <v-card-actions>
         <v-spacer />
-        <v-btn :color="primaryBlue" text @click="save">
-          Save
-        </v-btn>
-        <v-btn :color="primaryBlue" text @click="cancel">
-          Cancel
-        </v-btn>
+        <v-btn :color="primaryBlue" text @click="save"> Save </v-btn>
+        <v-btn :color="primaryBlue" text @click="cancel"> Cancel </v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
 </template>
 <script>
+import { mapState } from 'vuex'
 import { primaryBlue } from '~/static/js/colours'
-import { uploadTemplate } from '~/api/nivs/nivs'
+import { uploadTemplate } from '~/api/nivs'
 
 export default {
   name: 'SaveTemplate',
@@ -45,19 +42,26 @@ export default {
     }
   },
   methods: {
-    save(event) {
-      const currentState = this.$store.state
+    ...mapState({
+      state: state => state,
+    }),
+    async save() {
+      const currentState = this.state
       console.log('uploading current state', currentState)
-      uploadTemplate(this.title, this.description, this.filename, currentState)
-        .then((id) => {
-          console.log('Successfully uploaded template', id)
-        })
-        .catch((error) => {
-          console.log('ERROR uploading template', error)
-        })
+      try {
+        const id = await uploadTemplate(
+          this.title,
+          this.description,
+          this.filename,
+          currentState
+        )
+        console.log('Successfully uploaded template', id)
+      } catch (error) {
+        console.error('ERROR uploading template', error)
+      }
       this.dialog = false
     },
-    cancel(event) {
+    cancel() {
       this.dialog = false
     },
   },

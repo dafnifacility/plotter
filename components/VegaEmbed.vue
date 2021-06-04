@@ -5,10 +5,10 @@
 </template>
 
 <script>
+import { mapActions, mapGetters } from 'vuex'
 import axios from 'axios'
 import embed from 'vega-embed'
-import { getAuthHeader } from '@/plugins/authHeader'
-import { uploadPlot } from '~/api/nivs/nivs'
+import { uploadPlot } from '~/api/nivs'
 
 export default {
   props: {
@@ -24,8 +24,18 @@ export default {
       width: 0,
     }
   },
+  computed: {
+    ...mapGetters({
+      getVegaSpec: 'vegaSpec',
+    }),
+    vegaSpec() {
+      // sync to backend everytime we need to regenerate the spec
+      this.uploadState()
+      return this.getVegaSpec
+    },
+  },
   watch: {
-    spec(v) {
+    vegaSpec(v) {
       if (v) this.draw()
     },
   },
@@ -38,49 +48,39 @@ export default {
     window.removeEventListener('resize', this.handleResize)
   },
   methods: {
+    ...mapActions({
+      uploadState: 'uploadState',
+    }),
     // whenever the document is resized, re-set the 'fullHeight' variable
     handleResize(event) {
       this.width = this.$refs.box.clientWidth
       this.draw()
     },
-    draw() {
-      this.spec.width = 0.7 * this.width
-      this.spec.height = 0.55 * this.width
+    async draw() {
+      if (!this.vegaSpec) return
+
+      this.vegaSpec.width = 0.7 * this.width
+      this.vegaSpec.height = 0.55 * this.width
 
       const embedOptions = {
         actions: false,
-        loader: {
-          http: {
-            headers: {
-              Authorization: getAuthHeader(),
-            },
-          },
-        },
       }
-      return embed('#viz', this.spec, embedOptions)
-        .then((res) => {
-          res.finalize()
-        })
-        .catch((error) => {
-          console.log('ERROR in vega-embed: ', error)
-        })
-      // this.$store.commit('setVegaView', result.view)
+      try {
+        const res = await embed('#viz', this.vegaSpec, embedOptions)
+        return res.finalize()
+      } catch (error) {
+        console.error('ERROR in vega-embed: ', error)
+      }
     },
-    uploadPlot(title, description, filename) {
-      this.view
-        .toImageURL('png')
-        .then((pngUrl) => {
-          return axios.get(pngUrl, { responseType: 'blob' })
-        })
-        .then((response) => {
-          return uploadPlot(title, description, filename, response.data)
-        })
-        .then((id) => {
-          console.log('Successfully uploaded plot', id)
-        })
-        .catch((error) => {
-          console.log('ERROR uploading image', error)
-        })
+    async uploadPlot(title, description, filename) {
+      try {
+        const pngUrl = await this.view.toImageURL('png')
+        const response = await axios.get(pngUrl, { responseType: 'blob' })
+        const id = await uploadPlot(title, description, filename, response.data)
+        console.log('Successfully uploaded plot', id)
+      } catch (error) {
+        console.error('ERROR uploading image', error)
+      }
     },
   },
 }

@@ -1,8 +1,9 @@
 import { defaultColumn } from '~/store/dataset'
 import { geometries } from '~/constants/geometries'
+import modes from '~/constants/modes'
 
 export function defaultGeometry(name = 'line') {
-  const geo = geometries.filter((geo) => {
+  const geo = geometries.filter(geo => {
     return geo.name === name
   })[0]
   return {
@@ -23,20 +24,19 @@ export const state = () => ({
   geometries: [defaultGeometry()],
 })
 
-export const actions = {
-  loadStore({ commit }, state) {
-    commit('setSelectedGeometry', state.selectedGeometry)
-    commit('setGeometries', state.geometries)
-  },
-  removeGeometry({ commit, state }, index) {
-    if (state.selectedGeometry === index) {
-      if (index >= state.geometries.length - 1) {
-        commit('setSelectedGeometry', index - 1)
-      } else {
-        commit('setSelectedGeometry', index)
+export const getters = {
+  geometry(state) {
+    if (
+      state.selectedGeometry >= state.geometries.length ||
+      state.selectedGeometry < 0
+    ) {
+      return {
+        type: 'None',
+        aesthetics: {},
+        options: {},
       }
     }
-    commit('removeGeometry', index)
+    return state.geometries[state.selectedGeometry]
   },
 }
 
@@ -47,13 +47,13 @@ export const mutations = {
     state.selectedGeometry = state.geometries.length - 1
   },
   setDefaultGeometries(state, mode) {
-    if (mode === 'csv + topojson' || mode === 'csv + geojson') {
+    if (mode === modes.csvTopojson || mode === modes.csvGeojson) {
       state.geometries = [defaultGeometry('geoshape')]
       const geoField = defaultColumn()
       geoField.name = 'geo'
       geoField.type = 'geojson'
       state.geometries[0].aesthetics.shape = [geoField]
-    } else if (mode === 'topojson' || mode === 'geojson') {
+    } else if (mode === modes.topojson || mode === modes.geojson) {
       state.geometries = [defaultGeometry('geoshape')]
     } else {
       state.geometries = [defaultGeometry()]
@@ -68,7 +68,7 @@ export const mutations = {
   updateAesthetics(state, [name, value]) {
     const aes = state.geometries[state.selectedGeometry].aesthetics
     const oldValue = aes[name]
-    const diff = value.filter((x) => !oldValue.includes(x))
+    const diff = value.filter(x => !oldValue.includes(x))
     // should just be zero or one column in aesthetic now
     if (diff.length === 0) {
       aes[name] = []
@@ -103,18 +103,19 @@ export const mutations = {
   },
 }
 
-export const getters = {
-  geometry(state) {
-    if (
-      state.selectedGeometry >= state.geometries.length ||
-      state.selectedGeometry < 0
-    ) {
-      return {
-        type: 'None',
-        aesthetics: {},
-        options: {},
+export const actions = {
+  loadStore({ commit }, newState) {
+    commit('setSelectedGeometry', newState.selectedGeometry)
+    commit('setGeometries', newState.geometries)
+  },
+  removeGeometry({ commit, state }, index) {
+    if (state.selectedGeometry === index) {
+      if (index >= state.geometries.length - 1) {
+        commit('setSelectedGeometry', index - 1)
+      } else {
+        commit('setSelectedGeometry', index)
       }
     }
-    return state.geometries[state.selectedGeometry]
+    commit('removeGeometry', index)
   },
 }

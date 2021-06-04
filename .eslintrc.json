@@ -5,27 +5,50 @@
     "node": true
   },
   "parserOptions": {
-    "parser": "@babel/eslint-parser"
+    "parser": "babel-eslint"
   },
   "extends": [
     "@nuxtjs",
     "eslint:recommended",
     "plugin:vue/recommended",
-    "plugin:prettier/recommended"
+    "plugin:prettier/recommended",
+    "eslint-config-prettier",
+    "prettier",
+    "prettier/vue"
   ],
   "plugins": [
-    "vue",
-    "prettier"
+    "vue"
   ],
   // add your custom rules here
   "rules": {
+    "prettier/prettier": [
+      "error",
+      {
+        "endOfLine": "auto",
+        "arrowParens": "avoid"
+      }
+    ],
+    "arrow-parens": [
+      0,
+      "as-needed"
+    ],
+    "vue/valid-v-slot": 1,
+    "vue/no-mutating-props": 1,
     "no-console": 0,
-    "sort-imports": [1, {
-      "ignoreCase": true,
-      "ignoreDeclarationSort": false,
-      "ignoreMemberSort": false,
-      "memberSyntaxSortOrder": ["none", "all", "multiple", "single"]
-    }],
+    "sort-imports": [
+      1,
+      {
+        "ignoreCase": true,
+        "ignoreDeclarationSort": false,
+        "ignoreMemberSort": false,
+        "memberSyntaxSortOrder": [
+          "none",
+          "all",
+          "multiple",
+          "single"
+        ]
+      }
+    ],
     "import/order": 0
   }
 }

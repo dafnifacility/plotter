@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="invalid"><head><meta charset="UTF-8"><title>Login</title><script>
+  (function(){
+    const settings = {
+      keycloakUrl: '{{env "KEYCLOAK_ENDPOINT"}}',
+      keycloakRealm: '{{env "KEYCLOAK_REALM"}}',
+      keycloakClientId: '{{env "KEYCLOAK_CLIENT_ALT"}}',
+
+      cookieName: '{{env "KEYCLOAK_LOGIN_COOKIE_NAME"}}',
+      cookieDomain: '{{env "KEYCLOAK_LOGIN_COOKIE_DOMAIN"}}',
+      cookieExpirationHours: 2,
+
+      redirectDomainCheck: '{{env "KEYCLOAK_LOGIN_REDIRECT_CHECK"}}'
+    }
+
+    const keycloakScript = document.createElement('script')
+    keycloakScript.src = settings.keycloakUrl + 'js/keycloak.js'
+    keycloakScript.onload = function() {
+      keycloakConnect(settings)
+    }
+
+    {{include "/keycloak/main.js"}}
+
+    document.head.append(keycloakScript)
+  })()
+</script></head></html>
