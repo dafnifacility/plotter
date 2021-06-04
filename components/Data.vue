@@ -237,8 +237,6 @@ export default {
         return this.getCsvIndex
       },
       async set(value) {
-        console.log('id', this.csvId)
-        console.log('value', value)
         this.setCsvIndex(value)
         this.setCsvId('')
         await this.loadCsvData()
@@ -274,11 +272,9 @@ export default {
     },
     csvId: {
       get() {
-        console.log('getCsvId', this.getCsvId)
         return this.getCsvId
       },
       set(value) {
-        console.log('valuecsvid', value)
         this.setCsvId(value)
         const idColumn = this.columnsInDataFile.filter(c => {
           return c.name === value

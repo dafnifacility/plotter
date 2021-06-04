@@ -51,7 +51,6 @@ export const actions = {
   getFileDataFromMetadata({ state, commit }) {
     let fileData = []
     for (const id of state.datasetIds) {
-      console.log(id)
       const files = state.datasetMetadata[id]['dcat:distribution']
       fileData = fileData.concat(
         files.map(f => {

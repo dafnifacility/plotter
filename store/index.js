@@ -119,7 +119,6 @@ export const getters = {
         sD.topojsonObject
       )
     } else if (sD.mode === modes.geojson) {
-      console.log(sD.geojsonFiles)
       if (sD.geoIndex >= sD.geojsonFiles.length) {
         return {}
       }
@@ -191,7 +190,6 @@ export const getters = {
         state.dataset.mode === modes.csvGeojson &&
         state.dataset.geojsonFiles.length > 0
       ) {
-        console.log(state.dataset.geojsonFiles)
         dataSpec = vegaDataGeoJson(
           state.dataset.geojsonFiles[state.dataset.geoIndex].url
         )
