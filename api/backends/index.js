@@ -22,7 +22,7 @@ async function backends() {
     discoveryApiUrl = response.data.discoveryApiUrl
     environment = response.data.node_env
   } catch (error) {
-    console.log('Error while loading settings from server' + error)
+    console.error('Error while loading settings from server' + error)
   }
 }
 

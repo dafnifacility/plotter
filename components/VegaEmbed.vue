@@ -69,9 +69,8 @@ export default {
         const res = await embed('#viz', this.vegaSpec, embedOptions)
         return res.finalize()
       } catch (error) {
-        console.log('ERROR in vega-embed: ', error)
+        console.error('ERROR in vega-embed: ', error)
       }
-      // this.$store.commit('setVegaView', result.view)
     },
     async uploadPlot(title, description, filename) {
       try {
@@ -80,7 +79,7 @@ export default {
         const id = await uploadPlot(title, description, filename, response.data)
         console.log('Successfully uploaded plot', id)
       } catch (error) {
-        console.log('ERROR uploading image', error)
+        console.error('ERROR uploading image', error)
       }
     },
   },
