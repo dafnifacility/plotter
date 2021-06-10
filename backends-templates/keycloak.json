@@ -1,0 +1,5 @@
+{
+  "url": "{{env "KEYCLOAK_ENDPOINT"}}",
+  "realm": "{{env "KEYCLOAK_REALM"}}",
+  "clientId": "{{env "KEYCLOAK_CLIENT"}}"
+}
