@@ -1,6 +1,9 @@
-import { backendsPromise, visualisationApiUrl } from '~/api/backends/'
+import {
+  backendsPromise,
+  instanceID,
+  visualisationApiUrl,
+} from '~/api/backends/'
 import axios from 'axios'
-import { instanceId } from '~/constants/localUUIDs'
 
 const stateFileName = 'state.json'
 const builderId = 'a734e3e7-ca10-41f2-9638-a19710d6430d'
@@ -11,7 +14,7 @@ export async function setupSyncStore() {
 
 export async function getInstance() {
   await backendsPromise
-  return axios.get(`${visualisationApiUrl}/instances/${instanceId}`)
+  return axios.get(`${visualisationApiUrl}/instances/${instanceID}`)
 }
 
 function getStateFileUrl(listOfFiles) {
