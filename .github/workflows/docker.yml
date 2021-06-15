@@ -4,6 +4,7 @@ on:
   push:
     branches:
     - master
+    - james/instance-id-backends
     tags: ["v*"]
 
 jobs:
