@@ -103,7 +103,7 @@ export default {
    ** See https://nuxtjs.org/api/configuration-build/
    */
   build: {
-    publicPath: '',
+    publicPath: '/instance',
   },
 
   ...routerBase,
