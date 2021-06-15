@@ -1,97 +1,44 @@
 <template>
-  <v-container fluid>
-    <v-row no-gutters>
-      <v-col cols="12">
-        <Data />
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col cols="12" md="6" lg="2">
-        <Geometries />
-      </v-col>
-      <v-col cols="12" md="6" lg="3">
-        <Aesthetics />
-      </v-col>
-      <v-col cols="12" md="6" lg="2">
-        <Columns />
-      </v-col>
-      <v-col cols="12" md="6" lg="5">
-        <PlotView />
-        <!-- <v-col>
-          <Spec />
-        </v-col> -->
-      </v-col>
-    </v-row>
-    <transition name="fade">
-      <overlay v-if="loading" loading />
-    </transition>
-  </v-container>
+  <v-btn
+    dark
+    depressed
+    :ripple="false"
+    :color="primaryBlue"
+    @click="goToInstance"
+  >
+    Go to instance
+  </v-btn>
 </template>
-
 <script>
-import { mapActions, mapMutations, mapState } from 'vuex'
-import Aesthetics from '~/components/Aesthetics'
-import Columns from '~/components/Columns'
-import Geometries from '~/components/Geometries'
-import overlay from '~/components/overlay/Overlay'
-import PlotView from '~/components/PlotView'
-// import Spec from '~/components/Spec'
+import { backendsPromise, instanceID } from '~/api/backends/'
+import { primaryBlue } from '~/static/js/colours'
 
 export default {
-  name: 'Homepage',
-  components: {
-    Aesthetics,
-    Columns,
-    Geometries,
-    overlay,
-    PlotView,
-    // Spec,
-  },
+  name: 'Home',
   data() {
     return {
-      loading: false,
+      primaryBlue,
     }
   },
-  computed: {
-    ...mapState({
-      authenticated: state => state.auth.authenticated,
-      getUrl: state => state.dataset.url,
-    }),
-    url: {
-      get() {
-        return this.getUrl
-      },
-      async set(value) {
-        this.loading = true
-        this.setUrl(value)
-        await this.loadData()
-        this.loading = false
-      },
-    },
-  },
-  watch: {
-    authenticated() {
-      this.initialiseApp()
-    },
-  },
-  created() {
-    this.initialiseApp()
-  },
   methods: {
-    ...mapMutations({
-      setUrl: 'dataset/setUrl',
-    }),
-    ...mapActions({
-      loadStore: 'loadStore',
-      loadData: 'dataset/loadData',
-    }),
-    async initialiseApp() {
-      if (this.authenticated) {
-        this.loading = true
-        await this.loadStore()
-        this.loading = false
-      }
+    async goToInstance() {
+      await backendsPromise
+      this.$router.push(`instance/${instanceID}`)
     },
   },
 }
 </script>
+<style lang="scss" scoped>
+.v-btn {
+  text-transform: none !important;
+  letter-spacing: normal !important;
+  transition: background-color 0.25s ease-in-out;
+}
+.theme--dark.v-btn.v-btn--disabled:not(.v-btn--flat):not(.v-btn--text):not(.v-btn--outlined) {
+  color: $color-grey-faded-dark !important;
+  background-color: $color-grey-faded-light !important;
+}
+.theme--dark.v-btn.v-btn--disabled {
+  color: $color-grey-faded-dark !important;
+}
+</style>

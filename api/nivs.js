@@ -28,7 +28,7 @@ function getStateFileUrl(listOfFiles) {
 export async function getPresignedURLforGET() {
   await backendsPromise
   const response = await axios.get(
-    `${visualisationApiUrl}/instances/${instanceId}/state-sync`
+    `${visualisationApiUrl}/instances/${instanceID}/state-sync`
   )
   return getStateFileUrl(response.data)
 }
@@ -36,7 +36,7 @@ export async function getPresignedURLforGET() {
 export async function getPresignedURLforPUT() {
   await backendsPromise
   const response = await axios.post(
-    `${visualisationApiUrl}/instances/${instanceId}/state-sync`,
+    `${visualisationApiUrl}/instances/${instanceID}/state-sync`,
     {
       files: [stateFileName],
     }
@@ -63,7 +63,7 @@ export async function uploadPlot(plotTitle, plotDescription, filename, file) {
     title: plotTitle,
     description: plotDescription,
     files: [filename],
-    visualisation_instance: instanceId,
+    visualisation_instance: instanceID,
   })
   const presignedUrl = postResponse.data.presigned_urls[0].presigned_url
   plotId = postResponse.data.id
