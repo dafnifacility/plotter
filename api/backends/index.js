@@ -21,7 +21,7 @@ if (appMode !== 'production') {
 
 async function backends() {
   try {
-    const response = await axios.get('/backends/backends.json')
+    const response = await axios.get('./backends/backends.json')
     visualisationApiUrl = response.data.visualisationApiUrl
     dssauthUrl = response.data.dssauthUrl
     discoveryApiUrl = response.data.discoveryApiUrl
