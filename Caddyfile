@@ -4,7 +4,6 @@
 http://:5001
 log
 uri path_regexp /instance/[a-f0-9\-]{36} /
-try_files {path} /index.html
 root * /srv
 file_server {
   hide .git Caddyfile README.md
