@@ -5,7 +5,7 @@
 import { backendsPromise, instanceID } from '~/api/backends/'
 
 export default {
-  name: 'Home',
+  name: 'Instance',
   async mounted() {
     await backendsPromise
     this.$router.push({
