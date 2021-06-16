@@ -1,4 +1,4 @@
-import { downloadState, uploadState } from '~/api/minio'
+import { downloadState, replaceMinioUrl, uploadState } from '~/api/minio'
 import { columnProperties } from '~/constants/aesthetics'
 import modes from '~/constants/modes'
 import { setupSyncStore } from '~/api/nivs'
@@ -64,7 +64,7 @@ function vegaEncoding(geometry, mode) {
 
 function vegaDataTopoJson(URL, geoFeature) {
   return {
-    url: URL,
+    url: replaceMinioUrl(URL),
     format: {
       type: 'topojson',
       feature: geoFeature,
@@ -74,7 +74,7 @@ function vegaDataTopoJson(URL, geoFeature) {
 
 function vegaDataGeoJson(URL) {
   return {
-    url: URL,
+    url: replaceMinioUrl(URL),
     format: {
       property: 'features',
     },
@@ -128,7 +128,7 @@ export const getters = {
         return {}
       }
       return {
-        url: sD.csvFiles[sD.csvIndex].url,
+        url: replaceMinioUrl(sD.csvFiles[sD.csvIndex].url),
         name: 'table',
         format: {
           type: 'csv',
