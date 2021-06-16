@@ -1,7 +1,7 @@
 import { backendsPromise, nidMinioUrl, nivsMinioUrl } from '~/api/backends/'
 import axios from 'axios'
 
-function replaceMinioUrl(presignedUrl, replacementUrl) {
+export function replaceMinioUrl(presignedUrl, replacementUrl) {
   if (!replacementUrl) return presignedUrl
 
   const dafniUrl = 'dafni.rl.ac.uk'
@@ -44,6 +44,7 @@ export async function downloadFile(presignedUrl) {
 }
 
 export default {
+  replaceMinioUrl,
   uploadState,
   downloadState,
 }
