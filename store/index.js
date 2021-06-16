@@ -123,7 +123,7 @@ export const getters = {
         return {}
       }
       return vegaDataGeoJson(sD.geojsonFiles[sD.geoIndex].url)
-    } else {
+    } else if (sD.mode === modes.csv) {
       if (sD.csvIndex >= sD.csvFiles.length) {
         return {}
       }

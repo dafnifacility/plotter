@@ -5,7 +5,7 @@ import modes from '~/constants/modes'
 
 export const state = () => {
   return {
-    mode: modes.csv,
+    mode: null,
     csvId: '',
     csvIndex: 0,
     csvFiles: [],

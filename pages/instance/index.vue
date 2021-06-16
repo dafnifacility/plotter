@@ -8,10 +8,7 @@ export default {
   name: 'Instance',
   async mounted() {
     await backendsPromise
-    this.$router.push({
-      name: 'instance-id',
-      query: { id: instanceID },
-    })
+    this.$router.push(`instance/${instanceID}`)
   },
 }
 </script>

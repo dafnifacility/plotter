@@ -130,7 +130,7 @@
 <script>
 import { mapActions, mapMutations, mapState } from 'vuex'
 import { aggregateOps } from '~/constants/aggregate'
-import axios from 'axios'
+import { downloadFile } from '~/api/minio'
 import fileDownload from 'js-file-download'
 import modes from '~/constants/modes'
 import { primaryBlue } from '~/static/js/colours'
@@ -325,12 +325,12 @@ export default {
         filename = this.geojsonFiles[this.geojsonIndex].filename
       }
 
-      const res = await axios.get(urlString, {})
+      const res = await downloadFile(urlString)
       // topojson or geojson files will be objects
-      if (typeof res.data === 'object' && res.data !== null) {
-        fileDownload(JSON.stringify(res.data, null, 2), filename)
+      if (typeof res === 'object' && res !== null) {
+        fileDownload(JSON.stringify(res, null, 2), filename)
       } else {
-        fileDownload(res.data, filename)
+        fileDownload(res, filename)
       }
     },
   },

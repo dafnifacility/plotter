@@ -4,6 +4,7 @@ import {
   visualisationApiUrl,
 } from '~/api/backends/'
 import axios from 'axios'
+import { downloadFile } from '~/api/minio'
 
 const stateFileName = 'state.json'
 const builderId = 'a734e3e7-ca10-41f2-9638-a19710d6430d'
@@ -48,12 +49,7 @@ export async function downloadPlot(plotId) {
   await backendsPromise
   const response = await axios.get(`${visualisationApiUrl}/plots/${plotId}`)
   const presignedUrl = response.data.presigned_urls[0].presigned_url
-  const getResponse = await axios.get(presignedUrl, {
-    headers: {
-      'Content-Type': 'image/png',
-    },
-  })
-  return getResponse.data
+  return await downloadFile(presignedUrl)
 }
 
 export async function uploadPlot(plotTitle, plotDescription, filename, file) {
@@ -84,12 +80,7 @@ export async function downloadTemplate(templateId) {
     `${visualisationApiUrl}/templates/${templateId}`
   )
   const presignedUrl = response.data.presigned_urls[0].presigned_url
-  const getResponse = await axios.get(presignedUrl, {
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  })
-  return getResponse
+  return await downloadFile(presignedUrl)
 }
 
 export async function uploadTemplate(

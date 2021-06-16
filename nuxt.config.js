@@ -104,7 +104,7 @@ export default {
    ** See https://nuxtjs.org/api/configuration-build/
    */
   build: {
-    publicPath: './_nuxt',
+    publicPath: process.env.NODE_ENV === 'development' ? '/_nuxt' : './_nuxt/',
   },
 
   ...routerBase,

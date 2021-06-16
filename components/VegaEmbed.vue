@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex'
+import { mapActions, mapGetters, mapState } from 'vuex'
 import axios from 'axios'
 import embed from 'vega-embed'
 import { uploadPlot } from '~/api/nivs'
@@ -25,6 +25,9 @@ export default {
     }
   },
   computed: {
+    ...mapState({
+      authenticated: state => state.auth.authenticated,
+    }),
     ...mapGetters({
       getVegaSpec: 'vegaSpec',
     }),
@@ -36,6 +39,7 @@ export default {
   },
   watch: {
     vegaSpec(v) {
+      if (!this.authenticated) return
       if (v) this.draw()
     },
   },
