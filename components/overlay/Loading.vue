@@ -1,7 +1,7 @@
 <template>
   <img
     :class="[loadingClass, position]"
-    src="/ui/loading.svg"
+    src="ui/loading.svg"
     width="48"
     height="48"
     alt=""
