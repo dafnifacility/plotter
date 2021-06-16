@@ -5,6 +5,7 @@ export let visualisationApiUrl = process.env.visualisationApiUrl
 export let dssauthUrl = process.env.dssauthUrl
 export let discoveryApiUrl = process.env.discoveryApiUrl
 export let nivsMinioUrl = process.env.nivsMinioUrl
+export let nidMinioUrl = process.env.nidMinioUrl
 export let environment = process.env.environment
 export let instanceID = process.env.INSTANCE_ID
 
