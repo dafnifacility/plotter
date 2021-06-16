@@ -17,9 +17,9 @@ function useDefaultAPIUrls() {
     'https://dafni-dss-dssauth-review-dev-o2yn5p.staging.dafni.rl.ac.uk'
   discoveryApiUrl =
     'https://dafni-search-and-discovery-api-review-dev-4jxwt5.staging.dafni.rl.ac.uk'
-    nivsMinioUrl = null
-    nivsMinioUrl = null
-    instanceID = 'd1af8090-ec1c-467e-9a46-2027c659d9bc'
+  nivsMinioUrl = null
+  nidMinioUrl = null
+  instanceID = 'd1af8090-ec1c-467e-9a46-2027c659d9bc'
 }
 
 if (appMode !== 'production') {
@@ -34,7 +34,7 @@ async function backends() {
     dssauthUrl = response.data.dssauthUrl
     discoveryApiUrl = response.data.discoveryApiUrl
     nivsMinioUrl = response.data.nivsMinioUrl
-    nivsMinioUrl = response.data.nivsMinioUrl
+    nidMinioUrl = response.data.nidMinioUrl
     environment = response.data.node_env
     instanceID = response.data.instanceID
   } catch (error) {
