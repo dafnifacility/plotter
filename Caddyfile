@@ -10,8 +10,8 @@ file_server {
 }
 respond /healthz 204
 @backends {
-  path /backends/backends.json
-  path /backends/keycloak.json
+  path */backends/backends.json
+  path */backends/keycloak.json
 }
 handle @backends {
   header Cache-Control public,max-age=10800
