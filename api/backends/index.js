@@ -8,15 +8,20 @@ export let environment = process.env.environment
 export let instanceID = process.env.INSTANCE_ID
 
 const appMode = process.env.NODE_ENV
-if (appMode !== 'production') {
+
+function useDefaultAPIUrls() {
   visualisationApiUrl =
     'https://dafni-nivs-api-review-dev-4jxwt5.staging.dafni.rl.ac.uk'
   dssauthUrl =
     'https://dafni-dss-dssauth-review-dev-o2yn5p.staging.dafni.rl.ac.uk'
   discoveryApiUrl =
     'https://dafni-search-and-discovery-api-review-dev-4jxwt5.staging.dafni.rl.ac.uk'
-  environment = 'dev'
   instanceID = 'd1af8090-ec1c-467e-9a46-2027c659d9bc'
+}
+
+if (appMode !== 'production') {
+  useDefaultAPIUrls()
+  environment = "dev"
 }
 
 async function backends() {
@@ -28,7 +33,8 @@ async function backends() {
     environment = response.data.node_env
     instanceID = response.data.instanceID
   } catch (error) {
-    console.error('Error while loading settings from server' + error)
+    console.error(`Error while loading settings from server: ${error}`)
+    useDefaultAPIUrls()
   }
 }
 
