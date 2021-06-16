@@ -26,7 +26,7 @@ export async function uploadState(presignedUrl, state) {
 
 export async function downloadState(presignedUrl) {
   await backendsPromise
-  const response = await axios.get(presignedUrl, {
+  const response = await axios.get(replaceNIVSMinioUrl(presignedUrl), {
     headers: {
       'Content-Type': 'application/json',
     },
