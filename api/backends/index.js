@@ -4,6 +4,7 @@ import axios from 'axios'
 export let visualisationApiUrl = process.env.visualisationApiUrl
 export let dssauthUrl = process.env.dssauthUrl
 export let discoveryApiUrl = process.env.discoveryApiUrl
+export let nivsMinioUrl = process.env.nivsMinioUrl
 export let environment = process.env.environment
 export let instanceID = process.env.INSTANCE_ID
 
@@ -16,6 +17,7 @@ function useDefaultAPIUrls() {
     'https://dafni-dss-dssauth-review-dev-o2yn5p.staging.dafni.rl.ac.uk'
   discoveryApiUrl =
     'https://dafni-search-and-discovery-api-review-dev-4jxwt5.staging.dafni.rl.ac.uk'
+  nivsMinioUrl = null
   instanceID = 'd1af8090-ec1c-467e-9a46-2027c659d9bc'
 }
 
@@ -30,6 +32,7 @@ async function backends() {
     visualisationApiUrl = response.data.visualisationApiUrl
     dssauthUrl = response.data.dssauthUrl
     discoveryApiUrl = response.data.discoveryApiUrl
+    nivsMinioUrl = response.data.nivsMinioUrl
     environment = response.data.node_env
     instanceID = response.data.instanceID
   } catch (error) {

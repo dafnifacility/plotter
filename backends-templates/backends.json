@@ -1,5 +1,6 @@
 {
   "visualisationApiUrl": "{{env "VISUALISATION_API_URL"}}",
+  "nivsMinioUrl": "{{env "NIVS_MINIO_URL"}}",
   "discoveryApiUrl": "{{env "DISCOVERY_API_URL"}}",
   "dssauthUrl": "{{env "DSS_AUTH"}}",
   "node_env": "{{env "NODE_ENV"}}",
