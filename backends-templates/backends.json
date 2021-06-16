@@ -3,9 +3,5 @@
   "discoveryApiUrl": "{{env "DISCOVERY_API_URL"}}",
   "dssauthUrl": "{{env "DSS_AUTH"}}",
   "node_env": "{{env "NODE_ENV"}}",
-  "instanceID": "{{env "INSTANCE_ID"}}",
-  "dataIds": {
-    {include "/datasets/datasets.json"
-    }
-  }
+  "instanceID": "{{env "INSTANCE_ID"}}"
 }
