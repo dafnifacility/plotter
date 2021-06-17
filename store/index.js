@@ -1,4 +1,9 @@
-import { downloadState, replaceMinioUrl, uploadState } from '~/api/minio'
+import {
+  downloadState,
+  nidMinioUrl,
+  replaceMinioUrl,
+  uploadState,
+} from '~/api/minio'
 import { backendsPromise } from '~/api/backends'
 import { columnProperties } from '~/constants/aesthetics'
 import embed from 'vega-embed'
@@ -31,18 +36,6 @@ function vegaEncoding(aesthetic, mode) {
     encoding[key] = aesthetic[key]
   })
   return encoding
-  // {
-  //   field: `${fieldNamePrepend}${aesthetic.name}`,
-  //   type: aesthetic.type,
-  //   aggregate: aesthetic.aggregate,
-  //   bin: aesthetic.bin,
-  //   calculate: aesthetic.calculate,
-  //   maxbins: aesthetic.maxbins,
-  //   scale: aesthetic.scale,
-  //   stack: aesthetic.stack,
-  //   timeUnit: aesthetic.timeUnit,
-  //   title: aesthetic.title,
-  // }
   // .reduce((map, key) => {
   //   map[key] = {
   //     field: fieldNamePrepend.concat(aesMap[key][0].name),
@@ -77,7 +70,7 @@ function vegaEncoding(aesthetic, mode) {
 
 function vegaDataTopoJson(URL, geoFeature) {
   return {
-    url: replaceMinioUrl(URL),
+    url: replaceMinioUrl(URL, nidMinioUrl),
     format: {
       type: 'topojson',
       feature: geoFeature,
@@ -87,7 +80,7 @@ function vegaDataTopoJson(URL, geoFeature) {
 
 function vegaDataGeoJson(URL) {
   return {
-    url: replaceMinioUrl(URL),
+    url: replaceMinioUrl(URL, nidMinioUrl),
     format: {
       property: 'features',
     },
@@ -96,7 +89,7 @@ function vegaDataGeoJson(URL) {
 
 function vegaDataCsv(URL) {
   return {
-    url: replaceMinioUrl(URL),
+    url: replaceMinioUrl(URL, nidMinioUrl),
     name: 'table',
     format: {
       type: 'csv',
@@ -130,43 +123,6 @@ export const getters = {
         return geometry.options[name]
       } else {
         throw new Error(`unknown option type ${type}`)
-      }
-    }
-  },
-  vegaLayers(state) {
-    const geometries = state.geometries.geometries
-    return geometries.map(geom => {
-      return {
-        mark: vegaMark(geom),
-        encoding: vegaEncoding(geom, state.dataset.mode),
-      }
-    })
-  },
-  vegaData(state) {
-    const sD = state.dataset
-    if (sD.mode === modes.topojson) {
-      if (sD.geoIndex >= sD.topojsonFiles.length) {
-        return {}
-      }
-      return vegaDataTopoJson(
-        sD.topojsonFiles[sD.geoIndex].url,
-        sD.topojsonObject
-      )
-    } else if (sD.mode === modes.geojson) {
-      if (sD.geoIndex >= sD.geojsonFiles.length) {
-        return {}
-      }
-      return vegaDataGeoJson(sD.geojsonFiles[sD.geoIndex].url)
-    } else if (sD.mode === modes.csv) {
-      if (sD.csvIndex === null || sD.csvIndex >= sD.csvFiles.length) {
-        return {}
-      }
-      return {
-        url: replaceMinioUrl(sD.csvFiles[sD.csvIndex].url),
-        name: 'table',
-        format: {
-          type: 'csv',
-        },
       }
     }
   },
@@ -253,21 +209,7 @@ export const getters = {
     return transformArray
   },
   vegaSpec(state, getters) {
-    let spec = {
-      data: getters.vegaData,
-    }
-    const vegaLayers = getters.vegaLayers
-    if (vegaLayers.length === 1) {
-      spec = {
-        ...spec,
-        ...vegaLayers[0],
-      }
-    } else {
-      spec = {
-        ...spec,
-        layer: vegaLayers,
-      }
-    }
+    let spec = {}
     const vTransform = getters.vegaTransform
     if (vTransform.length > 0) {
       spec = {
@@ -303,7 +245,7 @@ export const mutations = {
   setVegaSpecHeight(state, h) {
     state.vegaSpec.height = h
   },
-  updateAesthetic(state, { layer, name, value }) {
+  updateEncoding(state, { layer, name, value }) {
     state.vegaSpec.layer[layer].encoding[name] = vegaEncoding(value)
   },
   addLayer(state, l) {
@@ -321,19 +263,14 @@ export const mutations = {
 }
 
 export const actions = {
-  async updateAesthetic({ state, commit, dispatch }, { name, value }) {
-    commit('updateAesthetic', {
+  async updateEncoding({ state, commit, dispatch }, { name, value }) {
+    commit('updateEncoding', {
       layer: state.geometries.selectedGeometry,
       name,
       value,
     })
-    console.log('updateAesthetic')
+    console.log('updateEncoding')
 
-    await dispatch('refreshVegaEmbed')
-  },
-  async setAesthetic({ commit, dispatch }, data) {
-    console.log('aesthetic', data)
-    // commit('addAesthetic', aesthetic)
     await dispatch('refreshVegaEmbed')
   },
   async addLayer({ commit, dispatch }, layer) {

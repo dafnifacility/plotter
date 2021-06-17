@@ -98,13 +98,7 @@ export const mutations = {
 export const actions = {
   updateAesthetic({ commit, dispatch }, { name, value }) {
     commit('updateAesthetic', { name, value })
-    dispatch('updateAesthetic', { name, value: value[0] }, { root: true })
-  },
-  addAesthetic({ state, commit, dispatch }, aesthetic) {
-    console.log('AddAesthetic Action')
-    commit('addAesthetic', aesthetic)
-    commit('setSelectedGeometry', state.geometries.length - 1)
-    dispatch('addAesthetic', aesthetic, { root: true })
+    dispatch('updateEncoding', { name, value: value[0] }, { root: true })
   },
   addGeometry({ state, commit, dispatch }, name) {
     const newGeometry = defaultGeometry(name)

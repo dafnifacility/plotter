@@ -294,6 +294,7 @@ export default {
   },
   methods: {
     ...mapMutations({
+      addAesthetic: 'geometries/addAesthetic',
       addGeoField: 'dataset/addGeoField',
       setCsvId: 'dataset/setCsvId',
       setGeoId: 'dataset/setGeoId',
@@ -305,7 +306,6 @@ export default {
     }),
     ...mapActions({
       updateAesthetic: 'geometries/updateAesthetic',
-      addAesthetic: 'geometries/addAesthetic',
       setCsvIndex: 'dataset/setCsvIndex',
       loadCsvData: 'dataset/loadCsvData',
       loadGeojsonData: 'dataset/loadGeojsonData',
