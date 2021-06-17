@@ -46,7 +46,7 @@
 </template>
 
 <script>
-import { mapGetters, mapMutations } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 import Aesthetic from '~/components/Aesthetic'
 import { aesthetics } from '~/constants/aesthetics'
 import { primaryBlue } from '~/static/js/colours'
@@ -68,10 +68,11 @@ export default {
     },
   },
   methods: {
-    ...mapMutations({
+    ...mapActions({
       addAesthetic: 'geometries/addAesthetic',
     }),
     selectAesthetic(name) {
+      console.log('select Aesthetic')
       this.addAesthetic(name)
       this.$nextTick(() => {
         this.addAestheticSelected = null

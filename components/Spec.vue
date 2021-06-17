@@ -1,4 +1,7 @@
 <template>
+  <div />
+</template>
+<!--template>
   <v-card class="pa-1">
     <v-card-title>
       <v-row no-gutters>
@@ -14,7 +17,7 @@
   </v-card>
 </template>
 <script>
-import { mapGetters } from 'vuex'
+import { mapActions } from 'vuex'
 import { primaryBlue } from '~/static/js/colours'
 
 export default {
@@ -23,12 +26,14 @@ export default {
     return { primaryBlue }
   },
   computed: {
-    ...mapGetters({
-      vegaSpec: 'vegaSpec',
-    }),
     vegaSpecString() {
-      return JSON.stringify(this.vegaSpec, null, 2)
+      return JSON.stringify(await this.vegaSpec, null, 2)
     },
   },
+  methods: {
+    ...mapActions({
+      vegaSpec: 'vegaSpec',
+    }),
+  },
 }
-</script>
+</script-->

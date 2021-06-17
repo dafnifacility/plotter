@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import { mapActions, mapGetters, mapState } from 'vuex'
+import { mapActions, mapGetters, mapMutations, mapState } from 'vuex'
 import axios from 'axios'
 import embed from 'vega-embed'
 import { uploadPlot } from '~/api/nivs'
@@ -39,8 +39,9 @@ export default {
   },
   watch: {
     vegaSpec(v) {
-      if (!this.authenticated) return
-      if (v) this.draw()
+      console.log('Triggered spec watch')
+      // if (!this.authenticated) return
+      // if (v) this.draw()
     },
   },
   async mounted() {
@@ -52,8 +53,13 @@ export default {
     window.removeEventListener('resize', this.handleResize)
   },
   methods: {
+    ...mapMutations({
+      setVegaSpecWidth: 'setVegaSpecWidth',
+      setVegaSpecHeight: 'setVegaSpecHeight',
+    }),
     ...mapActions({
       uploadState: 'uploadState',
+      refreshVegaEmbed: 'refreshVegaEmbed',
     }),
     // whenever the document is resized, re-set the 'fullHeight' variable
     handleResize(event) {
@@ -61,20 +67,24 @@ export default {
       this.draw()
     },
     async draw() {
-      if (!this.vegaSpec) return
+      this.setVegaSpecWidth(0.7 * this.width)
+      this.setVegaSpecHeight(0.55 * this.width)
+      await this.refreshVegaEmbed()
+      console.log('Old Spec', this.vegaSpec)
+      // if (!this.vegaSpec) return
 
-      this.vegaSpec.width = 0.7 * this.width
-      this.vegaSpec.height = 0.55 * this.width
+      // this.vegaSpec.width = 0.7 * this.width
+      // this.vegaSpec.height = 0.55 * this.width
 
-      const embedOptions = {
-        actions: false,
-      }
-      try {
-        const res = await embed('#viz', this.vegaSpec, embedOptions)
-        return res.finalize()
-      } catch (error) {
-        console.error('ERROR in vega-embed: ', error)
-      }
+      // const embedOptions = {
+      //   actions: false,
+      // }
+      // try {
+      //   const res = await embed('#viz', this.vegaSpec, embedOptions)
+      //   return res.finalize()
+      // } catch (error) {
+      //   console.error('ERROR in vega-embed: ', error)
+      // }
     },
     async uploadPlot(title, description, filename) {
       try {

@@ -47,7 +47,7 @@
 </template>
 
 <script>
-import { mapGetters, mapMutations } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 import { aesthetics } from '~/constants/aesthetics'
 import Column from './Column'
 import draggable from 'vuedraggable'
@@ -82,13 +82,13 @@ export default {
         return this.geometry.aesthetics[this.name]
       },
       set(value) {
-        this.updateAesthetics([this.name, value])
+        this.updateAesthetic({ name: this.name, value })
       },
     },
   },
   methods: {
-    ...mapMutations({
-      updateAesthetics: 'geometries/updateAesthetics',
+    ...mapActions({
+      updateAesthetic: 'geometries/updateAesthetic',
     }),
     getComponentData() {
       return {

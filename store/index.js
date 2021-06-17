@@ -1,14 +1,9 @@
 import { downloadState, replaceMinioUrl, uploadState } from '~/api/minio'
+import { backendsPromise } from '~/api/backends'
 import { columnProperties } from '~/constants/aesthetics'
+import embed from 'vega-embed'
 import modes from '~/constants/modes'
 import { setupSyncStore } from '~/api/nivs'
-
-export const state = () => ({
-  vegaSpec: null,
-  syncError: null,
-  presignedUrlForUpload: null,
-  vegaView: null,
-})
 
 function vegaMark(geometry) {
   const nonNullOptions = Object.fromEntries(
@@ -20,46 +15,64 @@ function vegaMark(geometry) {
   }
 }
 
-function vegaEncoding(geometry, mode) {
-  const aesMap = geometry.aesthetics
+function vegaEncoding(aesthetic, mode) {
   let fieldNamePrepend = ''
   if (mode === modes.topojson || mode === modes.geojson) {
     fieldNamePrepend = 'properties.'
   }
-  return Object.keys(aesMap)
-    .filter(key => {
-      return aesMap[key].length > 0
-    })
-    .reduce((map, key) => {
-      map[key] = {
-        field: fieldNamePrepend.concat(aesMap[key][0].name),
-        type: aesMap[key][0].type,
-      }
-      map = columnProperties.reduce((map, prop) => {
-        const value = aesMap[key][0][prop.name]
-        if (value) {
-          if (prop.transform) {
-            // do nothing
-          } else {
-            let baseObject = map[key]
-            const numberOfKeys = prop.vegaKey.length
-            // make sure that all the parent keys are defined
-            for (let i = 0; i < numberOfKeys - 1; i++) {
-              if (
-                !(prop.vegaKey[i] in baseObject) ||
-                typeof baseObject[prop.vegaKey[i]] !== 'object'
-              ) {
-                baseObject[prop.vegaKey[i]] = {}
-              }
-              baseObject = baseObject[prop.vegaKey[i]]
-            }
-            baseObject[prop.vegaKey[numberOfKeys - 1]] = value
-          }
-        }
-        return map
-      }, map)
-      return map
-    }, {})
+  const encoding = {}
+  Object.keys(aesthetic).forEach(key => {
+    if (!aesthetic[key] || aesthetic[key] === '') return
+
+    if (key === 'name') {
+      encoding.field = `${fieldNamePrepend}${aesthetic[key]}`
+      return
+    }
+    encoding[key] = aesthetic[key]
+  })
+  return encoding
+  // {
+  //   field: `${fieldNamePrepend}${aesthetic.name}`,
+  //   type: aesthetic.type,
+  //   aggregate: aesthetic.aggregate,
+  //   bin: aesthetic.bin,
+  //   calculate: aesthetic.calculate,
+  //   maxbins: aesthetic.maxbins,
+  //   scale: aesthetic.scale,
+  //   stack: aesthetic.stack,
+  //   timeUnit: aesthetic.timeUnit,
+  //   title: aesthetic.title,
+  // }
+  // .reduce((map, key) => {
+  //   map[key] = {
+  //     field: fieldNamePrepend.concat(aesMap[key][0].name),
+  //     type: aesMap[key][0].type,
+  //   }
+  //   map = columnProperties.reduce((map, prop) => {
+  //     const value = aesMap[key][0][prop.name]
+  //     if (value) {
+  //       if (prop.transform) {
+  //         // do nothing
+  //       } else {
+  //         let baseObject = map[key]
+  //         const numberOfKeys = prop.vegaKey.length
+  //         // make sure that all the parent keys are defined
+  //         for (let i = 0; i < numberOfKeys - 1; i++) {
+  //           if (
+  //             !(prop.vegaKey[i] in baseObject) ||
+  //             typeof baseObject[prop.vegaKey[i]] !== 'object'
+  //           ) {
+  //             baseObject[prop.vegaKey[i]] = {}
+  //           }
+  //           baseObject = baseObject[prop.vegaKey[i]]
+  //         }
+  //         baseObject[prop.vegaKey[numberOfKeys - 1]] = value
+  //       }
+  //     }
+  //     return map
+  //   }, map)
+  //   return map
+  // }, {})
 }
 
 function vegaDataTopoJson(URL, geoFeature) {
@@ -80,6 +93,27 @@ function vegaDataGeoJson(URL) {
     },
   }
 }
+
+function vegaDataCsv(URL) {
+  return {
+    url: replaceMinioUrl(URL),
+    name: 'table',
+    format: {
+      type: 'csv',
+    },
+  }
+}
+
+export const state = () => ({
+  vegaSpec: {
+    data: null,
+    layer: [],
+    width: null,
+    height: null,
+  },
+  syncError: null,
+  presignedUrlForUpload: null,
+})
 
 export const getters = {
   option(state, getters) {
@@ -124,7 +158,7 @@ export const getters = {
       }
       return vegaDataGeoJson(sD.geojsonFiles[sD.geoIndex].url)
     } else if (sD.mode === modes.csv) {
-      if (sD.csvIndex >= sD.csvFiles.length) {
+      if (sD.csvIndex === null || sD.csvIndex >= sD.csvFiles.length) {
         return {}
       }
       return {
@@ -257,11 +291,26 @@ export const getters = {
 }
 
 export const mutations = {
-  vegaSpec(state, spec) {
+  setVegaSpec(state, spec) {
     state.vegaSpec = spec
   },
-  setVegaView(state, view) {
-    state.vegaView = view
+  setVegaSpecData(state, d) {
+    state.vegaSpec.data = d
+  },
+  setVegaSpecWidth(state, w) {
+    state.vegaSpec.width = w
+  },
+  setVegaSpecHeight(state, h) {
+    state.vegaSpec.height = h
+  },
+  updateAesthetic(state, { layer, name, value }) {
+    state.vegaSpec.layer[layer].encoding[name] = vegaEncoding(value)
+  },
+  addLayer(state, l) {
+    state.vegaSpec.layer.push({
+      mark: vegaMark(l),
+      encoding: {},
+    })
   },
   setSyncError(state, err) {
     state.syncError = err
@@ -272,6 +321,46 @@ export const mutations = {
 }
 
 export const actions = {
+  async updateAesthetic({ state, commit, dispatch }, { name, value }) {
+    commit('updateAesthetic', {
+      layer: state.geometries.selectedGeometry,
+      name,
+      value,
+    })
+    console.log('updateAesthetic')
+
+    await dispatch('refreshVegaEmbed')
+  },
+  async setAesthetic({ commit, dispatch }, data) {
+    console.log('aesthetic', data)
+    // commit('addAesthetic', aesthetic)
+    await dispatch('refreshVegaEmbed')
+  },
+  async addLayer({ commit, dispatch }, layer) {
+    commit('addLayer', layer)
+    await dispatch('refreshVegaEmbed')
+  },
+  async setVegaSpecData({ state, commit, dispatch }, d) {
+    await backendsPromise
+    let data = {}
+    if (d.type === 'csv') {
+      data = vegaDataCsv(state.dataset.csvFiles[d.index].url)
+    }
+    commit('setVegaSpecData', data)
+    console.log('setVegaSpecData', state.vegaSpec)
+    await dispatch('refreshVegaEmbed')
+  },
+  async refreshVegaEmbed({ state }) {
+    try {
+      console.log('New Spec', state.vegaSpec)
+      const res = await embed('#viz', state.vegaSpec, {
+        actions: false,
+      })
+      return res.finalize()
+    } catch (error) {
+      console.error('ERROR in vega-embed: ', error)
+    }
+  },
   async loadStore({ commit, dispatch }) {
     try {
       const presignedUrls = await setupSyncStore()
@@ -279,8 +368,11 @@ export const actions = {
       commit('setPresignedUrlForUpload', presignedUrls[1])
 
       const newState = await downloadState(presignedUrlForDownload)
-      await dispatch('geometries/loadStore', newState.geometries)
-      await dispatch('dataset/loadStore', newState.dataset)
+      // commit('setVegaSpec', newState.vegaSpec)
+      await dispatch('refreshVegaEmbed')
+
+      // await dispatch('geometries/loadStore', newState.geometries)
+      // await dispatch('dataset/loadStore', newState.dataset)
       await dispatch('dataset/loadData')
       console.log('Successfully synced state from NIVS backend')
     } catch (e) {
@@ -292,7 +384,11 @@ export const actions = {
     const presignedUrlForUpload = state.presignedUrlForUpload
     if (presignedUrlForUpload) {
       try {
-        await uploadState(presignedUrlForUpload, state)
+        await uploadState(presignedUrlForUpload, {
+          dataset: state.dataset,
+          geometries: state.geometries,
+          vegaSpec: state.vegaSpec,
+        })
         commit('setSyncError', null)
       } catch (error) {
         commit(

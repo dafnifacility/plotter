@@ -212,24 +212,24 @@ export default {
       },
       async set(value) {
         this.setMode(value)
-        this.setCsvIndex(0)
-        this.setGeoIndex(0)
-        if (value === modes.csvTopojson) {
+        this.setCsvIndex(null)
+        this.setGeoIndex(null)
+        if (value === modes.csv) {
+          await this.loadCsvData()
+        } else if (value === modes.csvTopojson) {
           await this.loadCsvData()
           this.addGeoField()
-          this.loadTopojsonData()
+          await this.loadTopojsonData()
         } else if (value === modes.csvGeojson) {
           await this.loadCsvData()
           this.addGeoField()
-          this.loadGeojsonData()
+          await this.loadGeojsonData()
         } else if (value === modes.topojson) {
-          this.loadTopojsonData()
+          await this.loadTopojsonData()
         } else if (value === modes.geojson) {
-          this.loadGeojsonData()
-        } else {
-          this.loadCsvData()
+          await this.loadGeojsonData()
         }
-        this.setDefaultGeometries(value)
+        // this.setDefaultGeometries(value)
       },
     },
     csvIndex: {
@@ -280,7 +280,7 @@ export default {
           return c.name === value
         })[0]
         this.addAesthetic('detail')
-        this.updateAesthetics(['detail', [idColumn]])
+        this.updateAesthetic({ name: 'detail', value: [idColumn] })
       },
     },
     geoId: {
@@ -294,11 +294,8 @@ export default {
   },
   methods: {
     ...mapMutations({
-      addAesthetic: 'geometries/addAesthetic',
-      updateAesthetics: 'geometries/updateAesthetics',
       addGeoField: 'dataset/addGeoField',
       setCsvId: 'dataset/setCsvId',
-      setCsvIndex: 'dataset/setCsvIndex',
       setGeoId: 'dataset/setGeoId',
       setGeoIndex: 'dataset/setGeoIndex',
       loadGeojsonData: 'dataset/loadGeojsonData',
@@ -307,6 +304,9 @@ export default {
       setDefaultGeometries: 'geometries/setDefaultGeometries',
     }),
     ...mapActions({
+      updateAesthetic: 'geometries/updateAesthetic',
+      addAesthetic: 'geometries/addAesthetic',
+      setCsvIndex: 'dataset/setCsvIndex',
       loadCsvData: 'dataset/loadCsvData',
       loadGeojsonData: 'dataset/loadGeojsonData',
       loadTopojsonData: 'dataset/loadTopojsonData',

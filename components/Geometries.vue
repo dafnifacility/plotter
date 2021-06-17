@@ -44,7 +44,7 @@
 </template>
 
 <script>
-import { mapMutations, mapState } from 'vuex'
+import { mapActions, mapMutations, mapState } from 'vuex'
 import { geometries } from '~/constants/geometries'
 import { primaryBlue } from '~/static/js/colours'
 
@@ -80,9 +80,11 @@ export default {
     },
   },
   methods: {
+    ...mapActions({
+      addGeometry: 'geometries/addGeometry',
+    }),
     ...mapMutations({
       setGeometries: 'geometries/setGeometries',
-      addGeometry: 'geometries/addGeometry',
     }),
     selectGeometry(name) {
       this.addGeometry(name)

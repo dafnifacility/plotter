@@ -21,7 +21,7 @@ export function defaultGeometry(name = 'line') {
 
 export const state = () => ({
   selectedGeometry: 0,
-  geometries: [defaultGeometry()],
+  geometries: [],
 })
 
 export const getters = {
@@ -41,10 +41,8 @@ export const getters = {
 }
 
 export const mutations = {
-  addGeometry(state, name) {
-    const newGeometry = defaultGeometry(name)
-    state.geometries.push(newGeometry)
-    state.selectedGeometry = state.geometries.length - 1
+  addGeometry(state, g) {
+    state.geometries.push(g)
   },
   setDefaultGeometries(state, mode) {
     if (mode === modes.csvTopojson || mode === modes.csvGeojson) {
@@ -65,18 +63,12 @@ export const mutations = {
   setGeometries(state, value) {
     state.geometries = value
   },
-  updateAesthetics(state, [name, value]) {
+  updateAesthetic(state, { name, value }) {
     const aes = state.geometries[state.selectedGeometry].aesthetics
     const oldValue = aes[name]
     const diff = value.filter(x => !oldValue.includes(x))
-    // should just be zero or one column in aesthetic now
-    if (diff.length === 0) {
-      aes[name] = []
-    } else {
-      const column = diff[0]
-      // make sure this is copied
-      aes[name] = [{ ...column }]
-    }
+    const column = diff[0]
+    aes[name] = [{ ...column }]
   },
   setAesthetics(state, value) {
     state.aesthetics = value
@@ -104,9 +96,28 @@ export const mutations = {
 }
 
 export const actions = {
-  loadStore({ commit }, newState) {
+  updateAesthetic({ commit, dispatch }, { name, value }) {
+    commit('updateAesthetic', { name, value })
+    dispatch('updateAesthetic', { name, value: value[0] }, { root: true })
+  },
+  addAesthetic({ state, commit, dispatch }, aesthetic) {
+    console.log('AddAesthetic Action')
+    commit('addAesthetic', aesthetic)
+    commit('setSelectedGeometry', state.geometries.length - 1)
+    dispatch('addAesthetic', aesthetic, { root: true })
+  },
+  addGeometry({ state, commit, dispatch }, name) {
+    const newGeometry = defaultGeometry(name)
+    commit('addGeometry', newGeometry)
+    commit('setSelectedGeometry', state.geometries.length - 1)
+    dispatch('addLayer', newGeometry, { root: true })
+  },
+  loadStore({ state, commit, dispatch }, newState) {
     commit('setSelectedGeometry', newState.selectedGeometry)
     commit('setGeometries', newState.geometries)
+    if (state.geometries.length === 0) {
+      dispatch('addGeometry', 'line')
+    }
   },
   removeGeometry({ commit, state }, index) {
     if (state.selectedGeometry === index) {

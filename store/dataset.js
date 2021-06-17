@@ -7,12 +7,12 @@ export const state = () => {
   return {
     mode: null,
     csvId: '',
-    csvIndex: 0,
+    csvIndex: null,
     csvFiles: [],
     csvError: null,
     loadCsvProgress: 0,
     geoId: '',
-    geoIndex: 0,
+    geoIndex: null,
     geojsonFiles: [],
     geojsonError: null,
     geoProperties: [],
@@ -147,9 +147,24 @@ function guessColumnType(data) {
 }
 
 export const actions = {
-  loadStore({ commit }, newState) {
+  setCsvIndex({ commit, dispatch }, index) {
+    commit('setCsvIndex', index)
+    if (index !== null) {
+      dispatch(
+        'setVegaSpecData',
+        {
+          type: 'csv',
+          index,
+        },
+        {
+          root: true,
+        }
+      )
+    }
+  },
+  loadStore({ commit, dispatch }, newState) {
     commit('setMode', newState.mode)
-    commit('setCsvIndex', newState.csvIndex)
+    dispatch('setCsvIndex', newState.csvIndex)
     commit('setGeoIndex', newState.geoIndex)
     commit('setGeoProperties', newState.geoProperties)
     commit('setGeoProperties', newState.geoProperties)
@@ -164,6 +179,7 @@ export const actions = {
     await dispatch('discovery/getDatasetsAndPopulateFileLists', null, {
       root: true,
     })
+    console.log(state.csvFiles)
     if (state.mode === modes.csv) {
       await dispatch('loadCsvData')
     } else if (state.mode === modes.topojson) {
@@ -178,10 +194,9 @@ export const actions = {
       await dispatch('loadGeojsonData')
     }
   },
-  async loadCsvData({ state, commit }) {
-    if (state.csvIndex >= state.csvFiles.length) {
-      return
-    }
+  async loadCsvData({ state, commit, dispatch }) {
+    if (state.csvIndex >= state.csvFiles.length) return
+
     try {
       const data = await downloadFile(state.csvFiles[state.csvIndex].url)
       const csvData = CSV.parse(data)
@@ -196,9 +211,10 @@ export const actions = {
       })
       commit('setColumns', columns.slice(0, 5))
       commit('setColumnsInDatafile', columns)
+      dispatch('geometries/addGeometry', 'line', { root: true })
       commit('setCsvError', null)
     } catch (error) {
-      commit('setCsvError', 'Error loading csv: '.concat(error))
+      commit('setCsvError', `Error loading csv: ${error}`)
     }
   },
   async loadTopojsonData({ state, commit }) {
