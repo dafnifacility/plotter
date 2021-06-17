@@ -1,10 +1,5 @@
-import {
-  downloadState,
-  nidMinioUrl,
-  replaceMinioUrl,
-  uploadState,
-} from '~/api/minio'
-import { backendsPromise } from '~/api/backends'
+import { backendsPromise, nidMinioUrl } from '~/api/backends'
+import { downloadState, replaceMinioUrl, uploadState } from '~/api/minio'
 import { columnProperties } from '~/constants/aesthetics'
 import embed from 'vega-embed'
 import modes from '~/constants/modes'
