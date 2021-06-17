@@ -111,7 +111,7 @@ export const getters = {
         return column[name]
       } else if (type === 'aesthetic') {
         const aesthetic = args.aesthetic
-        const selectedGeometry = getters['geometries/geometry']
+        const selectedGeometry = getters['geometries/selectedGeometry']
         return selectedGeometry.aesthetics[aesthetic][0][name]
       } else if (type === 'geometry') {
         const geometry = state.geometries.geometries[args.index]
@@ -260,7 +260,7 @@ export const mutations = {
 export const actions = {
   async updateEncoding({ state, commit, dispatch }, { name, value }) {
     commit('updateEncoding', {
-      layer: state.geometries.selectedGeometry,
+      layer: state.geometries.geometryIndex,
       name,
       value,
     })

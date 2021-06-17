@@ -2,8 +2,6 @@ import { backendsPromise, nidMinioUrl, nivsMinioUrl } from '~/api/backends/'
 import axios from 'axios'
 
 export function replaceMinioUrl(presignedUrl, replacementUrl) {
-  console.log('presignedUrl', presignedUrl)
-  console.log('replacementUrl', replacementUrl)
   if (!replacementUrl) return presignedUrl
 
   const dafniUrl = 'dafni.rl.ac.uk'

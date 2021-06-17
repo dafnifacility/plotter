@@ -20,15 +20,15 @@ export function defaultGeometry(name = 'line') {
 }
 
 export const state = () => ({
-  selectedGeometry: 0,
+  geometryIndex: 0,
   geometries: [],
 })
 
 export const getters = {
-  geometry(state) {
+  selectedGeometry(state) {
     if (
-      state.selectedGeometry >= state.geometries.length ||
-      state.selectedGeometry < 0
+      state.geometryIndex >= state.geometries.length ||
+      state.geometryIndex < 0
     ) {
       return {
         type: 'None',
@@ -36,7 +36,7 @@ export const getters = {
         options: {},
       }
     }
-    return state.geometries[state.selectedGeometry]
+    return state.geometries[state.geometryIndex]
   },
 }
 
@@ -64,22 +64,28 @@ export const mutations = {
     state.geometries = value
   },
   updateAesthetic(state, { name, value }) {
-    const aes = state.geometries[state.selectedGeometry].aesthetics
+    const aes = state.geometries[state.geometryIndex].aesthetics
     const oldValue = aes[name]
     const diff = value.filter(x => !oldValue.includes(x))
-    const column = diff[0]
-    aes[name] = [{ ...column }]
+    // should just be zero or one column in aesthetic now
+    if (diff.length === 0) {
+      aes[name] = []
+    } else {
+      const column = diff[0]
+      // make sure this is copied
+      aes[name] = [{ ...column }]
+    }
   },
   setAesthetics(state, value) {
     state.aesthetics = value
   },
   addAesthetic(state, value) {
-    const geometry = state.geometries[state.selectedGeometry]
+    const geometry = state.geometries[state.geometryIndex]
     geometry.aesthetics[value] = []
     geometry.aesthetics = { ...geometry.aesthetics }
   },
   setAestheticColumnProperty(state, [aesthetic, index, prop, value]) {
-    const aes = state.geometries[state.selectedGeometry].aesthetics
+    const aes = state.geometries[state.geometryIndex].aesthetics
     aes[aesthetic][index][prop] = value
   },
   setGeometryProperty(state, [index, prop, value]) {
@@ -87,11 +93,11 @@ export const mutations = {
     geometry.options[prop] = value
   },
   removeAestheticColumn(state, [aesthetic, index]) {
-    const aes = state.geometries[state.selectedGeometry].aesthetics
+    const aes = state.geometries[state.geometryIndex].aesthetics
     aes[aesthetic].splice(index, 1)
   },
-  setSelectedGeometry(state, index) {
-    state.selectedGeometry = index
+  setGeometryIndex(state, index) {
+    state.geometryIndex = index
   },
 }
 
@@ -103,22 +109,22 @@ export const actions = {
   addGeometry({ state, commit, dispatch }, name) {
     const newGeometry = defaultGeometry(name)
     commit('addGeometry', newGeometry)
-    commit('setSelectedGeometry', state.geometries.length - 1)
+    commit('setGeometryIndex', state.geometries.length - 1)
     dispatch('addLayer', newGeometry, { root: true })
   },
   loadStore({ state, commit, dispatch }, newState) {
-    commit('setSelectedGeometry', newState.selectedGeometry)
+    commit('setGeometryIndex', newState.geometryIndex)
     commit('setGeometries', newState.geometries)
     if (state.geometries.length === 0) {
       dispatch('addGeometry', 'line')
     }
   },
   removeGeometry({ commit, state }, index) {
-    if (state.selectedGeometry === index) {
+    if (state.geometryIndex === index) {
       if (index >= state.geometries.length - 1) {
-        commit('setSelectedGeometry', index - 1)
+        commit('setGeometryIndex', index - 1)
       } else {
-        commit('setSelectedGeometry', index)
+        commit('setGeometryIndex', index)
       }
     }
     commit('removeGeometry', index)

@@ -12,7 +12,7 @@
         v-model="columns"
         :group="{ name: 'aesthetics', pull: 'clone', put: true }"
         :sort="false"
-        tag="v-expansion-panels"
+        tag="v-card"
         :component-data="getComponentData()"
       >
         <Column
@@ -104,7 +104,10 @@ export default {
       const cols = this.getColumnsInDataFile.map(c => {
         return c.name
       })
-      return cols
+      const unselectedCols = cols.filter(
+        col => !this.columns.find(c => c.name === col)
+      )
+      return unselectedCols
     },
     columns: {
       get() {

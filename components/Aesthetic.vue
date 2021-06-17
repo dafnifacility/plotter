@@ -24,7 +24,7 @@
           tag="v-expansion-panels"
           :component-data="getComponentData()"
         >
-          <Column
+          <DraggableAesthetic
             v-for="(column, i) in aesMap"
             :key="column.name"
             :name="column.name"
@@ -49,7 +49,7 @@
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import { aesthetics } from '~/constants/aesthetics'
-import Column from './Column'
+import DraggableAesthetic from './DraggableAesthetic'
 import draggable from 'vuedraggable'
 import { primaryBlue } from '~/static/js/colours'
 
@@ -57,7 +57,7 @@ export default {
   name: 'Aesthetic',
   components: {
     draggable,
-    Column,
+    DraggableAesthetic,
   },
   props: {
     name: {
@@ -70,7 +70,7 @@ export default {
   },
   computed: {
     ...mapGetters({
-      geometry: 'geometries/geometry',
+      selectedGeometry: 'geometries/selectedGeometry',
     }),
     aesthetic() {
       return aesthetics.filter(x => {
@@ -79,7 +79,7 @@ export default {
     },
     aesMap: {
       get() {
-        return this.geometry.aesthetics[this.name]
+        return this.selectedGeometry.aesthetics[this.name]
       },
       set(value) {
         this.updateAesthetic({ name: this.name, value })

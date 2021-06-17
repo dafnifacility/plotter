@@ -36,7 +36,7 @@ describe('Aesthetics', () => {
   test('currentAesthetics returns the right aesthetics', () => {
     const testGeo = 'arc'
     store.commit('geometries/setGeometries', [defaultGeometry(testGeo)])
-    store.commit('geometries/setSelectedGeometry', 0)
+    store.commit('geometries/setGeometryIndex', 0)
     const expectedAesthetics = geometries.filter(geo => {
       return geo.name === testGeo
     })[0].defaultAesthetics
@@ -46,7 +46,7 @@ describe('Aesthetics', () => {
   test('renders the right default aesthetics', async () => {
     const testGeo = 'circle'
     store.commit('geometries/setGeometries', [defaultGeometry(testGeo)])
-    store.commit('geometries/setSelectedGeometry', 0)
+    store.commit('geometries/setGeometryIndex', 0)
     await Vue.nextTick()
     const expectedAesthetics = geometries.filter(geo => {
       return geo.name === testGeo

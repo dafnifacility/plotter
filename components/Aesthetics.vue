@@ -61,10 +61,10 @@ export default {
   },
   computed: {
     ...mapGetters({
-      geometry: 'geometries/geometry',
+      selectedGeometry: 'geometries/selectedGeometry',
     }),
     currentAesthetics() {
-      return Object.keys(this.geometry.aesthetics)
+      return Object.keys(this.selectedGeometry.aesthetics)
     },
     aesthetics() {
       const unselectedAesthetics = aesthetics.filter(

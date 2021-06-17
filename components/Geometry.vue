@@ -50,7 +50,7 @@ export default {
   },
   computed: {
     ...mapState({
-      selectedGeometry: state => state.geometries.selectedGeometry,
+      geometryIndex: state => state.geometries.geometryIndex,
       geometries: state => state.geometries.geometries,
     }),
     geometry() {
@@ -64,7 +64,7 @@ export default {
       })
     },
     headerClass() {
-      return this.index === this.selectedGeometry && 'bg-grey'
+      return this.index === this.geometryIndex && 'bg-grey'
     },
     data() {
       return this.geometries[this.index]
@@ -75,13 +75,13 @@ export default {
   },
   methods: {
     ...mapMutations({
-      setSelectedGeometry: 'geometries/setSelectedGeometry',
+      setGeometryIndex: 'geometries/setGeometryIndex',
     }),
     ...mapActions({
       removeGeometry: 'geometries/removeGeometry',
     }),
     selectGeometry() {
-      this.setSelectedGeometry(this.index)
+      this.setGeometryIndex(this.index)
     },
     deleteGeometry() {
       this.removeGeometry(this.index)

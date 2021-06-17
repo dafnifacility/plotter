@@ -181,11 +181,6 @@ export const aesthetics = [
     text: 'A field definition for the horizontal facet of trellis plots.',
   },
 ]
-export const aestheticsToScalesMapping = {
-  x: 'x',
-  y: 'y',
-  color: 'color',
-}
 
 export const columnProperties = [
   {
@@ -330,6 +325,5 @@ export const columnProperties = [
 
 export default {
   aesthetics,
-  aestheticsToScalesMapping,
   columnProperties,
 }
