@@ -20,7 +20,6 @@
           :key="column.name"
           :name="column.name"
           :index="i"
-          type="column"
         />
       </draggable>
 
@@ -80,7 +79,8 @@
 </template>
 
 <script>
-import { mapMutations, mapState } from 'vuex'
+import { mapActions, mapMutations, mapState } from 'vuex'
+import _ from 'lodash'
 import Column from '~/components/Column'
 import draggable from 'vuedraggable'
 import { primaryBlue } from '~/static/js/colours'
@@ -122,7 +122,7 @@ export default {
         return this.filter
       },
       set(value) {
-        this.setFilter(value)
+        this.debouncedSetFilter(value)
       },
     },
   },
@@ -131,8 +131,13 @@ export default {
       addCalculateField: 'dataset/addCalculateField',
       addColumn: 'dataset/addColumn',
       setColumns: 'dataset/setColumns',
+    }),
+    ...mapActions({
       setFilter: 'dataset/setFilter',
     }),
+    debouncedSetFilter: _.debounce(function (value) {
+      this.setFilter(value)
+    }, 500),
     getComponentData() {
       return {
         attrs: {

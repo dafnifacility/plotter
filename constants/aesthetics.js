@@ -188,7 +188,6 @@ export const columnProperties = [
     hint: 'The type of measurement for the field.',
     default: 'quantitative',
     optional: false,
-    showInColumns: true,
     type: 'select',
     options: {
       quantitative: 'numerical',
@@ -203,7 +202,6 @@ export const columnProperties = [
     name: 'aggregate',
     hint: 'used to compute aggregate summary statistics (e.g., median, min, max) over groups of data',
     default: null,
-    showInColumns: false,
     type: 'select',
     vegaKey: ['aggregate'],
     options: {
@@ -240,7 +238,6 @@ export const columnProperties = [
     name: 'stack',
     default: null,
     type: 'parent',
-    showInColumns: false,
     vegaKey: ['stack'],
     options: {
       zero: 'stacking with baseline offset at zero value of the scale (for creating typical stacked bar and area chart).',
@@ -256,7 +253,6 @@ export const columnProperties = [
     hint: 'Binning discretizes numeric values into a set of bins. A common use case is to create a histogram.',
     vegaKey: ['bin'],
     default: false,
-    showInColumns: false,
     type: 'checkBox',
     optional: false,
   },
@@ -264,7 +260,6 @@ export const columnProperties = [
     name: 'maxbins',
     hint: 'Maximum number of bins.',
     vegaKey: ['bin', 'maxbins'],
-    showInColumns: false,
     default: null,
     type: 'textBoxNumber',
     optional: true,
@@ -273,7 +268,6 @@ export const columnProperties = [
     name: 'title',
     hint: 'text used for axis label, legend etc.',
     vegaKey: ['title'],
-    showInColumns: false,
     default: '',
     optional: false,
     type: 'textBox',
@@ -282,7 +276,6 @@ export const columnProperties = [
     name: 'scale',
     hint: 'only valid for quantitative fields',
     type: 'select',
-    showInColumns: false,
     vegaKey: ['scale', 'type'],
     options: {
       linear: 'linear scale (quantitative data only)',
@@ -293,9 +286,8 @@ export const columnProperties = [
   {
     name: 'calculate',
     hint: 'for example: "2*datum.fieldName"',
-    default: '',
+    default: null,
     vegaKey: ['calculate'],
-    showInColumns: false,
     transform: 'calculate',
     optional: true,
     type: 'textBox',
@@ -303,7 +295,6 @@ export const columnProperties = [
   {
     name: 'timeUnit',
     type: 'select',
-    showInColumns: false,
     vegaKey: ['timeUnit'],
     options: {
       year: 'Gregorian calendar years.',

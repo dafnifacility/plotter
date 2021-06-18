@@ -96,6 +96,7 @@ export const state = () => ({
   vegaSpec: {
     data: null,
     layer: [],
+    transform: [],
     width: null,
     height: null,
   },
@@ -241,6 +242,10 @@ export const mutations = {
     state.vegaSpec.height = h
   },
   updateEncoding(state, { layer, name, value }) {
+    if (value === null) {
+      delete state.vegaSpec.layer[layer].encoding[name]
+      return
+    }
     state.vegaSpec.layer[layer].encoding[name] = vegaEncoding(value)
   },
   addLayer(state, l) {
@@ -248,6 +253,28 @@ export const mutations = {
       mark: vegaMark(l),
       encoding: {},
     })
+  },
+  removeLayer(state, index) {
+    state.vegaSpec.layer.splice(index, 1)
+  },
+  addCalculateTransform(state, t) {
+    state.vegaSpec.transform.push({
+      calculate: t.calculate,
+      as: t.calculate,
+    })
+  },
+  addFilterTransform(state, t) {
+    state.vegaSpec.transform.push({
+      filter: t,
+    })
+  },
+  removeCalculateTransform(state, name) {
+    const index = state.vegaSpec.transform.findIndex(t => t.calculate === name)
+    state.vegaSpec.transform.splice(index, 1)
+  },
+  removeFilterTransform(state) {
+    const index = state.vegaSpec.transform.findIndex(t => t.filter)
+    state.vegaSpec.transform.splice(index, 1)
   },
   setSyncError(state, err) {
     state.syncError = err
@@ -270,6 +297,27 @@ export const actions = {
   },
   async addLayer({ commit, dispatch }, layer) {
     commit('addLayer', layer)
+    await dispatch('refreshVegaEmbed')
+  },
+  async removeLayer({ commit, dispatch }, index) {
+    commit('removeLayer', index)
+    await dispatch('refreshVegaEmbed')
+  },
+  async addTransform({ commit, dispatch }, transform) {
+    commit('addCalculateTransform', transform)
+    await dispatch('refreshVegaEmbed')
+  },
+  async removeTransform({ commit, dispatch }, name) {
+    commit('removeCalculateTransform', name)
+    await dispatch('refreshVegaEmbed')
+  },
+  async addFilter({ commit, dispatch }, transform) {
+    commit('removeFilterTransform')
+    commit('addFilterTransform', transform)
+    await dispatch('refreshVegaEmbed')
+  },
+  async removeFilter({ commit, dispatch }) {
+    commit('removeFilterTransform')
     await dispatch('refreshVegaEmbed')
   },
   async setVegaSpecData({ state, commit, dispatch }, d) {
@@ -345,13 +393,6 @@ export const actions = {
       commit('geometries/setGeometryProperty', [args.index, name, value])
     } else {
       throw new Error(`unknown option type ${type}`)
-    }
-  },
-  removeColumn({ commit }, [type, index, aesthetic]) {
-    if (type === 'column') {
-      commit('dataset/removeColumn', [index])
-    } else if (type === 'aesthetic') {
-      commit('geometries/removeAestheticColumn', [aesthetic, 0])
     }
   },
 }

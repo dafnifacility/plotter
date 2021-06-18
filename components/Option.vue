@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-select
-      v-if="option.type === 'select' && show"
+      v-if="option.type === 'select'"
       v-model="optionValue"
       :items="Object.keys(option.options)"
       :label="option.name"
@@ -19,14 +19,14 @@
       </template>
     </v-select>
     <v-text-field
-      v-if="option.type === 'textBox' && show"
+      v-if="option.type === 'textBox'"
       v-model="optionValue"
       :label="option.name"
       :clearable="option.optional"
       :hint="option.hint"
     />
     <v-text-field
-      v-if="option.type === 'textBoxNumber' && show"
+      v-if="option.type === 'textBoxNumber'"
       v-model="optionValue"
       :label="option.name"
       type="number"
@@ -34,7 +34,7 @@
       :hint="option.hint"
     />
     <v-checkbox
-      v-if="option.type === 'checkBox' && show"
+      v-if="option.type === 'checkBox'"
       v-model="optionValue"
       :label="option.name"
       :hint="option.hint"
@@ -76,13 +76,6 @@ export default {
     ...mapGetters({
       getOption: 'option',
     }),
-    show() {
-      if (this.type === 'column') {
-        return this.option.showInColumns
-      } else {
-        return true
-      }
-    },
     optionValue: {
       get() {
         const args = {

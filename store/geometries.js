@@ -65,16 +65,7 @@ export const mutations = {
   },
   updateAesthetic(state, { name, value }) {
     const aes = state.geometries[state.geometryIndex].aesthetics
-    const oldValue = aes[name]
-    const diff = value.filter(x => !oldValue.includes(x))
-    // should just be zero or one column in aesthetic now
-    if (diff.length === 0) {
-      aes[name] = []
-    } else {
-      const column = diff[0]
-      // make sure this is copied
-      aes[name] = [{ ...column }]
-    }
+    aes[name] = value
   },
   setAesthetics(state, value) {
     state.aesthetics = value
@@ -92,7 +83,7 @@ export const mutations = {
     const geometry = state.geometries[index]
     geometry.options[prop] = value
   },
-  removeAestheticColumn(state, [aesthetic, index]) {
+  removeAestheticColumn(state, { aesthetic, index }) {
     const aes = state.geometries[state.geometryIndex].aesthetics
     aes[aesthetic].splice(index, 1)
   },
@@ -102,9 +93,38 @@ export const mutations = {
 }
 
 export const actions = {
-  updateAesthetic({ commit, dispatch }, { name, value }) {
-    commit('updateAesthetic', { name, value })
-    dispatch('updateEncoding', { name, value: value[0] }, { root: true })
+  removeAesthetic({ commit, dispatch }, { aesthetic, index }) {
+    commit('removeAestheticColumn', { aesthetic, index })
+    dispatch('updateEncoding', { name: aesthetic, value: null }, { root: true })
+  },
+  updateAesthetic({ commit, dispatch, state }, { name, value }) {
+    const aes = state.geometries[state.geometryIndex].aesthetics
+    const oldValue = aes[name]
+    const diff = value.filter(x => !oldValue.includes(x))
+    if (diff.length === 0) {
+      // when diff length is 0 this means a user has moved the draggable
+      // from one aesthetic to another this should leave the original
+      // aesthetic empty
+      if (oldValue.calculate) {
+        // If the existing aesthetic has a calculate field we need to delete
+        // the transform as well as the aesthetic
+        dispatch('removeTransform', name, { root: true })
+      }
+      commit('updateAesthetic', { name, value: [] })
+      dispatch('updateEncoding', { name, value: null }, { root: true })
+    } else {
+      // when diff length is greater than 0 this means a user has moved a
+      // draggable column onto an aesthetic and so we should add the column
+      // to the aesthetic
+      const column = diff[0]
+      if (column.calculate) {
+        // If the column has a calulate field set we need to add a transform to
+        // the vega spec
+        dispatch('addTransform', column, { root: true })
+      }
+      commit('updateAesthetic', { name, value: [{ ...column }] })
+      dispatch('updateEncoding', { name, value: column }, { root: true })
+    }
   },
   addGeometry({ state, commit, dispatch }, name) {
     const newGeometry = defaultGeometry(name)
@@ -112,14 +132,7 @@ export const actions = {
     commit('setGeometryIndex', state.geometries.length - 1)
     dispatch('addLayer', newGeometry, { root: true })
   },
-  loadStore({ state, commit, dispatch }, newState) {
-    commit('setGeometryIndex', newState.geometryIndex)
-    commit('setGeometries', newState.geometries)
-    if (state.geometries.length === 0) {
-      dispatch('addGeometry', 'line')
-    }
-  },
-  removeGeometry({ commit, state }, index) {
+  removeGeometry({ commit, dispatch, state }, index) {
     if (state.geometryIndex === index) {
       if (index >= state.geometries.length - 1) {
         commit('setGeometryIndex', index - 1)
@@ -128,5 +141,13 @@ export const actions = {
       }
     }
     commit('removeGeometry', index)
+    dispatch('removeLayer', index, { root: true })
+  },
+  loadStore({ state, commit, dispatch }, newState) {
+    commit('setGeometryIndex', newState.geometryIndex)
+    commit('setGeometries', newState.geometries)
+    if (state.geometries.length === 0) {
+      dispatch('addGeometry', 'line')
+    }
   },
 }

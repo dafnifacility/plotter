@@ -16,7 +16,6 @@
         :option="option"
         :index="index"
         :aesthetic="aesthetic"
-        :type="type"
       />
     </v-expansion-panel-content>
   </v-expansion-panel>
@@ -30,10 +29,6 @@ import { primaryBlue } from '~/static/js/colours'
 export default {
   name: 'DraggableAesthetic',
   props: {
-    type: {
-      type: String,
-      default: 'column',
-    },
     name: {
       type: String,
       default: '',
@@ -55,10 +50,13 @@ export default {
   },
   methods: {
     ...mapActions({
-      removeColumn: 'removeColumn',
+      removeAesthetic: 'geometries/removeAesthetic',
     }),
     deleteColumn() {
-      this.removeColumn([this.type, this.index, this.aesthetic])
+      this.removeAesthetic({
+        index: this.index,
+        aesthetic: this.aesthetic,
+      })
     },
   },
 }

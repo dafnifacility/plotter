@@ -7,7 +7,6 @@
 <script>
 import { mapActions, mapGetters, mapMutations, mapState } from 'vuex'
 import axios from 'axios'
-import embed from 'vega-embed'
 import { uploadPlot } from '~/api/nivs'
 
 export default {
@@ -35,13 +34,6 @@ export default {
       // sync to backend everytime we need to regenerate the spec
       this.uploadState()
       return this.getVegaSpec
-    },
-  },
-  watch: {
-    vegaSpec(v) {
-      console.log('Triggered spec watch')
-      // if (!this.authenticated) return
-      // if (v) this.draw()
     },
   },
   async mounted() {

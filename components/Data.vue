@@ -210,25 +210,25 @@ export default {
       get() {
         return this.getMode
       },
-      async set(value) {
+      set(value) {
         this.setMode(value)
-        this.setCsvIndex(null)
-        this.setGeoIndex(null)
-        if (value === modes.csv) {
-          await this.loadCsvData()
-        } else if (value === modes.csvTopojson) {
-          await this.loadCsvData()
-          this.addGeoField()
-          await this.loadTopojsonData()
-        } else if (value === modes.csvGeojson) {
-          await this.loadCsvData()
-          this.addGeoField()
-          await this.loadGeojsonData()
-        } else if (value === modes.topojson) {
-          await this.loadTopojsonData()
-        } else if (value === modes.geojson) {
-          await this.loadGeojsonData()
-        }
+        // this.setCsvIndex(null)
+        // this.setGeoIndex(null)
+        // if (value === modes.csv) {
+        //   await this.loadCsvData()
+        // } else if (value === modes.csvTopojson) {
+        //   await this.loadCsvData()
+        //   this.addGeoField()
+        //   await this.loadTopojsonData()
+        // } else if (value === modes.csvGeojson) {
+        //   await this.loadCsvData()
+        //   this.addGeoField()
+        //   await this.loadGeojsonData()
+        // } else if (value === modes.topojson) {
+        //   await this.loadTopojsonData()
+        // } else if (value === modes.geojson) {
+        //   await this.loadGeojsonData()
+        // }
         // this.setDefaultGeometries(value)
       },
     },

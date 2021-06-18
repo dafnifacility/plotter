@@ -147,6 +147,14 @@ function guessColumnType(data) {
 }
 
 export const actions = {
+  setFilter({ commit, dispatch }, value) {
+    commit('setFilter', value)
+    if (value || value !== '') {
+      dispatch('addFilter', value, { root: true })
+    } else {
+      dispatch('removeFilter', null, { root: true })
+    }
+  },
   setCsvIndex({ commit, dispatch }, index) {
     commit('setCsvIndex', index)
     if (index !== null) {

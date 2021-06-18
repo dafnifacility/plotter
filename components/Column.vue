@@ -13,16 +13,12 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapMutations } from 'vuex'
 import { primaryBlue } from '~/static/js/colours'
 
 export default {
   name: 'Column',
   props: {
-    type: {
-      type: String,
-      default: 'column',
-    },
     name: {
       type: String,
       default: '',
@@ -31,10 +27,6 @@ export default {
       type: Number,
       default: 0,
     },
-    aesthetic: {
-      type: String,
-      default: '',
-    },
   },
   data() {
     return {
@@ -42,11 +34,11 @@ export default {
     }
   },
   methods: {
-    ...mapActions({
-      removeColumn: 'removeColumn',
+    ...mapMutations({
+      removeColumn: 'dataset/removeColumn',
     }),
     deleteColumn() {
-      this.removeColumn([this.type, this.index, this.aesthetic])
+      this.removeColumn(this.index)
     },
   },
 }
