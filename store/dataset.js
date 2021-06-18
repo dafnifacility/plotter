@@ -1,5 +1,5 @@
 import * as CSV from 'csv-string'
-import { columnProperties } from '~/constants/aesthetics'
+import { aestheticOptions } from '~/constants/aesthetics'
 import { downloadFile } from '~/api/minio'
 import modes from '~/constants/modes'
 
@@ -28,7 +28,7 @@ export const state = () => {
 }
 
 export function defaultColumn() {
-  return columnProperties.reduce((map, prop) => {
+  return aestheticOptions.reduce((map, prop) => {
     map[prop.name] = prop.default
     return map
   }, {})

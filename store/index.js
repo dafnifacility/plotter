@@ -1,6 +1,5 @@
 import { backendsPromise, nidMinioUrl } from '~/api/backends'
 import { downloadState, replaceMinioUrl, uploadState } from '~/api/minio'
-import { columnProperties } from '~/constants/aesthetics'
 import embed from 'vega-embed'
 import modes from '~/constants/modes'
 import { setupSyncStore } from '~/api/nivs'
@@ -36,7 +35,7 @@ function vegaEncoding(aesthetic, mode) {
   //     field: fieldNamePrepend.concat(aesMap[key][0].name),
   //     type: aesMap[key][0].type,
   //   }
-  //   map = columnProperties.reduce((map, prop) => {
+  //   map = aestheticOptions.reduce((map, prop) => {
   //     const value = aesMap[key][0][prop.name]
   //     if (value) {
   //       if (prop.transform) {
@@ -105,126 +104,110 @@ export const state = () => ({
 })
 
 export const getters = {
-  option(state, getters) {
-    return (type, name, args) => {
-      if (type === 'column') {
-        const column = state.dataset.columns[args.index]
-        return column[name]
-      } else if (type === 'aesthetic') {
-        const aesthetic = args.aesthetic
-        const selectedGeometry = getters['geometries/selectedGeometry']
-        return selectedGeometry.aesthetics[aesthetic][0][name]
-      } else if (type === 'geometry') {
-        const geometry = state.geometries.geometries[args.index]
-        return geometry.options[name]
-      } else {
-        throw new Error(`unknown option type ${type}`)
-      }
-    }
+  option: state => (name, index) => {
+    const geometry = state.geometries.geometries[index]
+    return geometry.options[name]
   },
   vegaTransform(state) {
-    const geometries = state.geometries.geometries
-    const allCalculateExpressions = geometries.reduce((outerSet, geom) => {
-      const aesMap = geom.aesthetics
-      return Object.keys(aesMap)
-        .filter(key => {
-          return aesMap[key].length > 0
-        })
-        .reduce((innerSet, key) => {
-          const calculateExpression = aesMap[key][0].calculate
-          if (calculateExpression) {
-            innerSet.add(calculateExpression)
-          }
-          return innerSet
-        }, outerSet)
-    }, new Set())
-    let transformArray = []
-    if (allCalculateExpressions) {
-      const calcArray = Array.from(allCalculateExpressions)
-      const mappedArray = calcArray.map(expr => {
-        return {
-          calculate: expr,
-          as: expr,
-        }
-      })
-      transformArray = transformArray.concat(mappedArray)
-    }
-    const filterExpression = state.dataset.filter
-    if (filterExpression) {
-      transformArray.push({
-        filter: filterExpression,
-      })
-    }
-
-    if (
-      state.dataset.mode === modes.csvTopojson ||
-      state.dataset.mode === modes.csvGeojson
-    ) {
-      const propertiesWithoutID = state.dataset.geoProperties.filter(
-        prop => prop !== state.dataset.geoId
-      )
-      let dataSpec = null
-      if (
-        state.dataset.mode === modes.csvTopojson &&
-        state.dataset.topojsonFiles.length > 0
-      ) {
-        dataSpec = vegaDataTopoJson(
-          state.dataset.topojsonFiles[state.dataset.geoIndex].url,
-          state.dataset.topojsonObject
-        )
-      } else if (
-        state.dataset.mode === modes.csvGeojson &&
-        state.dataset.geojsonFiles.length > 0
-      ) {
-        dataSpec = vegaDataGeoJson(
-          state.dataset.geojsonFiles[state.dataset.geoIndex].url
-        )
-      }
-
-      // lookup geometry in combined topojson/geojson dataset
-      transformArray.push({
-        lookup: state.dataset.csvId,
-        from: {
-          data: dataSpec,
-          key: 'properties.'.concat(state.dataset.geoId),
-        },
-        as: 'geo',
-      })
-
-      // lookup remainder of fields in topojson/geojson dataset
-      transformArray.push({
-        lookup: state.dataset.csvId,
-        from: {
-          data: dataSpec,
-          key: 'properties.'.concat(state.dataset.geoId),
-          fields: propertiesWithoutID.map(prop => `properties.${prop}`),
-        },
-        as: propertiesWithoutID,
-      })
-    }
-    return transformArray
+    // const geometries = state.geometries.geometries
+    // const allCalculateExpressions = geometries.reduce((outerSet, geom) => {
+    //   const aesMap = geom.aesthetics
+    //   return Object.keys(aesMap)
+    //     .filter(key => {
+    //       return aesMap[key].length > 0
+    //     })
+    //     .reduce((innerSet, key) => {
+    //       const calculateExpression = aesMap[key][0].calculate
+    //       if (calculateExpression) {
+    //         innerSet.add(calculateExpression)
+    //       }
+    //       return innerSet
+    //     }, outerSet)
+    // }, new Set())
+    // let transformArray = []
+    // if (allCalculateExpressions) {
+    //   const calcArray = Array.from(allCalculateExpressions)
+    //   const mappedArray = calcArray.map(expr => {
+    //     return {
+    //       calculate: expr,
+    //       as: expr,
+    //     }
+    //   })
+    //   transformArray = transformArray.concat(mappedArray)
+    // }
+    // const filterExpression = state.dataset.filter
+    // if (filterExpression) {
+    //   transformArray.push({
+    //     filter: filterExpression,
+    //   })
+    // }
+    // if (
+    //   state.dataset.mode === modes.csvTopojson ||
+    //   state.dataset.mode === modes.csvGeojson
+    // ) {
+    //   const propertiesWithoutID = state.dataset.geoProperties.filter(
+    //     prop => prop !== state.dataset.geoId
+    //   )
+    //   let dataSpec = null
+    //   if (
+    //     state.dataset.mode === modes.csvTopojson &&
+    //     state.dataset.topojsonFiles.length > 0
+    //   ) {
+    //     dataSpec = vegaDataTopoJson(
+    //       state.dataset.topojsonFiles[state.dataset.geoIndex].url,
+    //       state.dataset.topojsonObject
+    //     )
+    //   } else if (
+    //     state.dataset.mode === modes.csvGeojson &&
+    //     state.dataset.geojsonFiles.length > 0
+    //   ) {
+    //     dataSpec = vegaDataGeoJson(
+    //       state.dataset.geojsonFiles[state.dataset.geoIndex].url
+    //     )
+    //   }
+    // lookup geometry in combined topojson/geojson dataset
+    // transformArray.push({
+    //   lookup: state.dataset.csvId,
+    //   from: {
+    //     data: dataSpec,
+    //     key: 'properties.'.concat(state.dataset.geoId),
+    //   },
+    //   as: 'geo',
+    // })
+    // lookup remainder of fields in topojson/geojson dataset
+    //   transformArray.push({
+    //     lookup: state.dataset.csvId,
+    //     from: {
+    //       data: dataSpec,
+    //       key: 'properties.'.concat(state.dataset.geoId),
+    //       fields: propertiesWithoutID.map(prop => `properties.${prop}`),
+    //     },
+    //     as: propertiesWithoutID,
+    //   })
+    // }
+    // return transformArray
   },
   vegaSpec(state, getters) {
-    let spec = {}
-    const vTransform = getters.vegaTransform
-    if (vTransform.length > 0) {
-      spec = {
-        ...spec,
-        transform: vTransform,
-      }
-    }
-    if (
-      state.dataset.mode === modes.topojson ||
-      state.dataset.mode === modes.csvTopojson
-    ) {
-      spec = {
-        ...spec,
-        projection: {
-          type: 'mercator',
-        },
-      }
-    }
-    return spec
+    // let spec = {}
+    // const vTransform = getters.vegaTransform
+    // if (vTransform.length > 0) {
+    //   spec = {
+    //     ...spec,
+    //     transform: vTransform,
+    //   }
+    // }
+    // if (
+    //   state.dataset.mode === modes.topojson ||
+    //   state.dataset.mode === modes.csvTopojson
+    // ) {
+    //   spec = {
+    //     ...spec,
+    //     projection: {
+    //       type: 'mercator',
+    //     },
+    //   }
+    // }
+    // return spec
   },
 }
 
@@ -242,7 +225,9 @@ export const mutations = {
     state.vegaSpec.height = h
   },
   updateEncoding(state, { layer, name, value }) {
-    if (value === null) {
+    // explicitly not doing !value because we want 0/false
+    // values to be set
+    if (value === null || value === '' || typeof value === 'undefined') {
       delete state.vegaSpec.layer[layer].encoding[name]
       return
     }
@@ -378,21 +363,7 @@ export const actions = {
       }
     }
   },
-  setOption({ commit }, [type, name, args, value]) {
-    if (type === 'column') {
-      commit('dataset/setColumn', [args.index, name, value])
-    } else if (type === 'aesthetic') {
-      const aesthetic = args.aesthetic
-      commit('geometries/setAestheticColumnProperty', [
-        aesthetic,
-        0,
-        name,
-        value,
-      ])
-    } else if (type === 'geometry') {
-      commit('geometries/setGeometryProperty', [args.index, name, value])
-    } else {
-      throw new Error(`unknown option type ${type}`)
-    }
+  setOption({ commit }, { name, index, value }) {
+    commit('geometries/setGeometryProperty', [index, name, value])
   },
 }

@@ -2,22 +2,22 @@ export const aesthetics = [
   {
     name: 'x',
     icon: 'mdi-arrow-right',
-    text: 'X coordinates of the marks, or width of horizontal "bar" and "area" without specified x2 or width.',
+    text: 'X coordinates of the marks, or width of horizontal "bar" and "area" without specified x2 or width',
   },
   {
     name: 'y',
     icon: 'mdi-arrow-up',
-    text: 'Y coordinates of the marks, or height of vertical "bar" and "area" without specified y2 or height.',
+    text: 'Y coordinates of the marks, or height of vertical "bar" and "area" without specified y2 or height',
   },
   {
     name: 'x2',
     icon: 'mdi-arrow-left',
-    text: 'X2 coordinates for ranged "area", "bar", "rect", and "rule".',
+    text: 'X2 coordinates for ranged "area", "bar", "rect", and "rule"',
   },
   {
     name: 'y2',
     icon: 'mdi-arrow-down',
-    text: 'Y2 coordinates for ranged "area", "bar", "rect", and "rule".',
+    text: 'Y2 coordinates for ranged "area", "bar", "rect", and "rule"',
   },
   {
     name: 'xError',
@@ -44,89 +44,89 @@ export const aesthetics = [
   {
     name: 'theta',
     icon: 'mdi-angle-acute',
-    text: 'For arc marks, the arc length in radians if theta2 is not specified, otherwise the start arc angle. For text marks, polar coordinate angle in radians.',
+    text: 'For arc marks, the arc length in radians if theta2 is not specified, otherwise the start arc angle. For text marks, polar coordinate angle in radians',
   },
   {
     name: 'radius',
     icon: 'mdi-radius',
-    text: 'The outer radius in pixels of arc marks.',
+    text: 'The outer radius in pixels of arc marks',
   },
   {
     name: 'theta2',
     icon: 'mdi-angle-obtuse',
-    text: 'The end angle of arc marks in radians. A value of 0 indicates up or “north”, increasing values proceed clockwise.',
+    text: 'The end angle of arc marks in radians. A value of 0 indicates up or “north”, increasing values proceed clockwise',
   },
   {
     name: 'radius2',
     icon: 'mdi-radius-outline',
-    text: 'The inner radius in pixels of arc marks.',
+    text: 'The inner radius in pixels of arc marks',
   },
 
   // Geographic Position Channels
   {
     name: 'longtitude',
     icon: 'mdi-earth-plus',
-    text: 'Longitude position of geographically projected marks.',
+    text: 'Longitude position of geographically projected marks',
   },
 
   {
     name: 'latitude',
     icon: 'mdi-earth-minus',
-    text: 'Latitude position of geographically projected marks.',
+    text: 'Latitude position of geographically projected marks',
   },
   {
     name: 'longtitude2',
     icon: 'mdi-earth-plus',
-    text: 'Longitude-2 position for geographically projected ranged "area", "bar", "rect", and "rule".',
+    text: 'Longitude-2 position for geographically projected ranged "area", "bar", "rect", and "rule"',
   },
   {
     name: 'latitude2',
     icon: 'mdi-earth-minus',
-    text: 'Latitude-2 position for geographically projected ranged "area", "bar", "rect", and "rule".',
+    text: 'Latitude-2 position for geographically projected ranged "area", "bar", "rect", and "rule"',
   },
 
   // Mark Properties Channels
   {
     name: 'color',
     icon: 'mdi-water',
-    text: 'Color of the marks – either fill or stroke color based on the filled property of mark definition.',
+    text: 'Color of the marks – either fill or stroke color based on the filled property of mark definition',
   },
-  { name: 'opacity', icon: 'mdi-opacity', text: 'Opacity of the marks.' },
+  { name: 'opacity', icon: 'mdi-opacity', text: 'Opacity of the marks' },
   {
     name: 'fill',
     icon: 'mdi-format-color-fill',
-    text: 'Fill color of the marks. Default value: If undefined, the default color depends on mark config’s color property.',
+    text: 'Fill color of the marks. Default value: If undefined, the default color depends on mark config’s color property',
   },
   {
     name: 'fillOpacity',
     icon: 'mdi-format-color-fill',
-    text: 'Fill opacity of the marks.',
+    text: 'Fill opacity of the marks',
   },
   {
     name: 'strokeOpacity',
     icon: 'mdi-water-plus-outline',
-    text: 'Stroke opacity of the marks.',
+    text: 'Stroke opacity of the marks',
   },
 
   {
     name: 'strokeWidth',
     icon: 'mdi-arrow-collapse-vertical',
-    text: 'Stroke width of the marks.',
+    text: 'Stroke width of the marks',
   },
   {
     name: 'strokeDash',
     icon: 'mdi-dots-horizontal',
-    text: 'Stroke dash of the marks.',
+    text: 'Stroke dash of the marks',
   },
   {
     name: 'size',
     icon: 'mdi-chart-bubble',
-    text: 'Size of the mark. For "point", "square" and "circle", – the symbol size, or pixel area of the mark. For "bar" and "tick" – the bar and tick’s size. For "text" – the text’s font size.',
+    text: 'Size of the mark. For "point", "square" and "circle", – the symbol size, or pixel area of the mark. For "bar" and "tick" – the bar and tick’s size. For "text" – the text’s font size',
   },
   {
     name: 'angle',
     icon: 'mdi-angle-right',
-    text: 'Rotation angle of point and text marks.',
+    text: 'Rotation angle of point and text marks',
   },
   {
     name: 'shape',
@@ -138,183 +138,316 @@ export const aesthetics = [
   {
     name: 'text',
     icon: 'mdi-format-text-variant-outline',
-    text: 'Text of the text mark.',
+    text: 'Text of the text mark',
   },
   {
     name: 'tooltip',
     icon: 'mdi-tooltip-text',
-    text: 'The tooltip text to show upon mouse hover.',
+    text: 'The tooltip text to show upon mouse hover',
   },
 
   // Hyperlink Channel
-  { name: 'href', icon: 'mdi-link', text: 'A URL to load upon mouse click.' },
+  { name: 'href', icon: 'mdi-link', text: 'A URL to load upon mouse click' },
 
   // Level of Detail Channel
   {
     name: 'detail',
     icon: 'mdi-details',
-    text: 'Additional levels of detail for grouping data in aggregate views and in line, trail, and area marks without mapping data to a specific visual channel.',
+    text: 'Additional levels of detail for grouping data in aggregate views and in line, trail, and area marks without mapping data to a specific visual channel',
   },
 
   // Order Channel
   {
     name: 'order',
     icon: 'mdi-order-numeric-ascending',
-    text: 'Order of the marks. Stacked marks: stack order. Line and trail marks: order of data points in the lines. Otherwise, this order channel encodes layer order of the marks.',
+    text: 'Order of the marks. Stacked marks: stack order. Line and trail marks: order of data points in the lines. Otherwise, this order channel encodes layer order of the marks',
   },
 
   // Facet Channels
   {
     name: 'facet',
     icon: 'mdi-chart-multiple',
-    text: 'A field definition for the (flexible) facet of trellis plots. If either row or column is specified, this channel will be ignored.',
+    text: 'A field definition for the (flexible) facet of trellis plots. If either row or column is specified, this channel will be ignored',
   },
   {
     name: 'row',
     icon: 'mdi-arrow-collapse-right',
-    text: 'A field definition for the vertical facet of trellis plots.',
+    text: 'A field definition for the vertical facet of trellis plots',
   },
 
   {
     name: 'column',
     icon: 'mdi-arrow-collapse-down',
-    text: 'A field definition for the horizontal facet of trellis plots.',
+    text: 'A field definition for the horizontal facet of trellis plots',
   },
 ]
 
-export const columnProperties = [
+export const typeOptions = [
+  {
+    value: 'quantitative',
+    text: 'Numerical',
+  },
+  {
+    value: 'temporal',
+    text: 'Date or Time',
+  },
+  {
+    value: 'ordinal',
+    text: 'Ordinal',
+  },
+  {
+    value: 'nominal',
+    text: 'Nominal',
+  },
+  {
+    value: 'geojson',
+    text: 'Geographical',
+  },
+]
+
+export const aggregateOptions = [
+  {
+    text: 'Count',
+    value: 'count',
+    description:
+      'The total count of data objects in the group. Note: ‘count’ operates directly on the input objects and return the same value regardless of the provided field',
+  },
+  {
+    text: 'Valid count',
+    value: 'valid',
+    description:
+      'The count of field values that are not null, undefined or NaN',
+  },
+  {
+    text: 'Values',
+    value: 'values',
+    description: 'A list of data objects in the group',
+  },
+  {
+    text: 'Missing count',
+    value: 'missing',
+    description: 'The count of field values that are null, undefined or NaN',
+  },
+  {
+    text: 'Distinct count',
+    value: 'distinct',
+    description: 'The count of distinct field values',
+  },
+  {
+    text: 'Sum',
+    value: 'sum',
+    description: 'The sum of field values',
+  },
+  {
+    text: 'Product',
+    value: 'product',
+    description: 'The product of field values',
+  },
+  {
+    text: 'Mean',
+    value: 'mean',
+    description: 'The mean (average) field value',
+  },
+  {
+    text: 'Variance',
+    value: 'variance',
+    description: 'The sample variance of field values',
+  },
+  {
+    text: 'Population variance',
+    value: 'variancep',
+    description: 'The population variance of field values',
+  },
+  {
+    text: 'Standard deviation',
+    value: 'stdev',
+    description: 'The sample standard deviation of field values',
+  },
+  {
+    text: 'Population standard deviation',
+    value: 'stdevp',
+    description: 'The population standard deviation of field values',
+  },
+  {
+    text: 'Standard error',
+    value: 'stderr',
+    description: 'The standard error of field values',
+  },
+  {
+    text: 'Median',
+    value: 'median',
+    description: 'The median field value',
+  },
+  {
+    text: 'Lower quartile',
+    value: 'q1',
+    description: 'The lower quartile boundary of field values',
+  },
+  {
+    text: 'Upper quartile',
+    value: 'q3',
+    description: 'The upper quartile boundary of field values',
+  },
+  {
+    text: 'Lower confidence interval',
+    value: 'ci0',
+    description:
+      'The lower boundary of the bootstrapped 95% confidence interval of the mean field value',
+  },
+  {
+    text: 'Upper confidence interval',
+    value: 'ci1',
+    description:
+      'The upper boundary of the bootstrapped 95% confidence interval of the mean field value',
+  },
+  {
+    text: 'Min',
+    value: 'min',
+    description: 'The minimum field value',
+  },
+  {
+    text: 'Max',
+    value: 'max',
+    description: 'The maximum field value',
+  },
+  {
+    text: 'Arg min',
+    value: 'argmin',
+    description:
+      'An input data object containing the minimum field value. Note: When used inside encoding, argmin must be specified as an object',
+  },
+  {
+    text: 'Arg max',
+    value: 'argmax',
+    description:
+      'An input data object containing the maximum field value. Note: When used inside encoding, argmax must be specified as an object',
+  },
+]
+
+export const scaleOptions = [
+  {
+    text: 'Linear',
+    value: 'linear',
+    description: 'Linear scale',
+  },
+  {
+    text: 'Logarithmic',
+    value: 'log',
+    description: 'Logarithmic (exponential) scale',
+  },
+]
+
+export const timeOptions = [
+  {
+    text: 'Year',
+    value: 'year',
+    description: 'Gregorian calendar years',
+  },
+  {
+    text: 'Quarter',
+    value: 'quarter',
+    description:
+      'Three-month intervals, starting in one of January, April, July, and October',
+  },
+  {
+    text: 'Month',
+    value: 'month',
+    description: 'Calendar months (January, February, etc.)',
+  },
+  {
+    text: 'Date',
+    value: 'date',
+    description: 'Calendar day of the month (January 1, January 2, etc.)',
+  },
+  {
+    text: 'Week',
+    value: 'week',
+    description:
+      'Sunday-based weeks. Days before the first Sunday of the year are considered to be in week 0, the first Sunday of the year is the start of week 1, the second Sunday week 2, etc.',
+  },
+  {
+    text: 'Day',
+    value: 'day',
+    description: 'Day of the week (Sunday, Monday, etc.)',
+  },
+  {
+    text: 'Day of the year',
+    value: 'dayofyear',
+    description: 'Day of the year (1, 2, …, 365, etc.)',
+  },
+  {
+    text: 'Hours',
+    value: 'hours',
+    description: 'Hours of the day (12:00am, 1:00am, etc.)',
+  },
+  {
+    text: 'Minutes',
+    value: 'minutes',
+    description: 'Minutes in an hour (12:00, 12:01, etc.)',
+  },
+  {
+    text: 'Seconds',
+    value: 'seconds',
+    description: 'Seconds in a minute (12:00:00, 12:00:01, etc.)',
+  },
+  {
+    text: 'Milliseconds',
+    value: 'milliseconds',
+    description: 'Milliseconds in a second',
+  },
+]
+
+// {
+//   name: 'stack',
+//   default: null,
+//   type: 'parent',
+//   vegaKey: ['stack'],
+//   options: {
+//     zero: 'stacking with baseline offset at zero value of the scale (for creating typical stacked bar and area chart)',
+//     normalize:
+//       'stacking with normalized domain (for creating normalized stacked bar and area charts',
+//     center: 'stacking with center baseline (for streamgraph)',
+//     false: 'No-stacking. This will produce layered bar and area chart',
+//   },
+//   optional: true,
+// },
+
+export const aestheticOptions = [
   {
     name: 'type',
-    hint: 'The type of measurement for the field.',
     default: 'quantitative',
-    optional: false,
-    type: 'select',
-    options: {
-      quantitative: 'numerical',
-      temporal: 'date/time',
-      ordinal: 'ordinal',
-      nominal: 'nominal',
-      geojson: 'geographical',
-    },
-    vegaKey: ['type'],
   },
   {
     name: 'aggregate',
-    hint: 'used to compute aggregate summary statistics (e.g., median, min, max) over groups of data',
     default: null,
-    type: 'select',
-    vegaKey: ['aggregate'],
-    options: {
-      count:
-        'The total count of data objects in the group. Note: ‘count’ operates directly on the input objects and return the same value regardless of the provided field.',
-      valid: 'The count of field values that are not null, undefined or NaN.',
-      values:
-        'A list of data objects in the group. missing	The count of null or undefined field values.',
-      distinct: 'The count of distinct field values.',
-      sum: 'The sum of field values.',
-      product: 'The product of field values.',
-      mean: 'The mean (average) field value.',
-      average: 'The mean (average) field value. Identical to mean.',
-      variance: 'The sample variance of field values.',
-      variancep: 'The population variance of field values.',
-      stdev: 'The sample standard deviation of field values.',
-      stdevp: 'The population standard deviation of field values.',
-      stderr: 'The standard error of field values.',
-      median: 'The median field value.',
-      q1: 'The lower quartile boundary of field values.',
-      q3: 'The upper quartile boundary of field values.',
-      ci0: 'The lower boundary of the bootstrapped 95% confidence interval of the mean field value.',
-      ci1: 'The upper boundary of the bootstrapped 95% confidence interval of the mean field value.',
-      min: 'The minimum field value.',
-      max: 'The maximum field value.',
-      argmin:
-        'An input data object containing the minimum field value. Note: When used inside encoding, argmin must be specified as an object.',
-      argmax:
-        'An input data object containing the maximum field value. Note: When used inside encoding, argmax must be specified as an object.',
-    },
-    optional: true,
-  },
-  {
-    name: 'stack',
-    default: null,
-    type: 'parent',
-    vegaKey: ['stack'],
-    options: {
-      zero: 'stacking with baseline offset at zero value of the scale (for creating typical stacked bar and area chart).',
-      normalize:
-        'stacking with normalized domain (for creating normalized stacked bar and area charts.',
-      center: 'stacking with center baseline (for streamgraph).',
-      false: 'No-stacking. This will produce layered bar and area chart.',
-    },
-    optional: true,
   },
   {
     name: 'bin',
-    hint: 'Binning discretizes numeric values into a set of bins. A common use case is to create a histogram.',
-    vegaKey: ['bin'],
-    default: false,
-    type: 'checkBox',
-    optional: false,
+    default: null,
   },
   {
     name: 'maxbins',
-    hint: 'Maximum number of bins.',
-    vegaKey: ['bin', 'maxbins'],
     default: null,
-    type: 'textBoxNumber',
-    optional: true,
   },
   {
     name: 'title',
-    hint: 'text used for axis label, legend etc.',
-    vegaKey: ['title'],
-    default: '',
-    optional: false,
-    type: 'textBox',
+    default: null,
   },
   {
     name: 'scale',
-    hint: 'only valid for quantitative fields',
-    type: 'select',
-    vegaKey: ['scale', 'type'],
-    options: {
-      linear: 'linear scale (quantitative data only)',
-      log: 'log scale (quantitative data only)',
-    },
-    optional: true,
-  },
-  {
-    name: 'calculate',
-    hint: 'for example: "2*datum.fieldName"',
     default: null,
-    vegaKey: ['calculate'],
-    transform: 'calculate',
-    optional: true,
-    type: 'textBox',
   },
   {
     name: 'timeUnit',
-    type: 'select',
-    vegaKey: ['timeUnit'],
-    options: {
-      year: 'Gregorian calendar years.',
-      quarter:
-        'Three-month intervals, starting in one of January, April, July, and October.',
-      month: 'Calendar months (January, February, etc.).',
-      date: 'Calendar day of the month (January 1, January 2, etc.).',
-      week: 'Sunday-based weeks. Days before the first Sunday of the year are considered to be in week 0, the first Sunday of the year is the start of week 1, the second Sunday week 2, etc..',
-      day: 'Day of the week (Sunday, Monday, etc.).',
-      dayofyear: 'Day of the year (1, 2, …, 365, etc.).',
-      hours: 'Hours of the day (12:00am, 1:00am, etc.).',
-      minutes: 'Minutes in an hour (12:00, 12:01, etc.).',
-      seconds: 'Seconds in a minute (12:00:00, 12:00:01, etc.).',
-      milliseconds: 'Milliseconds in a second.',
-    },
-    optional: true,
+    default: null,
   },
 ]
 
 export default {
   aesthetics,
-  columnProperties,
+  aggregateOptions,
+  scaleOptions,
+  timeOptions,
+  typeOptions,
+  aestheticOptions,
 }

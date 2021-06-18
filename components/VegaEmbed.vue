@@ -62,7 +62,6 @@ export default {
       this.setVegaSpecWidth(0.7 * this.width)
       this.setVegaSpecHeight(0.55 * this.width)
       await this.refreshVegaEmbed()
-      console.log('Old Spec', this.vegaSpec)
       // if (!this.vegaSpec) return
 
       // this.vegaSpec.width = 0.7 * this.width

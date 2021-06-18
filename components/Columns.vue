@@ -10,7 +10,7 @@
       <v-expansion-panels class="pb-2" />
       <draggable
         v-model="columns"
-        :group="{ name: 'aesthetics', pull: 'clone', put: true }"
+        :group="{ name: 'aesthetics', pull: 'clone', put: false }"
         :sort="false"
         tag="v-card"
         :component-data="getComponentData()"
@@ -97,7 +97,7 @@ export default {
   computed: {
     ...mapState({
       getColumnsInDataFile: state => state.dataset.columnsInDataFile,
-      getColumns: state => state.dataset.columns,
+      columns: state => state.dataset.columns,
       filter: state => state.dataset.filter,
     }),
     columnsInDataFile() {
@@ -108,14 +108,6 @@ export default {
         col => !this.columns.find(c => c.name === col)
       )
       return unselectedCols
-    },
-    columns: {
-      get() {
-        return this.getColumns
-      },
-      set(value) {
-        this.setColumns(value)
-      },
     },
     filterExpression: {
       get() {
@@ -130,7 +122,6 @@ export default {
     ...mapMutations({
       addCalculateField: 'dataset/addCalculateField',
       addColumn: 'dataset/addColumn',
-      setColumns: 'dataset/setColumns',
     }),
     ...mapActions({
       setFilter: 'dataset/setFilter',

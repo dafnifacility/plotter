@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <v-col cols="6">
     <v-select
       v-if="option.type === 'select'"
       v-model="optionValue"
@@ -40,12 +40,12 @@
       :hint="option.hint"
       persistent-hint
     />
-  </div>
+  </v-col>
 </template>
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
-import { columnProperties } from '~/constants/aesthetics'
+import _ from 'lodash'
 
 export default {
   name: 'Column',
@@ -53,20 +53,12 @@ export default {
     option: {
       type: Object,
       default: () => {
-        return columnProperties[0]
+        return {}
       },
-    },
-    type: {
-      type: String,
-      default: 'column',
     },
     index: {
       type: Number,
       default: 0,
-    },
-    aesthetic: {
-      type: String,
-      default: '',
     },
   },
   data() {
@@ -78,18 +70,14 @@ export default {
     }),
     optionValue: {
       get() {
-        const args = {
-          index: this.index,
-          aesthetic: this.aesthetic,
-        }
-        return this.getOption(this.type, this.option.name, args)
+        return this.getOption(this.option.name, this.index)
       },
       set(value) {
-        const args = {
+        this.debouncedSetOption({
+          name: this.option.name,
           index: this.index,
-          aesthetic: this.aesthetic,
-        }
-        this.setOption([this.type, this.option.name, args, value])
+          value,
+        })
       },
     },
   },
@@ -97,6 +85,9 @@ export default {
     ...mapActions({
       setOption: 'setOption',
     }),
+    debouncedSetOption: _.debounce(function (value) {
+      this.setOption(value)
+    }, 500),
   },
 }
 </script>

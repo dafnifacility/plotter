@@ -105,6 +105,16 @@ export default {
    */
   build: {
     publicPath: process.env.NODE_ENV === 'development' ? '/_nuxt' : './_nuxt/',
+    extend(config) {
+      // Run ESLint on save
+      config.module.rules.push({
+        enforce: 'pre',
+        test: /\.(js|vue)$/,
+        loader: 'eslint-loader',
+        exclude: /(node_modules)/,
+      })
+    },
+
   },
 
   ...routerBase,
