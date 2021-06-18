@@ -1,16 +1,16 @@
 .logo {
   display: flex;
   align-items: center;
-  margin: 0 70px 0 16px;
+  margin: 0 0 0 16px;
 }
 .theme--light {
   .v-navigation-drawer:not(.v-navigation-drawer--right) {
     background-color: $color-primary-blue;
     .v-list-item {
       &--link {
-        border-right: 3px solid $color-primary-blue;
         padding: 0 24px;
-        }
+        transition: background-color 0.25s ease-in-out;
+      }
       .v-list-item__title {
         color: $color-white !important;
         .v-icon {
@@ -18,11 +18,15 @@
           color: $color-white !important;
         }
       }
-        &--link:hover,
+      &--link:hover,
+      &--link:focus,
       &--active {
-        border-right: 3px solid $color-primary-dark-blue;
+        background-color: darken($color-primary-blue, 8%);
         .v-icon {
           color: $color-white !important;
+        }
+        &::before {
+          opacity: 0;
         }
       }
     }

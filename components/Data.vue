@@ -1,130 +1,128 @@
 <template>
-  <div>
-    <v-row dense>
-      <v-col cols="2">
-        <v-select
-          v-model="mode"
-          :items="availableModes"
-          label="what is your input data?"
-          hint="selection will reset geometry data"
-        />
-      </v-col>
-      <v-col cols="3">
-        <v-select
-          v-if="
-            mode == modes.csv ||
-            mode == modes.csvTopojson ||
-            mode == modes.csvGeojson
-          "
-          v-model="csvIndex"
-          :items="csvFiles"
-          item-text="filename"
-          item-value="index"
-          label="csv file"
-        >
-          <template #append-outer>
-            <v-btn icon :color="primaryBlue" @click="downloadFile('csv')">
-              <v-icon>mdi-download</v-icon>
-            </v-btn>
-          </template>
-        </v-select>
-        <v-select
-          v-if="mode == modes.topojson"
-          v-model="topojsonIndex"
-          :items="topojsonFiles"
-          item-text="filename"
-          item-value="index"
-          label="topojson file"
-        >
-          <template #append-outer>
-            <v-btn icon :color="primaryBlue" @click="downloadFile('topojson')">
-              <v-icon>mdi-download</v-icon>
-            </v-btn>
-          </template>
-        </v-select>
-        <v-select
-          v-if="mode == modes.geojson"
-          v-model="geojsonIndex"
-          :items="geojsonFiles"
-          item-text="filename"
-          item-value="index"
-          label="geojson file"
-        >
-          <template #append-outer>
-            <v-btn icon :color="primaryBlue" @click="downloadFile('geojson')">
-              <v-icon>mdi-download</v-icon>
-            </v-btn>
-          </template>
-        </v-select>
-      </v-col>
-      <v-col cols="2">
-        <v-select
-          v-if="mode == modes.csvTopojson || mode == modes.csvGeojson"
-          v-model="csvId"
-          :items="csvProperties"
-          label="csv id field"
-        />
-      </v-col>
-      <v-col cols="3">
-        <v-select
-          v-if="mode == modes.csvTopojson"
-          v-model="topojsonIndex"
-          :items="topojsonFiles"
-          item-text="filename"
-          item-value="index"
-          label="topojson file"
-        >
-          <template #append-outer>
-            <v-btn icon :color="primaryBlue" @click="downloadFile('topojson')">
-              <v-icon>mdi-download</v-icon>
-            </v-btn>
-          </template>
-        </v-select>
-        <v-select
-          v-if="mode == modes.csvGeojson"
-          v-model="geojsonIndex"
-          :items="geojsonFiles"
-          item-text="filename"
-          item-value="index"
-          label="geojson file"
-        >
-          <template #append-outer>
-            <v-btn icon :color="primaryBlue" @click="downloadFile('geojson')">
-              <v-icon>mdi-download</v-icon>
-            </v-btn>
-          </template>
-        </v-select>
-      </v-col>
-      <v-col cols="2">
-        <v-select
-          v-if="mode == modes.csvTopojson || mode == modes.csvGeojson"
-          v-model="geoId"
-          :items="geoProperties"
-          label="geometry id field"
-        />
-      </v-col>
-      <v-col v-if="csvError" cols="12">
-        <v-alert type="error" dense dismissible>
-          {{ csvError }}
-        </v-alert>
-      </v-col>
-      <v-col v-if="topojsonError" cols="12">
-        <v-alert type="error" dense dismissible>
-          {{ topojsonError }}
-        </v-alert>
-      </v-col>
-      <v-col v-if="geojsonError" cols="12">
-        <v-alert type="error" dense dismissible>
-          {{ geojsonError }}
-        </v-alert>
-      </v-col>
-      <v-col v-if="syncError" cols="12">
-        <v-alert type="error" dense dismissible>
-          {{ syncError }}
-        </v-alert>
-      </v-col>
-    </v-row>
-  </div>
+  <v-row>
+    <v-col class="py-0" cols="2">
+      <v-select
+        v-model="mode"
+        :items="availableModes"
+        label="what is your input data?"
+        hint="selection will reset geometry data"
+      />
+    </v-col>
+    <v-col class="py-0" cols="3">
+      <v-select
+        v-if="
+          mode == modes.csv ||
+          mode == modes.csvTopojson ||
+          mode == modes.csvGeojson
+        "
+        v-model="csvIndex"
+        :items="csvFiles"
+        item-text="filename"
+        item-value="index"
+        label="csv file"
+      >
+        <template #append-outer>
+          <v-btn icon :color="primaryBlue" @click="downloadFile('csv')">
+            <v-icon>mdi-download</v-icon>
+          </v-btn>
+        </template>
+      </v-select>
+      <v-select
+        v-if="mode == modes.topojson"
+        v-model="topojsonIndex"
+        :items="topojsonFiles"
+        item-text="filename"
+        item-value="index"
+        label="topojson file"
+      >
+        <template #append-outer>
+          <v-btn icon :color="primaryBlue" @click="downloadFile('topojson')">
+            <v-icon>mdi-download</v-icon>
+          </v-btn>
+        </template>
+      </v-select>
+      <v-select
+        v-if="mode == modes.geojson"
+        v-model="geojsonIndex"
+        :items="geojsonFiles"
+        item-text="filename"
+        item-value="index"
+        label="geojson file"
+      >
+        <template #append-outer>
+          <v-btn icon :color="primaryBlue" @click="downloadFile('geojson')">
+            <v-icon>mdi-download</v-icon>
+          </v-btn>
+        </template>
+      </v-select>
+    </v-col>
+    <v-col class="py-0" cols="2">
+      <v-select
+        v-if="mode == modes.csvTopojson || mode == modes.csvGeojson"
+        v-model="csvId"
+        :items="csvProperties"
+        label="csv id field"
+      />
+    </v-col>
+    <v-col class="py-0" cols="3">
+      <v-select
+        v-if="mode == modes.csvTopojson"
+        v-model="topojsonIndex"
+        :items="topojsonFiles"
+        item-text="filename"
+        item-value="index"
+        label="topojson file"
+      >
+        <template #append-outer>
+          <v-btn icon :color="primaryBlue" @click="downloadFile('topojson')">
+            <v-icon>mdi-download</v-icon>
+          </v-btn>
+        </template>
+      </v-select>
+      <v-select
+        v-if="mode == modes.csvGeojson"
+        v-model="geojsonIndex"
+        :items="geojsonFiles"
+        item-text="filename"
+        item-value="index"
+        label="geojson file"
+      >
+        <template #append-outer>
+          <v-btn icon :color="primaryBlue" @click="downloadFile('geojson')">
+            <v-icon>mdi-download</v-icon>
+          </v-btn>
+        </template>
+      </v-select>
+    </v-col>
+    <v-col class="py-0" cols="2">
+      <v-select
+        v-if="mode == modes.csvTopojson || mode == modes.csvGeojson"
+        v-model="geoId"
+        :items="geoProperties"
+        label="geometry id field"
+      />
+    </v-col>
+    <v-col v-if="csvError" class="py-0" cols="12">
+      <v-alert type="error" dense dismissible>
+        {{ csvError }}
+      </v-alert>
+    </v-col>
+    <v-col v-if="topojsonError" class="py-0" cols="12">
+      <v-alert type="error" dense dismissible>
+        {{ topojsonError }}
+      </v-alert>
+    </v-col>
+    <v-col v-if="geojsonError" class="py-0" cols="12">
+      <v-alert type="error" dense dismissible>
+        {{ geojsonError }}
+      </v-alert>
+    </v-col>
+    <v-col v-if="syncError" class="py-0" cols="12">
+      <v-alert type="error" dense dismissible>
+        {{ syncError }}
+      </v-alert>
+    </v-col>
+  </v-row>
 </template>
 
 <script>

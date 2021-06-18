@@ -16,8 +16,10 @@
           </v-icon>
           Geometries
           <template #actions>
-            <v-btn @click="openGeometriesDialog"> Add geometry </v-btn>
-            <v-icon :color="primaryBlue">$expand</v-icon>
+            <d-btn secondary @click="openGeometriesDialog">
+              Add geometry
+            </d-btn>
+            <v-icon class="pl-3" :color="primaryBlue">$expand</v-icon>
           </template>
         </v-expansion-panel-header>
         <v-divider />
@@ -32,7 +34,7 @@
               <Geometry
                 v-for="(geometry, i) in geometries"
                 :key="i"
-                :name="geometry.name"
+                :name="geometry.value"
                 :index="i"
               />
             </v-col>
@@ -40,7 +42,7 @@
         </v-expansion-panel-content>
       </v-expansion-panel>
     </v-expansion-panels>
-    <v-dialog v-model="dialogOpen" persistent>
+    <v-dialog v-model="dialogOpen" persistent scrollable>
       <v-card outlined>
         <v-card-title class="headline bg-grey py-4 px-5" primary-title>
           Select Geometry
@@ -49,26 +51,28 @@
         <v-card-text>
           <v-item-group>
             <v-row>
-              <v-col cols="3" v-for="geom in geometriesConst" :key="geom.name">
-                <v-item v-slot="{active, toggle}">
-                  <v-card outlined @click="toggle">
+              <v-col v-for="geom in geometriesConst" :key="geom.value" cols="3">
+                <v-item v-slot="{ active, toggle }">
+                  <v-card outlined style="height: 100%" @click="toggle">
                     <v-card-title>
-                      {{ geom.name }}
+                      {{ geom.text }}
                     </v-card-title>
-                    <v-card-text>
-                      <v-icon :color="primaryBlue" v-text="geom.icon" />
+                    <v-card-text style="display: flex; justify-content: center">
+                      <v-icon x-large :color="primaryBlue" v-text="geom.icon" />
                     </v-card-text>
                     <v-card-subtitle>
-                      {{ geom.text }}
+                      {{ geom.description }}
                     </v-card-subtitle>
                   </v-card>
                 </v-item>
               </v-col>
+            </v-row>
           </v-item-group>
-          
-           </v-card-text>
+        </v-card-text>
         <v-card-actions>
-          <d-btn secondary class="ma-0" @click="close()"> Cancel </d-btn>
+          <d-btn secondary class="ma-0" @click="closeGeometriesDialog">
+            Cancel
+          </d-btn>
           <v-spacer />
           <d-btn primary class="ma-0" @click="selectGeometry">
             Add geometry
@@ -121,9 +125,9 @@
 
 <script>
 import { mapActions, mapMutations, mapState } from 'vuex'
+import DBtn from '~/components/DBtn'
 import { geometries } from '~/constants/geometries'
 import { primaryBlue } from '~/static/js/colours'
-import DBtn from '~/components/DBtn'
 
 export default {
   name: 'Geometries',
@@ -145,7 +149,7 @@ export default {
     }),
     supportedGeometriesNames() {
       return this.geometriesConst.map(geo => {
-        return geo.name
+        return geo.value
       })
     },
     data() {
@@ -183,6 +187,9 @@ export default {
     },
     openGeometriesDialog() {
       this.dialogOpen = !this.dialogOpen
+    },
+    closeGeometriesDialog() {
+      this.dialogOpen = false
     },
   },
 }

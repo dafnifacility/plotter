@@ -2,7 +2,7 @@
   <v-card :class="[headerClass]" outlined @click="selectGeometry">
     <v-card-title style="font-size: 1rem; display: flex">
       <v-icon :color="primaryBlue" class="pr-1" v-text="geometry.icon" />
-      {{ geometry.name }}
+      {{ geometry.value }}
       <v-spacer />
       <v-btn icon @click="deleteGeometry">
         <v-icon :color="primaryBlue">mdi-delete</v-icon>
@@ -69,12 +69,12 @@ export default {
     }),
     geometry() {
       return geometries.filter(geo => {
-        return geo.name === this.data.type
+        return geo.value === this.data.type
       })[0]
     },
     supportedGeometries() {
       return geometries.map(geo => {
-        return geo.name
+        return geo.value
       })
     },
     headerClass() {

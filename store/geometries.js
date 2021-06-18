@@ -4,8 +4,8 @@ import { geometries } from '~/constants/geometries'
 import modes from '~/constants/modes'
 
 export function defaultGeometry(name = 'line') {
-  const geo = geometries.filter(geo => {
-    return geo.name === name
+  const geo = geometries.filter(g => {
+    return g.value === name
   })[0]
   return {
     type: name,
@@ -14,7 +14,7 @@ export function defaultGeometry(name = 'line') {
       return map
     }, {}),
     options: geo.options.reduce((map, option) => {
-      map[option.name] = option.default
+      map[option.value] = option.default
       return map
     }, {}),
   }

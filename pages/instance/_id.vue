@@ -1,11 +1,9 @@
 <template>
   <v-container fluid>
-    <v-row no-gutters>
-      <v-col cols="12">
+    <v-row>
+      <v-col class="py-0" cols="12">
         <Data />
       </v-col>
-    </v-row>
-    <v-row>
       <v-col cols="12" lg="5">
         <Geometries />
         <v-row class="pt-3">

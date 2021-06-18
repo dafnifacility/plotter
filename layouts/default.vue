@@ -61,9 +61,7 @@
       />
     </transition>
     <v-main>
-      <v-container fluid style="border: 0px">
-        <nuxt />
-      </v-container>
+      <nuxt />
     </v-main>
   </v-app>
 </template>
