@@ -6,6 +6,7 @@
 
 <script>
 import { mapActions, mapGetters, mapMutations, mapState } from 'vuex'
+import _ from 'lodash'
 import axios from 'axios'
 import { uploadPlot } from '~/api/nivs'
 
@@ -54,10 +55,10 @@ export default {
       refreshVegaEmbed: 'refreshVegaEmbed',
     }),
     // whenever the document is resized, re-set the 'fullHeight' variable
-    handleResize(event) {
+    handleResize: _.debounce(function () {
       this.width = this.$refs.box.clientWidth
       this.draw()
-    },
+    }, 1000),
     async draw() {
       this.setVegaSpecWidth(0.7 * this.width)
       this.setVegaSpecHeight(0.55 * this.width)

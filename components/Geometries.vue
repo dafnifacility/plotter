@@ -16,7 +16,7 @@
           </v-icon>
           Geometries
           <template #actions>
-            <d-btn secondary @click="openGeometriesDialog">
+            <d-btn secondary @click.stop="openGeometriesDialog">
               Add geometry
             </d-btn>
             <v-icon class="pl-3" :color="primaryBlue">$expand</v-icon>
@@ -30,7 +30,7 @@
                 Add layers to plot
               </span>
             </v-col>
-            <v-col cols="12">
+            <v-col v-show="geometries.length > 0" cols="12">
               <Geometry
                 v-for="(geometry, i) in geometries"
                 :key="i"
@@ -49,10 +49,19 @@
         </v-card-title>
         <v-divider />
         <v-card-text>
-          <v-item-group>
+          <v-item-group
+            v-model="selectedGeometry"
+            active-class="activeGeometry"
+          >
             <v-row>
-              <v-col v-for="geom in geometriesConst" :key="geom.value" cols="3">
-                <v-item v-slot="{ active, toggle }">
+              <v-col
+                v-for="geom in geometriesConst"
+                :key="geom.value"
+                cols="12"
+                sm="6"
+                md="3"
+              >
+                <v-item v-slot="{ toggle }">
                   <v-card outlined style="height: 100%" @click="toggle">
                     <v-card-title>
                       {{ geom.text }}
@@ -138,9 +147,9 @@ export default {
     return {
       primaryBlue,
       geometriesConst: geometries,
-      addGeometrySelected: null,
       panelOpen: 0,
       dialogOpen: false,
+      selectedGeometry: null,
     }
   },
   computed: {
@@ -152,9 +161,6 @@ export default {
         return geo.value
       })
     },
-    data() {
-      return this.geometries[this.index]
-    },
     geometries: {
       get() {
         return this.getGeometries
@@ -165,17 +171,20 @@ export default {
     },
   },
   methods: {
+    ...mapMutations({
+      setLoading: 'setLoading',
+      setGeometries: 'geometries/setGeometries',
+    }),
     ...mapActions({
       addGeometry: 'geometries/addGeometry',
     }),
-    ...mapMutations({
-      setGeometries: 'geometries/setGeometries',
-    }),
-    selectGeometry(name) {
-      this.addGeometry(name)
-      this.$nextTick(() => {
-        this.addGeometrySelected = null
-      })
+    async selectGeometry() {
+      console.log(geometries[this.selectedGeometry])
+      this.setLoading(true)
+      const selectedGeom = geometries[this.selectedGeometry].value
+      this.closeGeometriesDialog()
+      await this.addGeometry(selectedGeom)
+      this.setLoading(false)
     },
     getComponentData() {
       return {
@@ -186,11 +195,21 @@ export default {
       }
     },
     openGeometriesDialog() {
-      this.dialogOpen = !this.dialogOpen
+      this.dialogOpen = true
     },
     closeGeometriesDialog() {
       this.dialogOpen = false
+      this.selectedGeometry = null
     },
   },
 }
 </script>
+<style lang="scss" scoped>
+.activeGeometry {
+  border-color: $color-primary-blue !important;
+  background-color: $color-grey-light !important;
+}
+.v-card--link:focus:before {
+  opacity: 0;
+}
+</style>

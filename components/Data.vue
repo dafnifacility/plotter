@@ -210,8 +210,8 @@ export default {
       },
       set(value) {
         this.setMode(value)
-        // this.setCsvIndex(null)
-        // this.setGeoIndex(null)
+        this.setCsvIndex(null)
+        this.setGeoIndex(null)
         // if (value === modes.csv) {
         //   await this.loadCsvData()
         // } else if (value === modes.csvTopojson) {
@@ -235,12 +235,9 @@ export default {
         return this.getCsvIndex
       },
       async set(value) {
-        this.setCsvIndex(value)
-        this.setCsvId('')
-        await this.loadCsvData()
-        if (this.mode === modes.csvTopojson) {
-          this.addGeoField()
-        }
+        this.setLoading(true)
+        await this.setCsvIndex(value)
+        this.setLoading(false)
       },
     },
     topojsonIndex: {
@@ -292,6 +289,7 @@ export default {
   },
   methods: {
     ...mapMutations({
+      setLoading: 'setLoading',
       addAesthetic: 'geometries/addAesthetic',
       addGeoField: 'dataset/addGeoField',
       setCsvId: 'dataset/setCsvId',

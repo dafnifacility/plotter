@@ -11,13 +11,13 @@ export const geometries = [
         value: 'innerRadius',
         vegaKey: ['innerRadius'],
         default: null,
-        type: 'textBoxNumber',
+        type: 'textBox',
       },
       {
         value: 'outerRadius',
         vegaKey: ['outerRadius'],
         default: null,
-        type: 'textBoxNumber',
+        type: 'textBox',
       },
     ],
   },
@@ -84,16 +84,16 @@ export const geometries = [
     defaultAesthetics: ['shape', 'color'],
     options: [
       {
+        value: 'strokeWidth',
+        vegaKey: ['outerRadius'],
+        default: 1,
+        type: 'textBox',
+      },
+      {
         value: 'filled',
         vegaKey: ['filled'],
         default: false,
         type: 'checkBox',
-      },
-      {
-        value: 'strokeWidth',
-        vegaKey: ['outerRadius'],
-        default: 1,
-        type: 'textBoxNumber',
       },
     ],
   },

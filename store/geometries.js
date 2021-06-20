@@ -21,54 +21,24 @@ export function defaultGeometry(name = 'line') {
 }
 
 export const state = () => ({
-  geometryIndex: 0,
   geometries: [],
 })
 
 export const getters = {
-  getSimpleAestheticOption:
-    (state, getters) =>
-    ({ aesthetic, option }) => {
-      const aes = getters.getAestheticObject(aesthetic)
-      console.log('1aes', aes)
-      console.log('aesthetic', aesthetic)
-      return aes[option]
+  getGeometries(state) {
+    return state.geometries
+  },
+  getGeometryOption:
+    state =>
+    ({ option, index }) => {
+      return state.geometries[index].options[option]
     },
-  getMaxBins:
-    (state, getters) =>
-    ({ aesthetic }) => {
-      const aes = getters.getAestheticObject(aesthetic)
-      console.log('2aes', aes)
-      console.log('aesthetic', aesthetic)
-      return (aes.bin && aes.bin.maxbins) || null
-    },
-  getScale:
-    (state, getters) =>
-    ({ aesthetic }) => {
-      const aes = getters.getAestheticObject(aesthetic)
-      console.log('3aes', aes)
-      console.log('aesthetic', aesthetic)
-      return (aes.scale && aes.scale.type) || null
-    },
-  getAestheticObject(state) {
+  getAestheticObject(state, rootState) {
     return function (aesthetic) {
       console.log('aesthet', aesthetic)
-      const aesList = state.geometries[state.geometryIndex].aesthetics
+      const aesList = state.geometries[rootState.activeLayerIndex].aesthetics
       return deepCopy(aesList[aesthetic][0])
     }
-  },
-  selectedGeometry(state) {
-    if (
-      state.geometryIndex >= state.geometries.length ||
-      state.geometryIndex < 0
-    ) {
-      return {
-        type: 'None',
-        aesthetics: {},
-        options: {},
-      }
-    }
-    return state.geometries[state.geometryIndex]
   },
 }
 
@@ -95,25 +65,22 @@ export const mutations = {
   setGeometries(state, value) {
     state.geometries = value
   },
-  updateAesthetic(state, { name, value }) {
-    const aes = state.geometries[state.geometryIndex].aesthetics
+  updateAesthetic({ state, rootState }, { name, value }) {
+    const aes = state.geometries[rootState.activeLayerIndex].aesthetics
     aes[name] = value
   },
-  addAesthetic(state, value) {
-    const geometry = state.geometries[state.geometryIndex]
+  addAesthetic({ state, rootState }, value) {
+    const geometry = state.geometries[rootState.activeLayerIndex]
     geometry.aesthetics[value] = []
     geometry.aesthetics = { ...geometry.aesthetics }
   },
-  setGeometryProperty(state, [index, prop, value]) {
+  setGeometryOption(state, { index, option, value }) {
     const geometry = state.geometries[index]
-    geometry.options[prop] = value
+    geometry.options[option] = value
   },
-  removeAestheticColumn(state, { aesthetic, index }) {
-    const aes = state.geometries[state.geometryIndex].aesthetics
+  removeAestheticColumn({ state, rootState }, { aesthetic, index }) {
+    const aes = state.geometries[rootState.activeLayerIndex].aesthetics
     aes[aesthetic].splice(index, 1)
-  },
-  setGeometryIndex(state, index) {
-    state.geometryIndex = index
   },
 }
 
@@ -160,8 +127,8 @@ export const actions = {
     console.log('currentAes', currentAes)
     dispatch('updateAesthetic', { name: aesthetic, value: [currentAes] })
   },
-  updateAesthetic({ commit, dispatch, state }, { name, value }) {
-    const aesList = state.geometries[state.geometryIndex].aesthetics
+  updateAesthetic({ commit, dispatch, state, rootState }, { name, value }) {
+    const aesList = state.geometries[rootState.activeLayerIndex].aesthetics
     const oldValue = aesList[name]
     const diff = value.filter(x => !oldValue.includes(x))
     if (diff.length === 0) {
@@ -189,18 +156,26 @@ export const actions = {
       dispatch('updateEncoding', { name, value: column }, { root: true })
     }
   },
-  addGeometry({ state, commit, dispatch }, name) {
+  updateGeometryOption({ commit, dispatch }, { index, option, value }) {
+    commit('setGeometryOption', { index, option, value })
+    dispatch('updateLayerOption', { index, option, value }, { root: true })
+  },
+  async addGeometry({ state, commit, dispatch }, name) {
     const newGeometry = defaultGeometry(name)
     commit('addGeometry', newGeometry)
-    commit('setGeometryIndex', state.geometries.length - 1)
-    dispatch('addLayer', newGeometry, { root: true })
+    commit('setActiveLayerIndex', state.geometries.length - 1, { root: true })
+    await dispatch('addLayer', newGeometry, { root: true })
   },
-  removeGeometry({ commit, dispatch, state }, index) {
-    if (state.geometryIndex === index) {
+  clearGeometries({ commit }) {
+    commit('setGeometries', [])
+    commit('setActiveLayerIndex', null, { root: true })
+  },
+  removeGeometry({ commit, dispatch, state, rootState }, index) {
+    if (rootState.activeLayerIndex === index) {
       if (index >= state.geometries.length - 1) {
-        commit('setGeometryIndex', index - 1)
+        commit('setActiveLayerIndex', index - 1, { root: true })
       } else {
-        commit('setGeometryIndex', index)
+        commit('setActiveLayerIndex', index, { root: true })
       }
     }
     commit('removeGeometry', index)

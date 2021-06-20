@@ -140,13 +140,13 @@ export default {
   },
   computed: {
     ...mapGetters({
-      getSimpleAestheticOption: 'geometries/getSimpleAestheticOption',
-      getMaxBins: 'geometries/getMaxBins',
-      getScale: 'geometries/getScale',
+      getSimpleEncodingOption: 'getSimpleEncodingOption',
+      getMaxBins: 'getMaxBins',
+      getScale: 'getScale',
     }),
     type: {
       get() {
-        return this.getSimpleAestheticOption({
+        return this.getSimpleEncodingOption({
           aesthetic: this.aesthetic,
           option: 'type',
         })
@@ -161,7 +161,7 @@ export default {
     },
     aggregate: {
       get() {
-        return this.getSimpleAestheticOption({
+        return this.getSimpleEncodingOption({
           aesthetic: this.aesthetic,
           option: 'aggregate',
         })
@@ -176,7 +176,7 @@ export default {
     },
     bin: {
       get() {
-        return this.getSimpleAestheticOption({
+        return this.getSimpleEncodingOption({
           aesthetic: this.aesthetic,
           option: 'bin',
         })
@@ -199,7 +199,7 @@ export default {
     },
     title: {
       get() {
-        return this.getSimpleAestheticOption({
+        return this.getSimpleEncodingOption({
           aesthetic: this.aesthetic,
           option: 'title',
         })
@@ -222,7 +222,7 @@ export default {
     },
     timeUnit: {
       get() {
-        return this.getSimpleAestheticOption({
+        return this.getSimpleEncodingOption({
           aesthetic: this.aesthetic,
           option: 'timeUnit',
         })

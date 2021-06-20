@@ -2,7 +2,7 @@
   <v-card :class="[headerClass]" outlined @click="selectGeometry">
     <v-card-title style="font-size: 1rem; display: flex">
       <v-icon :color="primaryBlue" class="pr-1" v-text="geometry.icon" />
-      {{ geometry.value }}
+      {{ geometry.text }}
       <v-spacer />
       <v-btn icon @click="deleteGeometry">
         <v-icon :color="primaryBlue">mdi-delete</v-icon>
@@ -10,9 +10,9 @@
     </v-card-title>
     <v-card-text v-if="geometry.options.length > 0">
       <v-row>
-        <Option
+        <GeometryOption
           v-for="option in geometry.options"
-          :key="option.name"
+          :key="option.value"
           :option="option"
           :index="index"
           type="geometry"
@@ -64,7 +64,7 @@ export default {
   },
   computed: {
     ...mapState({
-      geometryIndex: state => state.geometries.geometryIndex,
+      activeLayerIndex: state => state.activeLayerIndex,
       geometries: state => state.geometries.geometries,
     }),
     geometry() {
@@ -78,7 +78,7 @@ export default {
       })
     },
     headerClass() {
-      return this.index === this.geometryIndex && 'bg-grey'
+      return this.index === this.activeLayerIndex && 'bg-grey'
     },
     data() {
       return this.geometries[this.index]
@@ -89,13 +89,13 @@ export default {
   },
   methods: {
     ...mapMutations({
-      setGeometryIndex: 'geometries/setGeometryIndex',
+      setActiveLayerIndex: 'setActiveLayerIndex',
     }),
     ...mapActions({
       removeGeometry: 'geometries/removeGeometry',
     }),
     selectGeometry() {
-      this.setGeometryIndex(this.index)
+      this.setActiveLayerIndex(this.index)
     },
     deleteGeometry() {
       this.removeGeometry(this.index)

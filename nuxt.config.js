@@ -104,6 +104,7 @@ export default {
    ** See https://nuxtjs.org/api/configuration-build/
    */
   build: {
+    extractCSS: true,
     publicPath: process.env.NODE_ENV === 'development' ? '/_nuxt' : './_nuxt/',
     extend(config) {
       // Run ESLint on save

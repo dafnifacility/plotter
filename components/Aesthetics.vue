@@ -49,6 +49,7 @@
 import { mapGetters, mapMutations } from 'vuex'
 import Aesthetic from '~/components/Aesthetic'
 import { aesthetics } from '~/constants/aesthetics'
+import { geometries } from '~/constants/geometries'
 import { primaryBlue } from '~/static/js/colours'
 
 export default {
@@ -61,10 +62,11 @@ export default {
   },
   computed: {
     ...mapGetters({
-      selectedGeometry: 'geometries/selectedGeometry',
+      getActiveLayer: 'getActiveLayer',
     }),
     currentAesthetics() {
-      return Object.keys(this.selectedGeometry.aesthetics)
+      const currentEncodings = Object.keys(this.getActiveLayer.encoding)
+      return currentEncodings
     },
     aesthetics() {
       const unselectedAesthetics = aesthetics.filter(

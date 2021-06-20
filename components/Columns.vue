@@ -152,17 +152,3 @@ export default {
   },
 }
 </script>
-
-<style>
-.list-group {
-  min-height: 20px;
-}
-
-.list-group-item {
-  cursor: move;
-}
-
-.footer-item {
-  opacity: 50%;
-}
-</style>

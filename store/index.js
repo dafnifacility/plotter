@@ -1,17 +1,41 @@
 import { backendsPromise, nidMinioUrl } from '~/api/backends'
 import { downloadState, replaceMinioUrl, uploadState } from '~/api/minio'
 import embed from 'vega-embed'
+import { deepCopy } from '~/static/js/utils'
+import { geometries } from '~/constants/geometries'
 import modes from '~/constants/modes'
 import { setupSyncStore } from '~/api/nivs'
 
-function vegaMark(geometry) {
-  const nonNullOptions = Object.fromEntries(
-    Object.entries(geometry.options).filter(([_, v]) => v != null)
-  )
+function vegaLayer(geometry) {
+  console.log('geometry', geometry)
+  const geom = geometries.find(g => {
+    return g.value === geometry.type
+  })
+
+  const mark = vegaMark(geom)
+  const encoding = baseVegaEncoding(geom.defaultAesthetics)
   return {
-    type: geometry.type,
-    ...nonNullOptions,
+    mark,
+    encoding,
   }
+}
+
+function baseVegaEncoding(aesthetics) {
+  const encoding = {}
+  for (const aes of aesthetics) {
+    encoding[aes] = null
+  }
+  return encoding
+}
+
+function vegaMark(geometry) {
+  const mark = {
+    type: geometry.value,
+  }
+  for (const opt of geometry.options) {
+    mark[opt.value] = opt.default
+  }
+  return mark
 }
 
 function vegaEncoding(aesthetic, mode) {
@@ -30,36 +54,6 @@ function vegaEncoding(aesthetic, mode) {
     encoding[key] = aesthetic[key]
   })
   return encoding
-  // .reduce((map, key) => {
-  //   map[key] = {
-  //     field: fieldNamePrepend.concat(aesMap[key][0].name),
-  //     type: aesMap[key][0].type,
-  //   }
-  //   map = aestheticOptions.reduce((map, prop) => {
-  //     const value = aesMap[key][0][prop.name]
-  //     if (value) {
-  //       if (prop.transform) {
-  //         // do nothing
-  //       } else {
-  //         let baseObject = map[key]
-  //         const numberOfKeys = prop.vegaKey.length
-  //         // make sure that all the parent keys are defined
-  //         for (let i = 0; i < numberOfKeys - 1; i++) {
-  //           if (
-  //             !(prop.vegaKey[i] in baseObject) ||
-  //             typeof baseObject[prop.vegaKey[i]] !== 'object'
-  //           ) {
-  //             baseObject[prop.vegaKey[i]] = {}
-  //           }
-  //           baseObject = baseObject[prop.vegaKey[i]]
-  //         }
-  //         baseObject[prop.vegaKey[numberOfKeys - 1]] = value
-  //       }
-  //     }
-  //     return map
-  //   }, map)
-  //   return map
-  // }, {})
 }
 
 function vegaDataTopoJson(URL, geoFeature) {
@@ -99,48 +93,61 @@ export const state = () => ({
     width: null,
     height: null,
   },
-  syncError: null,
+  activeLayerIndex: null,
+  loading: false,
   presignedUrlForUpload: null,
+  syncError: null,
 })
 
 export const getters = {
-  option: state => (name, index) => {
-    const geometry = state.geometries.geometries[index]
-    return geometry.options[name]
+  getActiveLayer(state) {
+    if (
+      state.activeLayerIndex === null ||
+      state.activeLayerIndex >= state.vegaSpec.layer.length ||
+      state.activeLayerIndex < 0
+    ) {
+      return {
+        mark: {},
+        encoding: {},
+      }
+    }
+
+    return state.vegaSpec.layer[state.activeLayerIndex]
   },
+  getActiveLayerEncoding:
+    (state, getters) =>
+    ({ aesthetic }) => {
+      console.log('aesthet', aesthetic)
+      return deepCopy(getters.getActiveLayer[aesthetic])
+    },
+  getSimpleEncodingOption:
+    (state, getters) =>
+    ({ aesthetic, option }) => {
+      console.log('SimpleEncoding-aesthetic', aesthetic)
+      console.log('SimpleEncoding-option', option)
+      const encoding = getters.getActiveLayerEncoding({ aesthetic })
+      console.log('SimpleEncoding-encoding', encoding)
+      return (encoding && encoding[option]) || null
+    },
+  getMaxBins:
+    (state, getters) =>
+    ({ aesthetic, option }) => {
+      console.log('getMaxBins-aesthetic', aesthetic)
+      console.log('getMaxBins-option', option)
+      const encoding = getters.getActiveLayerEncoding({ aesthetic })
+      console.log('getMaxBins-encoding', encoding)
+      return (encoding && encoding.bin && encoding.bin.maxbins) || null
+    },
+  getScale:
+    (state, getters) =>
+    ({ aesthetic, option }) => {
+      console.log('getScale-aesthetic', aesthetic)
+      console.log('getScale-option', option)
+      const encoding = getters.getActiveLayerEncoding({ aesthetic })
+      console.log('getScale-encoding', encoding)
+      return (encoding && encoding.scale && encoding.scale.type) || null
+    },
   vegaTransform(state) {
-    // const geometries = state.geometries.geometries
-    // const allCalculateExpressions = geometries.reduce((outerSet, geom) => {
-    //   const aesMap = geom.aesthetics
-    //   return Object.keys(aesMap)
-    //     .filter(key => {
-    //       return aesMap[key].length > 0
-    //     })
-    //     .reduce((innerSet, key) => {
-    //       const calculateExpression = aesMap[key][0].calculate
-    //       if (calculateExpression) {
-    //         innerSet.add(calculateExpression)
-    //       }
-    //       return innerSet
-    //     }, outerSet)
-    // }, new Set())
-    // let transformArray = []
-    // if (allCalculateExpressions) {
-    //   const calcArray = Array.from(allCalculateExpressions)
-    //   const mappedArray = calcArray.map(expr => {
-    //     return {
-    //       calculate: expr,
-    //       as: expr,
-    //     }
-    //   })
-    //   transformArray = transformArray.concat(mappedArray)
-    // }
-    // const filterExpression = state.dataset.filter
-    // if (filterExpression) {
-    //   transformArray.push({
-    //     filter: filterExpression,
-    //   })
-    // }
     // if (
     //   state.dataset.mode === modes.csvTopojson ||
     //   state.dataset.mode === modes.csvGeojson
@@ -188,14 +195,6 @@ export const getters = {
     // return transformArray
   },
   vegaSpec(state, getters) {
-    // let spec = {}
-    // const vTransform = getters.vegaTransform
-    // if (vTransform.length > 0) {
-    //   spec = {
-    //     ...spec,
-    //     transform: vTransform,
-    //   }
-    // }
     // if (
     //   state.dataset.mode === modes.topojson ||
     //   state.dataset.mode === modes.csvTopojson
@@ -212,6 +211,12 @@ export const getters = {
 }
 
 export const mutations = {
+  setActiveLayerIndex(state, al) {
+    state.activeLayerIndex = al
+  },
+  setLoading(state, l) {
+    state.loading = l
+  },
   setVegaSpec(state, spec) {
     state.vegaSpec = spec
   },
@@ -228,19 +233,29 @@ export const mutations = {
     // explicitly not doing !value because we want 0/false
     // values to be set
     if (value === null || value === '' || typeof value === 'undefined') {
-      delete state.vegaSpec.layer[layer].encoding[name]
+      state.vegaSpec.layer[layer].encoding[name] = null
       return
     }
-    state.vegaSpec.layer[layer].encoding[name] = vegaEncoding(value)
+    state.vegaSpec.layer[layer].encoding[name] = vegaEncoding(
+      value,
+      state.dataset.mode
+    )
   },
   addLayer(state, l) {
-    state.vegaSpec.layer.push({
-      mark: vegaMark(l),
-      encoding: {},
-    })
+    state.vegaSpec.layer.push(vegaLayer(l))
+  },
+  clearLayers(state, l) {
+    state.vegaSpec.layer = []
   },
   removeLayer(state, index) {
     state.vegaSpec.layer.splice(index, 1)
+  },
+  updateLayerOption(state, { index, option, value }) {
+    if (value === null || value === '' || typeof value === 'undefined') {
+      delete state.vegaSpec.layer[index].mark[option]
+      return
+    }
+    state.vegaSpec.layer[index].mark[option] = value
   },
   addCalculateTransform(state, t) {
     state.vegaSpec.transform.push({
@@ -253,6 +268,9 @@ export const mutations = {
       filter: t,
     })
   },
+  clearTransforms(state) {
+    state.vegaSpec.transform = []
+  },
   removeCalculateTransform(state, name) {
     const index = state.vegaSpec.transform.findIndex(t => t.calculate === name)
     state.vegaSpec.transform.splice(index, 1)
@@ -260,6 +278,10 @@ export const mutations = {
   removeFilterTransform(state) {
     const index = state.vegaSpec.transform.findIndex(t => t.filter)
     state.vegaSpec.transform.splice(index, 1)
+  },
+
+  clearProjection(state) {
+    delete state.vegaSpec.projection
   },
   setSyncError(state, err) {
     state.syncError = err
@@ -270,9 +292,42 @@ export const mutations = {
 }
 
 export const actions = {
-  async updateEncoding({ state, commit, dispatch }, { name, value }) {
+  async resetSpec({ commit, dispatch }) {
+    commit('dataset/setColumns', [])
+    commit('dataset/setColumnsInDatafile', [])
+    commit('dataset/setFilter', null)
+    dispatch('geometries/clearGeometries')
+    commit('clearLayers')
+    commit('clearTransforms')
+    commit('clearProjection')
+    commit('setVegaSpecData', null)
+    await dispatch('refreshVegaEmbed')
+  },
+  async updateSimpleEncodingOption(
+    { state, commit, dispatch, getters },
+    { aesthetic, option, value }
+  ) {
+    const encoding = getters.getActiveLayerEncoding(aesthetic)
+    encoding[option] = value
+  },
+  async updateEncoding(
+    { state, commit, dispatch, getters },
+    { name, field, value }
+  ) {
+    console.log('updateEncoding-name', name)
+    console.log('updateEncoding-field', field)
+    console.log('updateEncoding-value', value)
+    const currentEncoding = getters.getActiveLayerEncoding({ aesthetic: name })
+
+    console.log(value)
+    const diff = value.filter(x => !oldValue[x])
+    if (diff.length === 0) {
+      // when diff length is 0 this means a user has moved the draggable
+      // from one aesthetic to another this should leave the original
+      // aesthetic empty
+    }
     commit('updateEncoding', {
-      layer: state.geometries.geometryIndex,
+      layer: state.activeLayerIndex,
       name,
       value,
     })
@@ -282,6 +337,14 @@ export const actions = {
   },
   async addLayer({ commit, dispatch }, layer) {
     commit('addLayer', layer)
+    await dispatch('refreshVegaEmbed')
+  },
+  async updateLayerOption({ commit, dispatch }, { index, option, value }) {
+    commit('updateLayerOption', { index, option, value })
+    await dispatch('refreshVegaEmbed')
+  },
+  async clearLayers({ commit, dispatch }) {
+    commit('clearLayers')
     await dispatch('refreshVegaEmbed')
   },
   async removeLayer({ commit, dispatch }, index) {
@@ -305,11 +368,15 @@ export const actions = {
     commit('removeFilterTransform')
     await dispatch('refreshVegaEmbed')
   },
-  async setVegaSpecData({ state, commit, dispatch }, d) {
+  async setVegaSpecData({ state, commit, dispatch }, { type, index }) {
     await backendsPromise
     let data = {}
-    if (d.type === 'csv') {
-      data = vegaDataCsv(state.dataset.csvFiles[d.index].url)
+    if (type === 'csv') {
+      data = vegaDataCsv(state.dataset.csvFiles[index].url)
+    } else if (type === 'geojson') {
+      data = vegaDataGeoJson(state.dataset.geojsonFiles[index].url)
+    } else if (type === 'topojson') {
+      data = vegaDataTopoJson(state.dataset.topojsonFiles[index].url)
     }
     commit('setVegaSpecData', data)
     console.log('setVegaSpecData', state.vegaSpec)
@@ -362,8 +429,5 @@ export const actions = {
         )
       }
     }
-  },
-  setOption({ commit }, { name, index, value }) {
-    commit('geometries/setGeometryProperty', [index, name, value])
   },
 }

@@ -155,10 +155,13 @@ export const actions = {
       dispatch('removeFilter', null, { root: true })
     }
   },
-  setCsvIndex({ commit, dispatch }, index) {
+  async setCsvIndex({ state, commit, dispatch }, index) {
     commit('setCsvIndex', index)
-    if (index !== null) {
-      dispatch(
+    commit('setCsvId', '')
+    if (index === null) {
+      await dispatch('resetSpec', null, { root: true })
+    } else {
+      await dispatch(
         'setVegaSpecData',
         {
           type: 'csv',
@@ -168,6 +171,10 @@ export const actions = {
           root: true,
         }
       )
+      await dispatch('loadCsvData')
+      if (state.mode === modes.csvTopojson) {
+        commit('addGeoField')
+      }
     }
   },
   loadStore({ commit, dispatch }, newState) {
@@ -202,7 +209,7 @@ export const actions = {
       await dispatch('loadGeojsonData')
     }
   },
-  async loadCsvData({ state, commit, dispatch }) {
+  async loadCsvData({ state, commit, dispatch, rootState }) {
     if (state.csvIndex >= state.csvFiles.length) return
 
     try {
@@ -219,7 +226,9 @@ export const actions = {
       })
       commit('setColumns', columns.slice(0, 5))
       commit('setColumnsInDatafile', columns)
-      dispatch('geometries/addGeometry', 'line', { root: true })
+      if (rootState.geometries.geometries.length === 0) {
+        dispatch('geometries/addGeometry', 'line', { root: true })
+      }
       commit('setCsvError', null)
     } catch (error) {
       commit('setCsvError', `Error loading csv: ${error}`)

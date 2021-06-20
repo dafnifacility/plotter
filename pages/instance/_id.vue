@@ -47,13 +47,9 @@ export default {
     PlotView,
     // Spec,
   },
-  data() {
-    return {
-      loading: false,
-    }
-  },
   computed: {
     ...mapState({
+      loading: state => state.loading,
       authenticated: state => state.auth.authenticated,
       getUrl: state => state.dataset.url,
     }),
@@ -62,10 +58,10 @@ export default {
         return this.getUrl
       },
       async set(value) {
-        this.loading = true
+        this.setLoading(true)
         this.setUrl(value)
         await this.loadData()
-        this.loading = false
+        this.setLoading(false)
       },
     },
   },
@@ -79,6 +75,7 @@ export default {
   },
   methods: {
     ...mapMutations({
+      setLoading: 'setLoading',
       setUrl: 'dataset/setUrl',
     }),
     ...mapActions({
@@ -87,9 +84,9 @@ export default {
     }),
     async initialiseApp() {
       if (this.authenticated) {
-        this.loading = true
+        this.setLoading(true)
         await this.loadStore()
-        this.loading = false
+        this.setLoading(false)
       }
     },
   },
