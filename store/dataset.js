@@ -194,7 +194,6 @@ export const actions = {
     await dispatch('discovery/getDatasetsAndPopulateFileLists', null, {
       root: true,
     })
-    console.log(state.csvFiles)
     if (state.mode === modes.csv) {
       await dispatch('loadCsvData')
     } else if (state.mode === modes.topojson) {
@@ -226,8 +225,8 @@ export const actions = {
       })
       commit('setColumns', columns.slice(0, 5))
       commit('setColumnsInDatafile', columns)
-      if (rootState.geometries.geometries.length === 0) {
-        dispatch('geometries/addGeometry', 'line', { root: true })
+      if (rootState.vegaSpec.layer.length === 0) {
+        dispatch('addLayer', 'line', { root: true })
       }
       commit('setCsvError', null)
     } catch (error) {

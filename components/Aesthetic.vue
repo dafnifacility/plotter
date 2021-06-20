@@ -25,9 +25,9 @@
           :component-data="getComponentData()"
         >
           <DraggableAesthetic
-            v-for="(column, i) in aesMap"
-            :key="column.name"
-            :name="column.name"
+            v-for="(aes, i) in aesMap"
+            :key="aes.field"
+            :name="aes.field"
             :index="i"
             :aesthetic="name"
             type="aesthetic"
@@ -70,7 +70,7 @@ export default {
   },
   computed: {
     ...mapGetters({
-      selectedGeometry: 'geometries/selectedGeometry',
+      getActiveLayer: 'getActiveLayer',
     }),
     aesthetic() {
       return aesthetics.filter(x => {
@@ -79,16 +79,17 @@ export default {
     },
     aesMap: {
       get() {
-        return this.selectedGeometry.aesthetics[this.name]
+        const encoding = this.getActiveLayer.encoding[this.name]
+        return encoding ? [encoding] : []
       },
       set(value) {
-        this.updateAesthetic({ name: this.name, value })
+        this.updateEncoding({ name: this.name, value })
       },
     },
   },
   methods: {
     ...mapActions({
-      updateAesthetic: 'geometries/updateAesthetic',
+      updateEncoding: 'updateEncoding',
     }),
     getComponentData() {
       return {

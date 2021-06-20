@@ -30,11 +30,11 @@
                 Add layers to plot
               </span>
             </v-col>
-            <v-col v-show="geometries.length > 0" cols="12">
+            <v-col v-show="layers.length > 0" cols="12">
               <Geometry
-                v-for="(geometry, i) in geometries"
+                v-for="(layer, i) in layers"
                 :key="i"
-                :name="geometry.value"
+                :name="layer.value"
                 :index="i"
               />
             </v-col>
@@ -55,7 +55,7 @@
           >
             <v-row>
               <v-col
-                v-for="geom in geometriesConst"
+                v-for="geom in geometries"
                 :key="geom.value"
                 cols="12"
                 sm="6"
@@ -90,46 +90,6 @@
       </v-card>
     </v-dialog>
   </div>
-  <!-- <v-card outlined>
-    <v-card-title class="py-3 text-h6 font-weight-bold bg-grey">
-      <v-icon :color="primaryBlue" class="pr-1"> mdi-shape-plus </v-icon>
-      Geometries
-    </v-card-title>
-    <v-divider />
-    <v-card-subtitle> Add layers to plot </v-card-subtitle>
-    <v-card-text>
-      <Geometry
-        v-for="(geometry, i) in geometries"
-        :key="i"
-        :name="geometry.name"
-        :index="i"
-      />
-      <v-overflow-btn
-        v-model="addGeometrySelected"
-        :items="geometriesConst"
-        item-value="name"
-        label="Add new geometry"
-        flat
-        filled
-        hide-details
-        class="pt-2"
-        @input="selectGeometry"
-      >
-        <template #item="{ item, attrs, on }">
-          <v-list-item v-bind="attrs" style="max-width: 600px" v-on="on">
-            <v-list-item-icon>
-              <v-icon :color="primaryBlue" v-text="item.icon" />
-            </v-list-item-icon>
-            <v-list-item-content :id="attrs['aria-labelledby']">
-              <span>
-                <strong>{{ item.name }}</strong> - {{ item.text }}
-              </span>
-            </v-list-item-content>
-          </v-list-item>
-        </template>
-      </v-overflow-btn>
-    </v-card-text>
-  </v-card> -->
 </template>
 
 <script>
@@ -146,7 +106,7 @@ export default {
   data() {
     return {
       primaryBlue,
-      geometriesConst: geometries,
+      geometries,
       panelOpen: 0,
       dialogOpen: false,
       selectedGeometry: null,
@@ -154,36 +114,30 @@ export default {
   },
   computed: {
     ...mapState({
-      getGeometries: state => state.geometries.geometries,
+      getLayers: state => state.vegaSpec.layer,
     }),
     supportedGeometriesNames() {
-      return this.geometriesConst.map(geo => {
+      return geometries.map(geo => {
         return geo.value
       })
     },
-    geometries: {
-      get() {
-        return this.getGeometries
-      },
-      set(value) {
-        this.setGeometries(value)
-      },
+    layers() {
+      return this.getLayers
     },
   },
   methods: {
     ...mapMutations({
       setLoading: 'setLoading',
-      setGeometries: 'geometries/setGeometries',
     }),
     ...mapActions({
-      addGeometry: 'geometries/addGeometry',
+      addLayer: 'addLayer',
     }),
     async selectGeometry() {
       console.log(geometries[this.selectedGeometry])
       this.setLoading(true)
       const selectedGeom = geometries[this.selectedGeometry].value
       this.closeGeometriesDialog()
-      await this.addGeometry(selectedGeom)
+      await this.addLayer(selectedGeom)
       this.setLoading(false)
     },
     getComponentData() {

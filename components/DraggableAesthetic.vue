@@ -3,7 +3,7 @@
     <v-expansion-panel-header disable-icon-rotate>
       {{ name }}
       <template #actions>
-        <v-btn icon @click="deleteColumn">
+        <v-btn icon @click="deleteAesthetic">
           <v-icon :color="primaryBlue">mdi-delete</v-icon>
         </v-btn>
         <v-icon :color="primaryBlue">$expand</v-icon>
@@ -140,19 +140,19 @@ export default {
   },
   computed: {
     ...mapGetters({
-      getSimpleAestheticOption: 'geometries/getSimpleAestheticOption',
-      getMaxBins: 'geometries/getMaxBins',
-      getScale: 'geometries/getScale',
+      getSimpleEncodingOption: 'getSimpleEncodingOption',
+      getMaxBins: 'getMaxBins',
+      getScale: 'getScale',
     }),
     type: {
       get() {
-        return this.getSimpleAestheticOption({
+        return this.getSimpleEncodingOption({
           aesthetic: this.aesthetic,
           option: 'type',
         })
       },
       set(value) {
-        this.updateSimpleAestheticOption({
+        this.updateSimpleEncodingOption({
           aesthetic: this.aesthetic,
           option: 'type',
           value,
@@ -161,13 +161,13 @@ export default {
     },
     aggregate: {
       get() {
-        return this.getSimpleAestheticOption({
+        return this.getSimpleEncodingOption({
           aesthetic: this.aesthetic,
           option: 'aggregate',
         })
       },
       set(value) {
-        this.updateSimpleAestheticOption({
+        this.updateSimpleEncodingOption({
           aesthetic: this.aesthetic,
           option: 'aggregate',
           value,
@@ -176,13 +176,13 @@ export default {
     },
     bin: {
       get() {
-        return this.getSimpleAestheticOption({
+        return this.getSimpleEncodingOption({
           aesthetic: this.aesthetic,
           option: 'bin',
         })
       },
       set(value) {
-        this.updateSimpleAestheticOption({
+        this.updateSimpleEncodingOption({
           aesthetic: this.aesthetic,
           option: 'bin',
           value,
@@ -199,7 +199,7 @@ export default {
     },
     title: {
       get() {
-        return this.getSimpleAestheticOption({
+        return this.getSimpleEncodingOption({
           aesthetic: this.aesthetic,
           option: 'title',
         })
@@ -222,13 +222,13 @@ export default {
     },
     timeUnit: {
       get() {
-        return this.getSimpleAestheticOption({
+        return this.getSimpleEncodingOption({
           aesthetic: this.aesthetic,
           option: 'timeUnit',
         })
       },
       set(value) {
-        this.updateSimpleAestheticOption({
+        this.updateSimpleEncodingOption({
           aesthetic: this.aesthetic,
           option: 'timeUnit',
           value,
@@ -238,19 +238,16 @@ export default {
   },
   methods: {
     ...mapActions({
-      updateSimpleAestheticOption: 'geometries/updateSimpleAestheticOption',
-      updateMaxBins: 'geometries/updateMaxBins',
-      updateScale: 'geometries/updateScale',
-      removeAesthetic: 'geometries/removeAesthetic',
+      updateSimpleEncodingOption: 'updateSimpleEncodingOption',
+      updateMaxBins: 'updateMaxBins',
+      updateScale: 'updateScale',
+      removeEncoding: 'removeEncoding',
     }),
-    deleteColumn() {
-      this.removeAesthetic({
-        index: this.index,
-        aesthetic: this.aesthetic,
-      })
+    deleteAesthetic() {
+      this.removeEncoding(this.aesthetic)
     },
     debouncedSetSimple: _.debounce(function (value) {
-      this.updateSimpleAestheticOption(value)
+      this.updateSimpleEncodingOption(value)
     }, 500),
   },
 }

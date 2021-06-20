@@ -61,10 +61,11 @@ export default {
   },
   computed: {
     ...mapGetters({
-      selectedGeometry: 'geometries/selectedGeometry',
+      getActiveLayer: 'getActiveLayer',
     }),
     currentAesthetics() {
-      return Object.keys(this.selectedGeometry.aesthetics)
+      const currentEncodings = Object.keys(this.getActiveLayer.encoding)
+      return currentEncodings
     },
     aesthetics() {
       const unselectedAesthetics = aesthetics.filter(

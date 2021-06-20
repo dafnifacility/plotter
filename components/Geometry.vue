@@ -20,30 +20,6 @@
       </v-row>
     </v-card-text>
   </v-card>
-  <!-- <v-expansion-panel
-    prepend-icon="mdi-chart-scatter-plot"
-    style="border: 1px solid #e0e0e0"
-    @click="selectGeometry"
-  >
-    <v-expansion-panel-header
-      :class="['px-3 py-2', headerClass]"
-      disable-icon-rotate
-    >
-      <span>
-        <v-icon :color="primaryBlue" v-text="geometry.icon" />
-        {{ geometry.name }}
-      </span>
-      <template #actions>
-        <v-btn icon @click="deleteGeometry">
-          <v-icon :color="primaryBlue">mdi-delete</v-icon>
-        </v-btn>
-        <v-icon>$expand</v-icon>
-      </template>
-    </v-expansion-panel-header>
-    <v-expansion-panel-content>
-      <v-card-text v-if="geometry.options == 0"> No options </v-card-text>
-    </v-expansion-panel-content>
-  </v-expansion-panel> -->
 </template>
 
 <script>
@@ -64,13 +40,11 @@ export default {
   },
   computed: {
     ...mapState({
-      geometryIndex: state => state.geometries.geometryIndex,
-      geometries: state => state.geometries.geometries,
+      activeLayerIndex: state => state.activeLayerIndex,
+      layers: state => state.vegaSpec.layer,
     }),
     geometry() {
-      return geometries.filter(geo => {
-        return geo.value === this.data.type
-      })[0]
+      return geometries.find(geo => geo.value === this.type)
     },
     supportedGeometries() {
       return geometries.map(geo => {
@@ -78,27 +52,24 @@ export default {
       })
     },
     headerClass() {
-      return this.index === this.geometryIndex && 'bg-grey'
-    },
-    data() {
-      return this.geometries[this.index]
+      return this.index === this.activeLayerIndex && 'bg-grey'
     },
     type() {
-      return this.data.type
+      return this.layers[this.index].mark.type
     },
   },
   methods: {
     ...mapMutations({
-      setGeometryIndex: 'geometries/setGeometryIndex',
+      setActiveLayerIndex: 'setActiveLayerIndex',
     }),
     ...mapActions({
-      removeGeometry: 'geometries/removeGeometry',
+      removeLayer: 'removeLayer',
     }),
     selectGeometry() {
-      this.setGeometryIndex(this.index)
+      this.setActiveLayerIndex(this.index)
     },
     deleteGeometry() {
-      this.removeGeometry(this.index)
+      this.removeLayer(this.index)
     },
   },
 }

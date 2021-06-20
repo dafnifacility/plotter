@@ -275,7 +275,7 @@ export default {
           return c.name === value
         })[0]
         this.addAesthetic('detail')
-        this.updateAesthetic({ name: 'detail', value: [idColumn] })
+        this.updateEncoding({ name: 'detail', value: [idColumn] })
       },
     },
     geoId: {
@@ -301,7 +301,7 @@ export default {
       setDefaultGeometries: 'geometries/setDefaultGeometries',
     }),
     ...mapActions({
-      updateAesthetic: 'geometries/updateAesthetic',
+      updateEncoding: 'geometries/updateEncoding',
       setCsvIndex: 'dataset/setCsvIndex',
       loadCsvData: 'dataset/loadCsvData',
       loadGeojsonData: 'dataset/loadGeojsonData',
