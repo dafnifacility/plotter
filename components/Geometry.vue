@@ -64,7 +64,7 @@ export default {
   },
   computed: {
     ...mapState({
-      activeLayerIndex: state => state.activeLayerIndex,
+      geometryIndex: state => state.geometries.geometryIndex,
       geometries: state => state.geometries.geometries,
     }),
     geometry() {
@@ -78,7 +78,7 @@ export default {
       })
     },
     headerClass() {
-      return this.index === this.activeLayerIndex && 'bg-grey'
+      return this.index === this.geometryIndex && 'bg-grey'
     },
     data() {
       return this.geometries[this.index]
@@ -89,13 +89,13 @@ export default {
   },
   methods: {
     ...mapMutations({
-      setActiveLayerIndex: 'setActiveLayerIndex',
+      setGeometryIndex: 'geometries/setGeometryIndex',
     }),
     ...mapActions({
       removeGeometry: 'geometries/removeGeometry',
     }),
     selectGeometry() {
-      this.setActiveLayerIndex(this.index)
+      this.setGeometryIndex(this.index)
     },
     deleteGeometry() {
       this.removeGeometry(this.index)

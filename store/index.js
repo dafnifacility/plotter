@@ -1,41 +1,17 @@
 import { backendsPromise, nidMinioUrl } from '~/api/backends'
 import { downloadState, replaceMinioUrl, uploadState } from '~/api/minio'
 import embed from 'vega-embed'
-import { deepCopy } from '~/static/js/utils'
-import { geometries } from '~/constants/geometries'
 import modes from '~/constants/modes'
 import { setupSyncStore } from '~/api/nivs'
 
-function vegaLayer(geometry) {
-  console.log('geometry', geometry)
-  const geom = geometries.find(g => {
-    return g.value === geometry.type
-  })
-
-  const mark = vegaMark(geom)
-  const encoding = baseVegaEncoding(geom.defaultAesthetics)
-  return {
-    mark,
-    encoding,
-  }
-}
-
-function baseVegaEncoding(aesthetics) {
-  const encoding = {}
-  for (const aes of aesthetics) {
-    encoding[aes] = null
-  }
-  return encoding
-}
-
 function vegaMark(geometry) {
-  const mark = {
-    type: geometry.value,
+  const nonNullOptions = Object.fromEntries(
+    Object.entries(geometry.options).filter(([_, v]) => v != null)
+  )
+  return {
+    type: geometry.type,
+    ...nonNullOptions,
   }
-  for (const opt of geometry.options) {
-    mark[opt.value] = opt.default
-  }
-  return mark
 }
 
 function vegaEncoding(aesthetic, mode) {
@@ -93,60 +69,13 @@ export const state = () => ({
     width: null,
     height: null,
   },
-  activeLayerIndex: null,
-  loading: false,
-  presignedUrlForUpload: null,
+  activeLayer: null,
   syncError: null,
+  presignedUrlForUpload: null,
+  loading: false,
 })
 
 export const getters = {
-  getActiveLayer(state) {
-    if (
-      state.activeLayerIndex === null ||
-      state.activeLayerIndex >= state.vegaSpec.layer.length ||
-      state.activeLayerIndex < 0
-    ) {
-      return {
-        mark: {},
-        encoding: {},
-      }
-    }
-
-    return state.vegaSpec.layer[state.activeLayerIndex]
-  },
-  getActiveLayerEncoding:
-    (state, getters) =>
-    ({ aesthetic }) => {
-      console.log('aesthet', aesthetic)
-      return deepCopy(getters.getActiveLayer[aesthetic])
-    },
-  getSimpleEncodingOption:
-    (state, getters) =>
-    ({ aesthetic, option }) => {
-      console.log('SimpleEncoding-aesthetic', aesthetic)
-      console.log('SimpleEncoding-option', option)
-      const encoding = getters.getActiveLayerEncoding({ aesthetic })
-      console.log('SimpleEncoding-encoding', encoding)
-      return (encoding && encoding[option]) || null
-    },
-  getMaxBins:
-    (state, getters) =>
-    ({ aesthetic, option }) => {
-      console.log('getMaxBins-aesthetic', aesthetic)
-      console.log('getMaxBins-option', option)
-      const encoding = getters.getActiveLayerEncoding({ aesthetic })
-      console.log('getMaxBins-encoding', encoding)
-      return (encoding && encoding.bin && encoding.bin.maxbins) || null
-    },
-  getScale:
-    (state, getters) =>
-    ({ aesthetic, option }) => {
-      console.log('getScale-aesthetic', aesthetic)
-      console.log('getScale-option', option)
-      const encoding = getters.getActiveLayerEncoding({ aesthetic })
-      console.log('getScale-encoding', encoding)
-      return (encoding && encoding.scale && encoding.scale.type) || null
-    },
   vegaTransform(state) {
     // if (
     //   state.dataset.mode === modes.csvTopojson ||
@@ -211,9 +140,6 @@ export const getters = {
 }
 
 export const mutations = {
-  setActiveLayerIndex(state, al) {
-    state.activeLayerIndex = al
-  },
   setLoading(state, l) {
     state.loading = l
   },
@@ -233,16 +159,16 @@ export const mutations = {
     // explicitly not doing !value because we want 0/false
     // values to be set
     if (value === null || value === '' || typeof value === 'undefined') {
-      state.vegaSpec.layer[layer].encoding[name] = null
+      delete state.vegaSpec.layer[layer].encoding[name]
       return
     }
-    state.vegaSpec.layer[layer].encoding[name] = vegaEncoding(
-      value,
-      state.dataset.mode
-    )
+    state.vegaSpec.layer[layer].encoding[name] = vegaEncoding(value)
   },
   addLayer(state, l) {
-    state.vegaSpec.layer.push(vegaLayer(l))
+    state.vegaSpec.layer.push({
+      mark: vegaMark(l),
+      encoding: {},
+    })
   },
   clearLayers(state, l) {
     state.vegaSpec.layer = []
@@ -303,31 +229,9 @@ export const actions = {
     commit('setVegaSpecData', null)
     await dispatch('refreshVegaEmbed')
   },
-  async updateSimpleEncodingOption(
-    { state, commit, dispatch, getters },
-    { aesthetic, option, value }
-  ) {
-    const encoding = getters.getActiveLayerEncoding(aesthetic)
-    encoding[option] = value
-  },
-  async updateEncoding(
-    { state, commit, dispatch, getters },
-    { name, field, value }
-  ) {
-    console.log('updateEncoding-name', name)
-    console.log('updateEncoding-field', field)
-    console.log('updateEncoding-value', value)
-    const currentEncoding = getters.getActiveLayerEncoding({ aesthetic: name })
-
-    console.log(value)
-    const diff = value.filter(x => !oldValue[x])
-    if (diff.length === 0) {
-      // when diff length is 0 this means a user has moved the draggable
-      // from one aesthetic to another this should leave the original
-      // aesthetic empty
-    }
+  async updateEncoding({ state, commit, dispatch }, { name, value }) {
     commit('updateEncoding', {
-      layer: state.activeLayerIndex,
+      layer: state.geometries.geometryIndex,
       name,
       value,
     })
