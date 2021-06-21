@@ -90,46 +90,6 @@
       </v-card>
     </v-dialog>
   </div>
-  <!-- <v-card outlined>
-    <v-card-title class="py-3 text-h6 font-weight-bold bg-grey">
-      <v-icon :color="primaryBlue" class="pr-1"> mdi-shape-plus </v-icon>
-      Geometries
-    </v-card-title>
-    <v-divider />
-    <v-card-subtitle> Add layers to plot </v-card-subtitle>
-    <v-card-text>
-      <Geometry
-        v-for="(geometry, i) in geometries"
-        :key="i"
-        :name="geometry.name"
-        :index="i"
-      />
-      <v-overflow-btn
-        v-model="addGeometrySelected"
-        :items="geometriesConst"
-        item-value="name"
-        label="Add new geometry"
-        flat
-        filled
-        hide-details
-        class="pt-2"
-        @input="selectGeometry"
-      >
-        <template #item="{ item, attrs, on }">
-          <v-list-item v-bind="attrs" style="max-width: 600px" v-on="on">
-            <v-list-item-icon>
-              <v-icon :color="primaryBlue" v-text="item.icon" />
-            </v-list-item-icon>
-            <v-list-item-content :id="attrs['aria-labelledby']">
-              <span>
-                <strong>{{ item.name }}</strong> - {{ item.text }}
-              </span>
-            </v-list-item-content>
-          </v-list-item>
-        </template>
-      </v-overflow-btn>
-    </v-card-text>
-  </v-card> -->
 </template>
 
 <script>

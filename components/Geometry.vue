@@ -20,30 +20,6 @@
       </v-row>
     </v-card-text>
   </v-card>
-  <!-- <v-expansion-panel
-    prepend-icon="mdi-chart-scatter-plot"
-    style="border: 1px solid #e0e0e0"
-    @click="selectGeometry"
-  >
-    <v-expansion-panel-header
-      :class="['px-3 py-2', headerClass]"
-      disable-icon-rotate
-    >
-      <span>
-        <v-icon :color="primaryBlue" v-text="geometry.icon" />
-        {{ geometry.name }}
-      </span>
-      <template #actions>
-        <v-btn icon @click="deleteGeometry">
-          <v-icon :color="primaryBlue">mdi-delete</v-icon>
-        </v-btn>
-        <v-icon>$expand</v-icon>
-      </template>
-    </v-expansion-panel-header>
-    <v-expansion-panel-content>
-      <v-card-text v-if="geometry.options == 0"> No options </v-card-text>
-    </v-expansion-panel-content>
-  </v-expansion-panel> -->
 </template>
 
 <script>
