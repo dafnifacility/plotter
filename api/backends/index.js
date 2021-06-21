@@ -20,7 +20,7 @@ function useDefaultAPIUrls() {
     'https://dafni-search-and-discovery-api-review-dev-4jxwt5.staging.dafni.rl.ac.uk'
   nivsMinioUrl = null
   nidMinioUrl = null
-  instanceID = '65e8f50e-2281-4716-82f7-8d9aee856fa0'
+  instanceID = 'b57525e7-0a5a-43da-b489-741c18c9f6d8'
 }
 
 if (appMode !== 'production') {

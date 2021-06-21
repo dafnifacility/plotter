@@ -303,7 +303,9 @@ export const actions = {
       const presignedUrlForDownload = presignedUrls[0]
       commit('setPresignedUrlForUpload', presignedUrls[1])
 
-      const newState = await downloadState(presignedUrlForDownload)
+      if (presignedUrlForDownload) {
+        const newState = await downloadState(presignedUrlForDownload)
+      }
       // commit('setVegaSpec', newState.vegaSpec)
       await dispatch('refreshVegaEmbed')
 
