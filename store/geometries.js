@@ -38,29 +38,22 @@ export const getters = {
     (state, getters) =>
     ({ aesthetic, option }) => {
       const aes = getters.getAestheticObject(aesthetic)
-      console.log('1aes', aes)
-      console.log('aesthetic', aesthetic)
       return aes[option]
     },
   getMaxBins:
     (state, getters) =>
     ({ aesthetic }) => {
       const aes = getters.getAestheticObject(aesthetic)
-      console.log('2aes', aes)
-      console.log('aesthetic', aesthetic)
       return (aes.bin && aes.bin.maxbins) || null
     },
   getScale:
     (state, getters) =>
     ({ aesthetic }) => {
       const aes = getters.getAestheticObject(aesthetic)
-      console.log('3aes', aes)
-      console.log('aesthetic', aesthetic)
       return (aes.scale && aes.scale.type) || null
     },
   getAestheticObject(state) {
     return function (aesthetic) {
-      console.log('aesthet', aesthetic)
       const aesList = state.geometries[state.geometryIndex].aesthetics
       return deepCopy(aesList[aesthetic][0])
     }
@@ -137,9 +130,6 @@ export const actions = {
   ) {
     const currentAes = getters.getAestheticObject(aesthetic)
     currentAes[option] = value
-    console.log('aesthetic', aesthetic)
-    console.log('option', option)
-    console.log('currentAes', currentAes)
     dispatch('updateAesthetic', { name: aesthetic, value: [currentAes] })
   },
   updateMaxBins({ dispatch, getters }, { aesthetic, value }) {
@@ -152,8 +142,6 @@ export const actions = {
     } else {
       currentAes.bin = null
     }
-    console.log('aesthetic', aesthetic)
-    console.log('currentAes', currentAes)
     dispatch('updateAesthetic', { name: aesthetic, value: [currentAes] })
   },
   updateScale({ dispatch, getters }, { aesthetic, value }) {
@@ -165,8 +153,6 @@ export const actions = {
     } else {
       currentAes.scale = null
     }
-    console.log('aesthetic', aesthetic)
-    console.log('currentAes', currentAes)
     dispatch('updateAesthetic', { name: aesthetic, value: [currentAes] })
   },
   updateAesthetic({ commit, dispatch, state }, { name, value }) {
@@ -223,11 +209,8 @@ export const actions = {
     commit('removeGeometry', index)
     dispatch('removeLayer', index, { root: true })
   },
-  loadStore({ state, commit, dispatch }, newState) {
+  loadStore({ commit }, newState) {
     commit('setGeometryIndex', newState.geometryIndex)
     commit('setGeometries', newState.geometries)
-    if (state.geometries.length === 0) {
-      dispatch('addGeometry', 'line')
-    }
   },
 }

@@ -28,14 +28,6 @@ export default {
     ...mapState({
       authenticated: state => state.auth.authenticated,
     }),
-    ...mapGetters({
-      getVegaSpec: 'vegaSpec',
-    }),
-    vegaSpec() {
-      // sync to backend everytime we need to regenerate the spec
-      this.uploadState()
-      return this.getVegaSpec
-    },
   },
   async mounted() {
     window.addEventListener('resize', this.handleResize)
@@ -51,7 +43,6 @@ export default {
       setVegaSpecHeight: 'setVegaSpecHeight',
     }),
     ...mapActions({
-      uploadState: 'uploadState',
       refreshVegaEmbed: 'refreshVegaEmbed',
     }),
     // whenever the document is resized, re-set the 'fullHeight' variable
@@ -63,20 +54,6 @@ export default {
       this.setVegaSpecWidth(0.7 * this.width)
       this.setVegaSpecHeight(0.55 * this.width)
       await this.refreshVegaEmbed()
-      // if (!this.vegaSpec) return
-
-      // this.vegaSpec.width = 0.7 * this.width
-      // this.vegaSpec.height = 0.55 * this.width
-
-      // const embedOptions = {
-      //   actions: false,
-      // }
-      // try {
-      //   const res = await embed('#viz', this.vegaSpec, embedOptions)
-      //   return res.finalize()
-      // } catch (error) {
-      //   console.error('ERROR in vega-embed: ', error)
-      // }
     },
     async uploadPlot(title, description, filename) {
       try {

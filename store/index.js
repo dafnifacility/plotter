@@ -24,6 +24,10 @@ function vegaEncoding(aesthetic, mode) {
     if (!aesthetic[key] || aesthetic[key] === '') return
 
     if (key === 'name') {
+      if (aesthetic[key].includes('datum')) {
+        encoding.field = aesthetic[key]
+        return
+      }
       encoding.field = `${fieldNamePrepend}${aesthetic[key]}`
       return
     }
@@ -75,71 +79,10 @@ export const state = () => ({
   loading: false,
 })
 
-export const getters = {
-  vegaTransform(state) {
-    // if (
-    //   state.dataset.mode === modes.csvTopojson ||
-    //   state.dataset.mode === modes.csvGeojson
-    // ) {
-    //   const propertiesWithoutID = state.dataset.geoProperties.filter(
-    //     prop => prop !== state.dataset.geoId
-    //   )
-    //   let dataSpec = null
-    //   if (
-    //     state.dataset.mode === modes.csvTopojson &&
-    //     state.dataset.topojsonFiles.length > 0
-    //   ) {
-    //     dataSpec = vegaDataTopoJson(
-    //       state.dataset.topojsonFiles[state.dataset.geoIndex].url,
-    //       state.dataset.topojsonObject
-    //     )
-    //   } else if (
-    //     state.dataset.mode === modes.csvGeojson &&
-    //     state.dataset.geojsonFiles.length > 0
-    //   ) {
-    //     dataSpec = vegaDataGeoJson(
-    //       state.dataset.geojsonFiles[state.dataset.geoIndex].url
-    //     )
-    //   }
-    // lookup geometry in combined topojson/geojson dataset
-    // transformArray.push({
-    //   lookup: state.dataset.csvId,
-    //   from: {
-    //     data: dataSpec,
-    //     key: 'properties.'.concat(state.dataset.geoId),
-    //   },
-    //   as: 'geo',
-    // })
-    // lookup remainder of fields in topojson/geojson dataset
-    //   transformArray.push({
-    //     lookup: state.dataset.csvId,
-    //     from: {
-    //       data: dataSpec,
-    //       key: 'properties.'.concat(state.dataset.geoId),
-    //       fields: propertiesWithoutID.map(prop => `properties.${prop}`),
-    //     },
-    //     as: propertiesWithoutID,
-    //   })
-    // }
-    // return transformArray
-  },
-  vegaSpec(state, getters) {
-    // if (
-    //   state.dataset.mode === modes.topojson ||
-    //   state.dataset.mode === modes.csvTopojson
-    // ) {
-    //   spec = {
-    //     ...spec,
-    //     projection: {
-    //       type: 'mercator',
-    //     },
-    //   }
-    // }
-    // return spec
-  },
-}
-
 export const mutations = {
+  setActiveLayer(state, al) {
+    state.activeLayer = al
+  },
   setLoading(state, l) {
     state.loading = l
   },
@@ -162,7 +105,10 @@ export const mutations = {
       delete state.vegaSpec.layer[layer].encoding[name]
       return
     }
-    state.vegaSpec.layer[layer].encoding[name] = vegaEncoding(value)
+    state.vegaSpec.layer[layer].encoding[name] = vegaEncoding(
+      value,
+      state.dataset.mode
+    )
   },
   addLayer(state, l) {
     state.vegaSpec.layer.push({
@@ -184,14 +130,37 @@ export const mutations = {
     state.vegaSpec.layer[index].mark[option] = value
   },
   addCalculateTransform(state, t) {
+    let calculate = t.calculate
+    const mode = state.dataset.mode
+    if (
+      mode === modes.topojson ||
+      (mode === modes.geojson && t.calculate.includes('datum'))
+    ) {
+      const dotIndex = t.calculate.indexOf('datum') + 6
+      const calcs = [
+        t.calculate.slice(0, dotIndex),
+        t.calculate.slice(dotIndex),
+      ]
+      calculate = `${calcs[0]}properties.${calcs[1]}`
+    }
     state.vegaSpec.transform.push({
-      calculate: t.calculate,
+      calculate,
       as: t.calculate,
     })
   },
   addFilterTransform(state, t) {
+    let filter = t
+    const mode = state.dataset.mode
+    if (
+      mode === modes.topojson ||
+      (mode === modes.geojson && t.includes('datum'))
+    ) {
+      const dotIndex = t.indexOf('datum') + 6
+      const filts = [t.slice(0, dotIndex), t.slice(dotIndex)]
+      filter = `${filts[0]}properties.${filts[1]}`
+    }
     state.vegaSpec.transform.push({
-      filter: t,
+      filter,
     })
   },
   clearTransforms(state) {
@@ -205,7 +174,11 @@ export const mutations = {
     const index = state.vegaSpec.transform.findIndex(t => t.filter)
     state.vegaSpec.transform.splice(index, 1)
   },
-
+  addProjection(state) {
+    state.vegaSpec.projection = {
+      type: 'mercator',
+    }
+  },
   clearProjection(state) {
     delete state.vegaSpec.projection
   },
@@ -225,7 +198,6 @@ export const actions = {
     dispatch('geometries/clearGeometries')
     commit('clearLayers')
     commit('clearTransforms')
-    commit('clearProjection')
     commit('setVegaSpecData', null)
     await dispatch('refreshVegaEmbed')
   },
@@ -235,7 +207,6 @@ export const actions = {
       name,
       value,
     })
-    console.log('updateEncoding')
 
     await dispatch('refreshVegaEmbed')
   },
@@ -255,7 +226,10 @@ export const actions = {
     commit('removeLayer', index)
     await dispatch('refreshVegaEmbed')
   },
-  async addTransform({ commit, dispatch }, transform) {
+  async addTransform({ state, commit, dispatch }, transform) {
+    if (state.vegaSpec.transform.find(t => t.as === transform.calculate)) {
+      return
+    }
     commit('addCalculateTransform', transform)
     await dispatch('refreshVegaEmbed')
   },
@@ -280,15 +254,17 @@ export const actions = {
     } else if (type === 'geojson') {
       data = vegaDataGeoJson(state.dataset.geojsonFiles[index].url)
     } else if (type === 'topojson') {
-      data = vegaDataTopoJson(state.dataset.topojsonFiles[index].url)
+      data = vegaDataTopoJson(
+        state.dataset.topojsonFiles[index].url,
+        state.dataset.topojsonObject
+      )
     }
     commit('setVegaSpecData', data)
-    console.log('setVegaSpecData', state.vegaSpec)
     await dispatch('refreshVegaEmbed')
   },
-  async refreshVegaEmbed({ state }) {
+  async refreshVegaEmbed({ state, dispatch }) {
     try {
-      console.log('New Spec', state.vegaSpec)
+      await dispatch('uploadState')
       const res = await embed('#viz', state.vegaSpec, {
         actions: false,
       })
@@ -303,15 +279,18 @@ export const actions = {
       const presignedUrlForDownload = presignedUrls[0]
       commit('setPresignedUrlForUpload', presignedUrls[1])
 
+      let newState = null
       if (presignedUrlForDownload) {
-        const newState = await downloadState(presignedUrlForDownload)
+        newState = await downloadState(presignedUrlForDownload)
       }
-      // commit('setVegaSpec', newState.vegaSpec)
-      await dispatch('refreshVegaEmbed')
-
-      // await dispatch('geometries/loadStore', newState.geometries)
-      // await dispatch('dataset/loadStore', newState.dataset)
+      if (newState) {
+        await dispatch('dataset/loadStore', newState.dataset)
+        await dispatch('geometries/loadStore', newState.geometries)
+        commit('setVegaSpec', newState.vegaSpec)
+        commit('setActiveLayer', newState.activeLayer)
+      }
       await dispatch('dataset/loadData')
+      await dispatch('refreshVegaEmbed')
       console.log('Successfully synced state from NIVS backend')
     } catch (e) {
       console.error(e)
@@ -326,9 +305,11 @@ export const actions = {
           dataset: state.dataset,
           geometries: state.geometries,
           vegaSpec: state.vegaSpec,
+          activeLayer: state.activeLayer,
         })
         commit('setSyncError', null)
       } catch (error) {
+        console.error(error)
         commit(
           'setSyncError',
           `Error syncing with DAFNI backend. Response status is "${error}"`

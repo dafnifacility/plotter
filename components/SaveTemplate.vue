@@ -47,7 +47,6 @@ export default {
     }),
     async save() {
       const currentState = this.state
-      console.log('uploading current state', currentState)
       try {
         const id = await uploadTemplate(
           this.title,

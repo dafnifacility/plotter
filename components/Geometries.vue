@@ -179,7 +179,6 @@ export default {
       addGeometry: 'geometries/addGeometry',
     }),
     async selectGeometry() {
-      console.log(geometries[this.selectedGeometry])
       this.setLoading(true)
       const selectedGeom = geometries[this.selectedGeometry].value
       this.closeGeometriesDialog()

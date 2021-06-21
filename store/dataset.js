@@ -10,17 +10,14 @@ export const state = () => {
     csvIndex: null,
     csvFiles: [],
     csvError: null,
-    loadCsvProgress: 0,
     geoId: '',
     geoIndex: null,
     geojsonFiles: [],
     geojsonError: null,
     geoProperties: [],
-    loadGeoProgress: 0,
     topojsonFiles: [],
     topojsonError: null,
     topojsonObject: '',
-    preLookupAggregate: '',
     columns: [],
     columnsInDataFile: [],
     filter: null,
@@ -71,12 +68,6 @@ export const mutations = {
   setMode(state, value) {
     state.mode = value
   },
-  setLoadCsvProgress(state, value) {
-    state.loadCsvProgress = value
-  },
-  setLoadGeoProgress(state, value) {
-    state.loadGeoProgress = value
-  },
   setCsvIndex(state, value) {
     state.csvIndex = value
   },
@@ -95,11 +86,8 @@ export const mutations = {
   setGeoId(state, value) {
     state.geoId = value
   },
-  setTopjsonObject(state, value) {
+  setTopojsonObject(state, value) {
     state.topojsonObject = value
-  },
-  setPreLookupAggregate(state, value) {
-    state.preLookupAggregate = value
   },
   setCsvId(state, value) {
     state.csvId = value
@@ -147,6 +135,14 @@ function guessColumnType(data) {
 }
 
 export const actions = {
+  setMode({ commit }, mode) {
+    commit('setMode', mode)
+    if (mode === modes.topojson || mode === modes.csvTopojson) {
+      commit('addProjection', null, { root: true })
+    } else {
+      commit('clearProjection', null, { root: true })
+    }
+  },
   setFilter({ commit, dispatch }, value) {
     commit('setFilter', value)
     if (value || value !== '') {
@@ -156,11 +152,10 @@ export const actions = {
     }
   },
   async setCsvIndex({ state, commit, dispatch }, index) {
+    await dispatch('resetSpec', null, { root: true })
     commit('setCsvIndex', index)
     commit('setCsvId', '')
-    if (index === null) {
-      await dispatch('resetSpec', null, { root: true })
-    } else {
+    if (index !== null) {
       await dispatch(
         'setVegaSpecData',
         {
@@ -177,24 +172,47 @@ export const actions = {
       }
     }
   },
-  loadStore({ commit, dispatch }, newState) {
+  async setGeoIndex({ state, commit, dispatch }, { index, type }) {
+    await dispatch('resetSpec', null, { root: true })
+    commit('setGeoIndex', index)
+    commit('setGeoId', '')
+    if (index !== null) {
+      if (type === 'topojson') {
+        await dispatch('loadTopojsonData')
+      } else if (type === 'geojson') {
+        await dispatch('loadGeojsonData')
+      }
+      await dispatch(
+        'setVegaSpecData',
+        {
+          type,
+          index,
+        },
+        {
+          root: true,
+        }
+      )
+    }
+  },
+  loadStore({ commit }, newState) {
     commit('setMode', newState.mode)
-    dispatch('setCsvIndex', newState.csvIndex)
-    commit('setGeoIndex', newState.geoIndex)
-    commit('setGeoProperties', newState.geoProperties)
-    commit('setGeoProperties', newState.geoProperties)
-    commit('setGeoId', newState.geoId)
-    commit('setTopjsonObject', newState.topjsonObject)
-    commit('setPreLookupAggregate', newState.preLookupAggregate)
     commit('setCsvId', newState.csvId)
+    commit('setCsvIndex', newState.csvIndex)
+    commit('setCsvFiles', newState.csvFiles)
+    commit('setGeoId', newState.geoId)
+    commit('setGeoIndex', newState.geoIndex)
+    commit('setGeojsonFiles', newState.geojsonFiles)
+    commit('setGeoProperties', newState.geoProperties)
+    commit('setTopojsonFiles', newState.topojsonFiles)
+    commit('setTopojsonObject', newState.topojsonObject)
     commit('setColumns', newState.columns)
+    commit('setColumnsInDatafile', newState.columnsInDataFile)
     commit('setFilter', newState.filter)
   },
   async loadData({ state, dispatch }) {
     await dispatch('discovery/getDatasetsAndPopulateFileLists', null, {
       root: true,
     })
-    console.log(state.csvFiles)
     if (state.mode === modes.csv) {
       await dispatch('loadCsvData')
     } else if (state.mode === modes.topojson) {
@@ -210,7 +228,8 @@ export const actions = {
     }
   },
   async loadCsvData({ state, commit, dispatch, rootState }) {
-    if (state.csvIndex >= state.csvFiles.length) return
+    if (state.csvIndex === null || state.csvIndex >= state.csvFiles.length)
+      return
 
     try {
       const data = await downloadFile(state.csvFiles[state.csvIndex].url)
@@ -231,20 +250,21 @@ export const actions = {
       }
       commit('setCsvError', null)
     } catch (error) {
+      console.error(error)
       commit('setCsvError', `Error loading csv: ${error}`)
     }
   },
-  async loadTopojsonData({ state, commit }) {
-    if (state.geoIndex >= state.topojsonFiles.length) {
+  async loadTopojsonData({ state, commit, dispatch, rootState }) {
+    if (state.geoIndex === null || state.geoIndex >= state.topojsonFiles.length)
       return
-    }
+
     try {
       const data = await downloadFile(state.topojsonFiles[state.geoIndex].url)
       if ('objects' in data) {
         const object = Object.keys(data.objects)[0]
         const properties = data.objects[object].geometries[0].properties
         const propertyNames = Object.keys(properties)
-        commit('setTopjsonObject', object)
+        commit('setTopojsonObject', object)
         commit('setGeoProperties', propertyNames)
         const columns = propertyNames.map(columnName => {
           const defaultProps = defaultColumn()
@@ -257,6 +277,9 @@ export const actions = {
         if (state.mode === modes.topojson) {
           commit('setColumns', columns.slice(0, 5))
           commit('setColumnsInDatafile', columns)
+          if (rootState.geometries.geometries.length === 0) {
+            dispatch('geometries/addGeometry', 'geoshape', { root: true })
+          }
         } else if (state.mode === modes.csvTopojson) {
           commit(
             'setColumnsInDatafile',
@@ -271,10 +294,9 @@ export const actions = {
       commit('setTopojsonError', 'Error loading topojson: '.concat(error))
     }
   },
-  async loadGeojsonData({ state, commit }) {
-    if (state.geoIndex >= state.geojsonFiles.length) {
+  async loadGeojsonData({ state, commit, rootState, dispatch }) {
+    if (state.geoIndex === null || state.geoIndex >= state.geojsonFiles.length)
       return
-    }
     try {
       const data = await downloadFile(state.geojsonFiles[state.geoIndex].url)
       if ('features' in data) {
@@ -292,6 +314,9 @@ export const actions = {
         if (state.mode === modes.geojson) {
           commit('setColumns', columns.slice(0, 5))
           commit('setColumnsInDatafile', columns)
+          if (rootState.geometries.geometries.length === 0) {
+            dispatch('geometries/addGeometry', 'geoshape', { root: true })
+          }
         } else if (state.mode === modes.csvGeojson) {
           commit(
             'setColumnsInDatafile',
@@ -303,7 +328,8 @@ export const actions = {
         commit('setGeojsonError', 'Error loading geojson')
       }
     } catch (error) {
-      commit('setGeojsonError', 'Error loading geojson: '.concat(error))
+      console.error(error)
+      commit('setGeojsonError', `Error loading geojson: ${error}`)
     }
   },
 }

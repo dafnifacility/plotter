@@ -146,16 +146,13 @@ export default {
       getCsvFiles: state => state.dataset.csvFiles,
       getCsvId: state => state.dataset.csvId,
       getCsvIndex: state => state.dataset.csvIndex,
-      loadCsvProgress: state => state.dataset.loadCsvProgress,
       geojsonError: state => state.dataset.geojsonError,
       getGeoId: state => state.dataset.geoId,
       getGeoIndex: state => state.dataset.geoIndex,
       getGeojsonFiles: state => state.dataset.geojsonFiles,
       geoProperties: state => state.dataset.geoProperties,
-      loadGeoProgress: state => state.dataset.loadGeoProgress,
       topojsonError: state => state.dataset.topojsonError,
       getTopojsonFiles: state => state.dataset.topojsonFiles,
-      getPreLookupAggregate: state => state.dataset.preLookupAggregate,
       getMode: state => state.dataset.mode,
       syncError: state => state.syncError,
     }),
@@ -176,14 +173,6 @@ export default {
     },
     availableAggregates() {
       return Object.keys(aggregateOps)
-    },
-    preLookupAggregate: {
-      get() {
-        return this.getPreLookupAggregate
-      },
-      set(value) {
-        this.setPreLookupAggregate(value)
-      },
     },
     availableModes() {
       const aModes = []
@@ -211,23 +200,7 @@ export default {
       set(value) {
         this.setMode(value)
         this.setCsvIndex(null)
-        this.setGeoIndex(null)
-        // if (value === modes.csv) {
-        //   await this.loadCsvData()
-        // } else if (value === modes.csvTopojson) {
-        //   await this.loadCsvData()
-        //   this.addGeoField()
-        //   await this.loadTopojsonData()
-        // } else if (value === modes.csvGeojson) {
-        //   await this.loadCsvData()
-        //   this.addGeoField()
-        //   await this.loadGeojsonData()
-        // } else if (value === modes.topojson) {
-        //   await this.loadTopojsonData()
-        // } else if (value === modes.geojson) {
-        //   await this.loadGeojsonData()
-        // }
-        // this.setDefaultGeometries(value)
+        this.setGeoIndex({ index: null, type: 'none' })
       },
     },
     csvIndex: {
@@ -244,20 +217,20 @@ export default {
       get() {
         return this.getGeoIndex
       },
-      set(value) {
-        this.setGeoIndex(value)
-        this.setGeoId('')
-        this.loadTopojsonData()
+      async set(value) {
+        this.setLoading(true)
+        await this.setGeoIndex({ index: value, type: 'topojson' })
+        this.setLoading(false)
       },
     },
     geojsonIndex: {
       get() {
         return this.getGeoIndex
       },
-      set(value) {
-        this.setGeoIndex(value)
-        this.setGeoId('')
-        this.loadGeojsonData()
+      async set(value) {
+        this.setLoading(true)
+        await this.setGeoIndex({ index: value, type: 'geojson' })
+        this.setLoading(false)
       },
     },
     csvProperties() {
@@ -291,21 +264,15 @@ export default {
     ...mapMutations({
       setLoading: 'setLoading',
       addAesthetic: 'geometries/addAesthetic',
-      addGeoField: 'dataset/addGeoField',
       setCsvId: 'dataset/setCsvId',
       setGeoId: 'dataset/setGeoId',
-      setGeoIndex: 'dataset/setGeoIndex',
-      loadGeojsonData: 'dataset/loadGeojsonData',
-      setMode: 'dataset/setMode',
-      setPreLookupAggregate: 'dataset/setPreLookupAggregate',
       setDefaultGeometries: 'geometries/setDefaultGeometries',
     }),
     ...mapActions({
+      setMode: 'dataset/setMode',
       updateAesthetic: 'geometries/updateAesthetic',
       setCsvIndex: 'dataset/setCsvIndex',
-      loadCsvData: 'dataset/loadCsvData',
-      loadGeojsonData: 'dataset/loadGeojsonData',
-      loadTopojsonData: 'dataset/loadTopojsonData',
+      setGeoIndex: 'dataset/setGeoIndex',
     }),
     async downloadFile(type) {
       let urlString = ''

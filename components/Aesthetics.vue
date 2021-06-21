@@ -78,7 +78,6 @@ export default {
       addAesthetic: 'geometries/addAesthetic',
     }),
     selectAesthetic(name) {
-      console.log('select Aesthetic')
       this.addAesthetic(name)
       this.$nextTick(() => {
         this.addAestheticSelected = null
