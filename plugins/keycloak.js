@@ -55,7 +55,7 @@ function dafniWideLogin() {
  */
 function tokenInterceptor() {
   setRequestInterceptor(config => {
-    if (config.url.includes('geonames')) {
+    if (config.url === null || config.url.includes('geonames')) {
       return config
     }
     if (config.url.includes('minio') || config.url.includes('nims-io')) {

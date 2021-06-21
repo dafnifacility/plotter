@@ -262,7 +262,7 @@ export default {
     },
     csvProperties() {
       return this.columnsInDataFile.map(c => {
-        return c.name
+        return c.field
       })
     },
     csvId: {
@@ -272,10 +272,10 @@ export default {
       set(value) {
         this.setCsvId(value)
         const idColumn = this.columnsInDataFile.filter(c => {
-          return c.name === value
+          return c.field === value
         })[0]
-        this.addAesthetic('detail')
-        this.updateEncoding({ name: 'detail', value: [idColumn] })
+        this.addEncoding('detail')
+        this.updateEncoding({ name: 'detail', value: idColumn })
       },
     },
     geoId: {
@@ -290,7 +290,6 @@ export default {
   methods: {
     ...mapMutations({
       setLoading: 'setLoading',
-      addAesthetic: 'geometries/addAesthetic',
       addGeoField: 'dataset/addGeoField',
       setCsvId: 'dataset/setCsvId',
       setGeoId: 'dataset/setGeoId',
@@ -301,7 +300,8 @@ export default {
       setDefaultGeometries: 'geometries/setDefaultGeometries',
     }),
     ...mapActions({
-      updateEncoding: 'geometries/updateEncoding',
+      addEncoding: 'addEncoding',
+      updateEncoding: 'updateEncoding',
       setCsvIndex: 'dataset/setCsvIndex',
       loadCsvData: 'dataset/loadCsvData',
       loadGeojsonData: 'dataset/loadGeojsonData',

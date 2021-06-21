@@ -23,6 +23,8 @@
           :sort="true"
           tag="v-expansion-panels"
           :component-data="getComponentData()"
+          @add="addEvent"
+          @remove="removeEvent"
         >
           <DraggableAesthetic
             v-for="(aes, i) in aesMap"
@@ -49,8 +51,8 @@
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import { aesthetics } from '~/constants/aesthetics'
-import DraggableAesthetic from './DraggableAesthetic'
 import draggable from 'vuedraggable'
+import DraggableAesthetic from './DraggableAesthetic'
 import { primaryBlue } from '~/static/js/colours'
 
 export default {
@@ -71,22 +73,38 @@ export default {
   computed: {
     ...mapGetters({
       getActiveLayer: 'getActiveLayer',
+      getActiveLayerEncodingOption: 'getActiveLayerEncodingOption',
     }),
     aesthetic() {
       return aesthetics.filter(x => {
         return x.name === this.name
       })[0]
     },
+    encodingOptions() {
+      console.log('encodingOptions', this.name)
+      return this.getActiveLayerEncodingOption({
+        aesthetic: this.name,
+      })
+    },
     aesMap: {
       get() {
-        const encoding = this.getActiveLayer.encoding[this.name]
-        return encoding ? [encoding] : []
+        console.log('watch on encoding', this.encodingOptions)
+        return this.encodingOptions ? [this.encodingOptions] : []
       },
       set(value) {
-        this.updateEncoding({ name: this.name, value })
+        if (value) this.addEncoding(value)
       },
     },
   },
+  // watch: {
+  //   encodingOptions: {
+  //     deep: true,
+  //     handler() {
+  //       console.log('watch on encoding', this.encodingOptions)
+  //       this.aesMap = this.encodingOptions ? [this.encodingOptions] : []
+  //     },
+  //   },
+  // },
   methods: {
     ...mapActions({
       updateEncoding: 'updateEncoding',
@@ -98,6 +116,22 @@ export default {
           hover: true,
         },
       }
+    },
+    addEncoding(newValue) {
+      this.updateEncoding({ name: this.name, value: newValue[0] })
+    },
+    addEvent(event) {
+      console.log('===========AddEvent===========')
+      // let newIndex = event.newIndex
+      // if (newIndex > 0 && newIndex === this.aesMap.length) {
+      //   newIndex = newIndex - 1
+      // }
+      // const newValue = this.aesMap[newIndex]
+      // console.log('newValue', newValue)
+      // this.updateEncoding({ name: this.name, value: newValue })
+    },
+    removeEvent(event) {
+      this.updateEncoding({ name: this.name, value: null })
     },
   },
 }

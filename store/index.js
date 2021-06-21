@@ -113,11 +113,14 @@ export const getters = {
 
     return state.vegaSpec.layer[state.activeLayerIndex]
   },
+  getActiveLayerEncoding: (state, getters) => {
+    return getters.getActiveLayer.encoding
+  },
   getActiveLayerEncodingOption:
     (state, getters) =>
     ({ aesthetic }) => {
       console.log('aesthet', aesthetic)
-      return deepCopy(getters.getActiveLayer.encoding[aesthetic])
+      return deepCopy(getters.getActiveLayer.encoding[aesthetic], null)
     },
   getSimpleEncodingOption:
     (state, getters) =>
@@ -220,9 +223,11 @@ export const mutations = {
     state.vegaSpec.height = h
   },
   updateEncoding(state, { layer, name, value }) {
+    console.log('Updating Encoding', layer, name, value)
     // explicitly not doing !value because we want 0/false
     // values to be set
     if (value === null || value === '' || typeof value === 'undefined') {
+      console.log('is null as expected')
       state.vegaSpec.layer[layer].encoding[name] = null
       return
     }
@@ -301,7 +306,7 @@ export const actions = {
     encoding[option] = value
     await dispatch('updateEncoding', {
       name: aesthetic,
-      value: [encoding],
+      value: encoding,
     })
   },
   async updateMaxBins({ dispatch, getters }, { aesthetic, value }) {
@@ -314,7 +319,7 @@ export const actions = {
       : null
     await dispatch('updateEncoding', {
       name: aesthetic,
-      value: [encoding],
+      value: encoding,
     })
   },
   async updateScale({ dispatch, getters }, { aesthetic, value }) {
@@ -326,54 +331,78 @@ export const actions = {
       : null
     await dispatch('updateEncoding', {
       name: aesthetic,
-      value: [encoding],
+      value: encoding,
+    })
+  },
+  addEncoding({ commit, state }, encoding) {
+    commit('updateEncoding', {
+      layer: state.activeLayerIndex,
+      name: encoding,
+      value: null,
     })
   },
   async updateEncoding({ state, commit, dispatch, getters }, { name, value }) {
     const currentEncoding = getters.getActiveLayerEncodingOption({
       aesthetic: name,
     })
-    const oldValue = [currentEncoding]
-    const diff = value.filter(x => !oldValue.includes(x))
-    if (diff.length === 0) {
-      // when diff length is 0 this means a user has moved the draggable
-      // from one aesthetic to another this should leave the original
-      // aesthetic empty
-      if (currentEncoding.calculate) {
-        // If the existing aesthetic has a calculate field we need to delete
-        // the transform as well as the aesthetic
-        await dispatch('removeTransform', name)
-      }
-      commit('updateEncoding', {
-        layer: state.activeLayerIndex,
-        name,
-        value: null,
-      })
-    } else {
-      // when diff length is greater than 0 this means a user has moved a
-      // draggable column onto an aesthetic and so we should add the column
-      // to the aesthetic
-      const column = diff[0]
-      if (column.calculate) {
-        // If the column has a calulate field set we need to add a transform to
-        // the vega spec
-        await dispatch('addTransform', column)
-      }
-      commit('updateEncoding', {
-        layer: state.activeLayerIndex,
-        name,
-        value: column,
-      })
+    // const oldValue = [currentEncoding]
+    // const diff = value.filter(x => !oldValue.includes(x))
+    // if (diff.length === 0) {
+    //   // when diff length is 0 this means a user has moved the draggable
+    //   // from one aesthetic to another this should leave the original
+    //   // aesthetic empty
+    //   if (currentEncoding.calculate) {
+    //     // If the existing aesthetic has a calculate field we need to delete
+    //     // the transform as well as the aesthetic
+    //     await dispatch('removeTransform', name)
+    //   }
+    //   commit('updateEncoding', {
+    //     layer: state.activeLayerIndex,
+    //     name,
+    //     value: null,
+    //   })
+    // } else {
+    //   // when diff length is greater than 0 this means a user has moved a
+    //   // draggable column onto an aesthetic and so we should add the column
+    //   // to the aesthetic
+    //   const column = diff[0]
+    //   if (column.calculate) {
+    //     // If the column has a calulate field set we need to add a transform to
+    //     // the vega spec
+    //     await dispatch('addTransform', column)
+    //   }
+    //   commit('updateEncoding', {
+    //     layer: state.activeLayerIndex,
+    //     name,
+    //     value: column,
+    //   })
+    // }
+    console.log('name', name)
+    console.log('currentEncoding', currentEncoding)
+    console.log('value', value)
+    if (
+      value === null &&
+      currentEncoding !== null &&
+      currentEncoding.calculate
+    ) {
+      await dispatch('removeTransform', name)
+    } else if (value !== null && value.calculate) {
+      await dispatch('addTransform', value)
     }
-
+    commit('updateEncoding', {
+      layer: state.activeLayerIndex,
+      name,
+      value: deepCopy(value, null),
+    })
     await dispatch('refreshVegaEmbed')
   },
-  removeEncoding({ commit, state }, encoding) {
+  async removeEncoding({ commit, dispatch, state }, encoding) {
     commit('updateEncoding', {
       layer: state.activeLayerIndex,
       name: encoding,
       value: null,
     })
+    await dispatch('refreshVegaEmbed')
   },
   async addLayer({ commit, dispatch, state }, layer) {
     commit('addLayer', layer)
@@ -447,7 +476,9 @@ export const actions = {
       const presignedUrlForDownload = presignedUrls[0]
       commit('setPresignedUrlForUpload', presignedUrls[1])
 
-      const newState = await downloadState(presignedUrlForDownload)
+      if (presignedUrlForDownload !== null) {
+        const newState = await downloadState(presignedUrlForDownload)
+      }
       // commit('setVegaSpec', newState.vegaSpec)
       await dispatch('refreshVegaEmbed')
 

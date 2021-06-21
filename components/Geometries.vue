@@ -116,11 +116,6 @@ export default {
     ...mapState({
       getLayers: state => state.vegaSpec.layer,
     }),
-    supportedGeometriesNames() {
-      return geometries.map(geo => {
-        return geo.value
-      })
-    },
     layers() {
       return this.getLayers
     },

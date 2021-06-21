@@ -36,7 +36,7 @@ export const mutations = {
     if (mode === modes.csvTopojson || mode === modes.csvGeojson) {
       state.geometries = [defaultGeometry('geoshape')]
       const geoField = defaultColumn()
-      geoField.name = 'geo'
+      geoField.field = 'geo'
       geoField.type = 'geojson'
       state.geometries[0].aesthetics.shape = [geoField]
     } else if (mode === modes.topojson || mode === modes.geojson) {
@@ -44,11 +44,6 @@ export const mutations = {
     } else {
       state.geometries = [defaultGeometry()]
     }
-  },
-  addAesthetic({ state, rootState }, value) {
-    const geometry = state.geometries[rootState.activeLayerIndex]
-    geometry.aesthetics[value] = []
-    geometry.aesthetics = { ...geometry.aesthetics }
   },
   setGeometryOption(state, { index, option, value }) {
     const geometry = state.geometries[index]

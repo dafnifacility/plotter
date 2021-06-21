@@ -46,7 +46,7 @@
 </template>
 
 <script>
-import { mapGetters, mapMutations } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 import Aesthetic from '~/components/Aesthetic'
 import { aesthetics } from '~/constants/aesthetics'
 import { primaryBlue } from '~/static/js/colours'
@@ -57,33 +57,39 @@ export default {
     Aesthetic,
   },
   data() {
-    return { primaryBlue, addAestheticSelected: null }
+    return { primaryBlue, addAestheticSelected: null, currentAesthetics: [] }
   },
   computed: {
     ...mapGetters({
       getActiveLayer: 'getActiveLayer',
+      getActiveLayerEncoding: 'getActiveLayerEncoding',
     }),
-    currentAesthetics() {
-      const currentEncodings = Object.keys(this.getActiveLayer.encoding)
-      return currentEncodings
-    },
     aesthetics() {
+      this.updateAesthetics()
       const unselectedAesthetics = aesthetics.filter(
         a => !this.currentAesthetics.includes(a.name)
       )
       return unselectedAesthetics
     },
   },
+  watch: {
+    getActiveLayerEncoding() {
+      this.updateAesthetics()
+    },
+  },
   methods: {
-    ...mapMutations({
-      addAesthetic: 'geometries/addAesthetic',
+    ...mapActions({
+      addEncoding: 'addEncoding',
     }),
-    selectAesthetic(name) {
-      console.log('select Aesthetic')
-      this.addAesthetic(name)
+    async selectAesthetic(name) {
+      await this.addEncoding(name)
+      this.updateAesthetics()
       this.$nextTick(() => {
         this.addAestheticSelected = null
       })
+    },
+    updateAesthetics() {
+      this.currentAesthetics = Object.keys(this.getActiveLayerEncoding)
     },
   },
 }

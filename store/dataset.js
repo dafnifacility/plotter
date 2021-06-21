@@ -36,7 +36,7 @@ export function defaultColumn() {
 
 function removeDuplicateColumns(columns) {
   const noDuplicates = columns.reduce((map, v) => {
-    map[v.name] = {
+    map[v.field] = {
       ...v,
     }
     return map
@@ -82,7 +82,7 @@ export const mutations = {
   },
   addGeoField(state) {
     const geoField = defaultColumn()
-    geoField.name = 'geo'
+    geoField.field = 'geo'
     geoField.type = 'geojson'
     state.columns.unshift(geoField)
   },
@@ -115,7 +115,7 @@ export const mutations = {
   },
   addColumn(state, name) {
     const newColumn = state.columnsInDataFile.filter(c => {
-      return c.name === name
+      return c.field === name
     })
     if (newColumn.length === 0) {
       throw new Error('cannot add a column not in the data file')
@@ -127,7 +127,7 @@ export const mutations = {
   },
   addCalculateField(state, expression) {
     const newField = defaultColumn()
-    newField.name = expression
+    newField.field = expression
     newField.calculate = expression
     state.columns.push(newField)
   },
@@ -219,7 +219,7 @@ export const actions = {
         const defaultProps = defaultColumn()
         defaultProps.type = guessColumnType(csvData[1][i])
         return {
-          name: columnName,
+          field: columnName,
           ...defaultProps,
         }
       })
@@ -249,7 +249,7 @@ export const actions = {
           const defaultProps = defaultColumn()
           defaultProps.type = guessColumnType(properties[columnName])
           return {
-            name: columnName,
+            field: columnName,
             ...defaultProps,
           }
         })
@@ -284,7 +284,7 @@ export const actions = {
           const defaultProps = defaultColumn()
           defaultProps.type = guessColumnType(properties[columnName])
           return {
-            name: columnName,
+            field: columnName,
             ...defaultProps,
           }
         })

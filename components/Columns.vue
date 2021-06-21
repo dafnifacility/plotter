@@ -17,8 +17,8 @@
       >
         <Column
           v-for="(column, i) in columns"
-          :key="column.name"
-          :name="column.name"
+          :key="column.field"
+          :name="column.field"
           :index="i"
         />
       </draggable>
@@ -102,10 +102,10 @@ export default {
     }),
     columnsInDataFile() {
       const cols = this.getColumnsInDataFile.map(c => {
-        return c.name
+        return c.field
       })
       const unselectedCols = cols.filter(
-        col => !this.columns.find(c => c.name === col)
+        col => !this.columns.find(c => c.field === col)
       )
       return unselectedCols
     },
@@ -124,6 +124,7 @@ export default {
       addColumn: 'dataset/addColumn',
     }),
     ...mapActions({
+      updateEncoding: 'updateEncoding',
       setFilter: 'dataset/setFilter',
     }),
     debouncedSetFilter: _.debounce(function (value) {
