@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import { mapActions, mapGetters, mapMutations, mapState } from 'vuex'
+import { mapActions, mapMutations, mapState } from 'vuex'
 import _ from 'lodash'
 import axios from 'axios'
 import { uploadPlot } from '~/api/nivs'

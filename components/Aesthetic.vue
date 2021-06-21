@@ -49,8 +49,8 @@
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import { aesthetics } from '~/constants/aesthetics'
-import DraggableAesthetic from './DraggableAesthetic'
 import draggable from 'vuedraggable'
+import DraggableAesthetic from './DraggableAesthetic'
 import { primaryBlue } from '~/static/js/colours'
 
 export default {
