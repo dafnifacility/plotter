@@ -22,28 +22,6 @@ export const greyLight = Colours.greyLight || '#eee'
 
 export const greyFadedLight = Colours.greyFadedLight || '#e0e0e0'
 
-// export const primaryDarkBlue = '#121a24'
-// export const primaryBlue = '#4F6E90'
-// export const primaryGreen = '#3eaa62'
-// export const primaryOrange = '#e3aa00'
-// export const primaryPurple = '#a3406a'
-// export const primaryGrey = '#6f7281'
-
-// export const secondaryDarkBlue = '#121a24'
-// export const secondaryBlue = '#51a2cb'
-// export const secondaryGreen ='#71b765'
-// export const secondaryOrange = '#e0b800'
-// export const secondaryPurple = '#d04382'
-// export const secondaryGrey = '#a5a9b8'
-
-// export const white = '#fff'
-// export const black = '#353535'
-// export const red = '#ea0600'
-// export const grey = '#777'
-// export const greyLight = '#eee'
-
-// export const greyFadedLight = '#e0e0e0'
-
 export default {
   primaryDarkBlue,
   primaryBlue,
