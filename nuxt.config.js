@@ -14,6 +14,7 @@ export default {
    ** See https://nuxtjs.org/api/configuration-mode
    */
   mode: 'spa',
+  ssr: false,
   /*
    ** Nuxt target
    ** See https://nuxtjs.org/api/configuration-target
@@ -25,7 +26,7 @@ export default {
     keycloakRealm: process.env.KEYCLOAK_REALM,
     keycloakClient: process.env.KEYCLOAK_CLIENT,
     INSTANCE_ID:
-      process.env.INSTANCE_ID || 'd1af8090-ec1c-467e-9a46-2027c659d9bc',
+      process.env.INSTANCE_ID || 'b57525e7-0a5a-43da-b489-741c18c9f6d8',
   },
 
   /*
@@ -33,8 +34,8 @@ export default {
    ** See https://nuxtjs.org/api/configuration-head
    */
   head: {
-    titleTemplate: '%s - ' + process.env.npm_package_name,
-    title: process.env.npm_package_name || '',
+    titleTemplate: '%s - DAFNI Plotter',
+    title: 'DAFNI Plotter',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
@@ -44,7 +45,13 @@ export default {
         content: process.env.npm_package_description || '',
       },
     ],
-    link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
+    link: [
+      {
+        rel: 'icon',
+        type: 'image/x-icon',
+        href: process.env.NODE_ENV === 'development' ? '/favicon.png' : './favicon.png',
+      }
+    ],
   },
   /*
    ** Global CSS
@@ -102,7 +109,19 @@ export default {
    ** Build configuration
    ** See https://nuxtjs.org/api/configuration-build/
    */
-  build: {},
+  build: {
+    extractCSS: process.env.NODE_ENV === 'development',
+    publicPath: process.env.NODE_ENV === 'development' ? '/_nuxt' : './_nuxt/',
+    extend(config) {
+      // Run ESLint on save
+      config.module.rules.push({
+        enforce: 'pre',
+        test: /\.(js|vue)$/,
+        loader: 'eslint-loader',
+        exclude: /(node_modules)/,
+      })
+    },
+  },
 
   ...routerBase,
 }

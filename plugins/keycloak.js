@@ -46,7 +46,7 @@ function dafniWideLogin() {
   const iframe = document.createElement('iframe')
   iframe.style =
     'position:absolute;visibility:hidden;display:none;width:0;height:0; padding:0; border:0;'
-  iframe.src = '/keycloak/login.html'
+  iframe.src = './keycloak/login.html'
   document.body.append(iframe)
 }
 
@@ -88,7 +88,7 @@ async function getKeycloakSettings(context) {
   }
 
   try {
-    const response = await axios.get('/backends/keycloak.json')
+    const response = await axios.get('./backends/keycloak.json')
     if (response.status === 200) {
       keycloakConfig = response.data
     }

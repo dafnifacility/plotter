@@ -1,136 +1,134 @@
 <template>
-  <div>
-    <v-row dense>
-      <v-col cols="2">
-        <v-select
-          v-model="mode"
-          :items="availableModes"
-          label="what is your input data?"
-          hint="selection will reset geometry data"
-        />
-      </v-col>
-      <v-col cols="3">
-        <v-select
-          v-if="
-            mode == modes.csv ||
-            mode == modes.csvTopojson ||
-            mode == modes.csvGeojson
-          "
-          v-model="csvIndex"
-          :items="csvFiles"
-          item-text="filename"
-          item-value="index"
-          label="csv file"
-        >
-          <template #append-outer>
-            <v-btn icon :color="primaryBlue" @click="downloadFile('csv')">
-              <v-icon>mdi-download</v-icon>
-            </v-btn>
-          </template>
-        </v-select>
-        <v-select
-          v-if="mode == modes.topojson"
-          v-model="topojsonIndex"
-          :items="topojsonFiles"
-          item-text="filename"
-          item-value="index"
-          label="topojson file"
-        >
-          <template #append-outer>
-            <v-btn icon :color="primaryBlue" @click="downloadFile('topojson')">
-              <v-icon>mdi-download</v-icon>
-            </v-btn>
-          </template>
-        </v-select>
-        <v-select
-          v-if="mode == modes.geojson"
-          v-model="geojsonIndex"
-          :items="geojsonFiles"
-          item-text="filename"
-          item-value="index"
-          label="geojson file"
-        >
-          <template #append-outer>
-            <v-btn icon :color="primaryBlue" @click="downloadFile('geojson')">
-              <v-icon>mdi-download</v-icon>
-            </v-btn>
-          </template>
-        </v-select>
-      </v-col>
-      <v-col cols="2">
-        <v-select
-          v-if="mode == modes.csvTopojson || mode == modes.csvGeojson"
-          v-model="csvId"
-          :items="csvProperties"
-          label="csv id field"
-        />
-      </v-col>
-      <v-col cols="3">
-        <v-select
-          v-if="mode == modes.csvTopojson"
-          v-model="topojsonIndex"
-          :items="topojsonFiles"
-          item-text="filename"
-          item-value="index"
-          label="topojson file"
-        >
-          <template #append-outer>
-            <v-btn icon :color="primaryBlue" @click="downloadFile('topojson')">
-              <v-icon>mdi-download</v-icon>
-            </v-btn>
-          </template>
-        </v-select>
-        <v-select
-          v-if="mode == modes.csvGeojson"
-          v-model="geojsonIndex"
-          :items="geojsonFiles"
-          item-text="filename"
-          item-value="index"
-          label="geojson file"
-        >
-          <template #append-outer>
-            <v-btn icon :color="primaryBlue" @click="downloadFile('geojson')">
-              <v-icon>mdi-download</v-icon>
-            </v-btn>
-          </template>
-        </v-select>
-      </v-col>
-      <v-col cols="2">
-        <v-select
-          v-if="mode == modes.csvTopojson || mode == modes.csvGeojson"
-          v-model="geoId"
-          :items="geoProperties"
-          label="geometry id field"
-        />
-      </v-col>
-      <v-col v-if="csvError" cols="12">
-        <v-alert type="error" dense dismissible>
-          {{ csvError }}
-        </v-alert>
-      </v-col>
-      <v-col v-if="topojsonError" cols="12">
-        <v-alert type="error" dense dismissible>
-          {{ topojsonError }}
-        </v-alert>
-      </v-col>
-      <v-col v-if="geojsonError" cols="12">
-        <v-alert type="error" dense dismissible>
-          {{ geojsonError }}
-        </v-alert>
-      </v-col>
-      <v-col v-if="syncError" cols="12">
-        <v-alert type="error" dense dismissible>
-          {{ syncError }}
-        </v-alert>
-      </v-col>
-    </v-row>
-  </div>
+  <v-row>
+    <v-col class="py-0" cols="2">
+      <v-select
+        v-model="mode"
+        :items="availableModes"
+        label="what is your input data?"
+        hint="selection will reset geometry data"
+      />
+    </v-col>
+    <v-col class="py-0" cols="3">
+      <v-select
+        v-if="
+          mode == modes.csv ||
+          mode == modes.csvTopojson ||
+          mode == modes.csvGeojson
+        "
+        v-model="csvIndex"
+        :items="csvFiles"
+        item-text="filename"
+        item-value="index"
+        label="csv file"
+      >
+        <template #append-outer>
+          <v-btn icon :color="primaryBlue" @click="downloadFile('csv')">
+            <v-icon>mdi-download</v-icon>
+          </v-btn>
+        </template>
+      </v-select>
+      <v-select
+        v-if="mode == modes.topojson"
+        v-model="topojsonIndex"
+        :items="topojsonFiles"
+        item-text="filename"
+        item-value="index"
+        label="topojson file"
+      >
+        <template #append-outer>
+          <v-btn icon :color="primaryBlue" @click="downloadFile('topojson')">
+            <v-icon>mdi-download</v-icon>
+          </v-btn>
+        </template>
+      </v-select>
+      <v-select
+        v-if="mode == modes.geojson"
+        v-model="geojsonIndex"
+        :items="geojsonFiles"
+        item-text="filename"
+        item-value="index"
+        label="geojson file"
+      >
+        <template #append-outer>
+          <v-btn icon :color="primaryBlue" @click="downloadFile('geojson')">
+            <v-icon>mdi-download</v-icon>
+          </v-btn>
+        </template>
+      </v-select>
+    </v-col>
+    <v-col class="py-0" cols="2">
+      <v-select
+        v-if="mode == modes.csvTopojson || mode == modes.csvGeojson"
+        v-model="csvId"
+        :items="csvProperties"
+        label="csv id field"
+      />
+    </v-col>
+    <v-col class="py-0" cols="3">
+      <v-select
+        v-if="mode == modes.csvTopojson"
+        v-model="topojsonIndex"
+        :items="topojsonFiles"
+        item-text="filename"
+        item-value="index"
+        label="topojson file"
+      >
+        <template #append-outer>
+          <v-btn icon :color="primaryBlue" @click="downloadFile('topojson')">
+            <v-icon>mdi-download</v-icon>
+          </v-btn>
+        </template>
+      </v-select>
+      <v-select
+        v-if="mode == modes.csvGeojson"
+        v-model="geojsonIndex"
+        :items="geojsonFiles"
+        item-text="filename"
+        item-value="index"
+        label="geojson file"
+      >
+        <template #append-outer>
+          <v-btn icon :color="primaryBlue" @click="downloadFile('geojson')">
+            <v-icon>mdi-download</v-icon>
+          </v-btn>
+        </template>
+      </v-select>
+    </v-col>
+    <v-col class="py-0" cols="2">
+      <v-select
+        v-if="mode == modes.csvTopojson || mode == modes.csvGeojson"
+        v-model="geoId"
+        :items="geoProperties"
+        label="geometry id field"
+      />
+    </v-col>
+    <v-col v-if="csvError" class="py-0" cols="12">
+      <v-alert type="error" dense dismissible>
+        {{ csvError }}
+      </v-alert>
+    </v-col>
+    <v-col v-if="topojsonError" class="py-0" cols="12">
+      <v-alert type="error" dense dismissible>
+        {{ topojsonError }}
+      </v-alert>
+    </v-col>
+    <v-col v-if="geojsonError" class="py-0" cols="12">
+      <v-alert type="error" dense dismissible>
+        {{ geojsonError }}
+      </v-alert>
+    </v-col>
+    <v-col v-if="syncError" class="py-0" cols="12">
+      <v-alert type="error" dense dismissible>
+        {{ syncError }}
+      </v-alert>
+    </v-col>
+  </v-row>
 </template>
 
 <script>
 import { mapActions, mapMutations, mapState } from 'vuex'
 import { aggregateOps } from '~/constants/aggregate'
-import axios from 'axios'
+import { downloadFileFromMinio } from '~/api/minio'
 import fileDownload from 'js-file-download'
 import modes from '~/constants/modes'
 import { primaryBlue } from '~/static/js/colours'
@@ -148,16 +146,13 @@ export default {
       getCsvFiles: state => state.dataset.csvFiles,
       getCsvId: state => state.dataset.csvId,
       getCsvIndex: state => state.dataset.csvIndex,
-      loadCsvProgress: state => state.dataset.loadCsvProgress,
       geojsonError: state => state.dataset.geojsonError,
       getGeoId: state => state.dataset.geoId,
       getGeoIndex: state => state.dataset.geoIndex,
       getGeojsonFiles: state => state.dataset.geojsonFiles,
       geoProperties: state => state.dataset.geoProperties,
-      loadGeoProgress: state => state.dataset.loadGeoProgress,
       topojsonError: state => state.dataset.topojsonError,
       getTopojsonFiles: state => state.dataset.topojsonFiles,
-      getPreLookupAggregate: state => state.dataset.preLookupAggregate,
       getMode: state => state.dataset.mode,
       syncError: state => state.syncError,
     }),
@@ -178,14 +173,6 @@ export default {
     },
     availableAggregates() {
       return Object.keys(aggregateOps)
-    },
-    preLookupAggregate: {
-      get() {
-        return this.getPreLookupAggregate
-      },
-      set(value) {
-        this.setPreLookupAggregate(value)
-      },
     },
     availableModes() {
       const aModes = []
@@ -210,26 +197,10 @@ export default {
       get() {
         return this.getMode
       },
-      async set(value) {
+      set(value) {
         this.setMode(value)
-        this.setCsvIndex(0)
-        this.setGeoIndex(0)
-        if (value === modes.csvTopojson) {
-          await this.loadCsvData()
-          this.addGeoField()
-          this.loadTopojsonData()
-        } else if (value === modes.csvGeojson) {
-          await this.loadCsvData()
-          this.addGeoField()
-          this.loadGeojsonData()
-        } else if (value === modes.topojson) {
-          this.loadTopojsonData()
-        } else if (value === modes.geojson) {
-          this.loadGeojsonData()
-        } else {
-          this.loadCsvData()
-        }
-        this.setDefaultGeometries(value)
+        this.setCsvIndex(null)
+        this.setGeoIndex({ index: null, type: 'none' })
       },
     },
     csvIndex: {
@@ -237,32 +208,29 @@ export default {
         return this.getCsvIndex
       },
       async set(value) {
-        this.setCsvIndex(value)
-        this.setCsvId('')
-        await this.loadCsvData()
-        if (this.mode === modes.csvTopojson) {
-          this.addGeoField()
-        }
+        this.setLoading(true)
+        await this.setCsvIndex(value)
+        this.setLoading(false)
       },
     },
     topojsonIndex: {
       get() {
         return this.getGeoIndex
       },
-      set(value) {
-        this.setGeoIndex(value)
-        this.setGeoId('')
-        this.loadTopojsonData()
+      async set(value) {
+        this.setLoading(true)
+        await this.setGeoIndex({ index: value, type: 'topojson' })
+        this.setLoading(false)
       },
     },
     geojsonIndex: {
       get() {
         return this.getGeoIndex
       },
-      set(value) {
-        this.setGeoIndex(value)
-        this.setGeoId('')
-        this.loadGeojsonData()
+      async set(value) {
+        this.setLoading(true)
+        await this.setGeoIndex({ index: value, type: 'geojson' })
+        this.setLoading(false)
       },
     },
     csvProperties() {
@@ -280,7 +248,7 @@ export default {
           return c.name === value
         })[0]
         this.addAesthetic('detail')
-        this.updateAesthetics(['detail', [idColumn]])
+        this.updateAesthetic({ name: 'detail', value: [idColumn] })
       },
     },
     geoId: {
@@ -294,22 +262,17 @@ export default {
   },
   methods: {
     ...mapMutations({
+      setLoading: 'setLoading',
       addAesthetic: 'geometries/addAesthetic',
-      updateAesthetics: 'geometries/updateAesthetics',
-      addGeoField: 'dataset/addGeoField',
       setCsvId: 'dataset/setCsvId',
-      setCsvIndex: 'dataset/setCsvIndex',
       setGeoId: 'dataset/setGeoId',
-      setGeoIndex: 'dataset/setGeoIndex',
-      loadGeojsonData: 'dataset/loadGeojsonData',
-      setMode: 'dataset/setMode',
-      setPreLookupAggregate: 'dataset/setPreLookupAggregate',
       setDefaultGeometries: 'geometries/setDefaultGeometries',
     }),
     ...mapActions({
-      loadCsvData: 'dataset/loadCsvData',
-      loadGeojsonData: 'dataset/loadGeojsonData',
-      loadTopojsonData: 'dataset/loadTopojsonData',
+      setMode: 'dataset/setMode',
+      updateAesthetic: 'geometries/updateAesthetic',
+      setCsvIndex: 'dataset/setCsvIndex',
+      setGeoIndex: 'dataset/setGeoIndex',
     }),
     async downloadFile(type) {
       let urlString = ''
@@ -325,12 +288,12 @@ export default {
         filename = this.geojsonFiles[this.geojsonIndex].filename
       }
 
-      const res = await axios.get(urlString, {})
+      const res = await downloadFileFromMinio(urlString)
       // topojson or geojson files will be objects
-      if (typeof res.data === 'object' && res.data !== null) {
-        fileDownload(JSON.stringify(res.data, null, 2), filename)
+      if (typeof res === 'object' && res !== null) {
+        fileDownload(JSON.stringify(res, null, 2), filename)
       } else {
-        fileDownload(res.data, filename)
+        fileDownload(res, filename)
       }
     },
   },

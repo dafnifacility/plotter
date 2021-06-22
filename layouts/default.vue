@@ -35,7 +35,7 @@
         <v-img
           :contain="true"
           position="left center"
-          src="ui/dafni-logo-white.png"
+          :src="src"
           alt="DAFNI logo"
           width="122"
           height="30"
@@ -61,9 +61,7 @@
       />
     </transition>
     <v-main>
-      <v-container fluid style="border: 0px">
-        <nuxt />
-      </v-container>
+      <nuxt />
     </v-main>
   </v-app>
 </template>
@@ -87,6 +85,12 @@ export default {
       keycloakReady: state => state.auth.keycloakReady,
       keycloakError: state => state.auth.keycloakError,
     }),
+    src() {
+      return process.env.NODE_ENV === 'development'
+        ? '/ui/dafni-logo-white.png'
+        : 'ui/dafni-logo-white.png'
+    },
+
     spinnerText() {
       return this.keycloakReady ? 'Contacting Auth service...' : 'Logging in...'
     },

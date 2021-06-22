@@ -57,14 +57,20 @@ export default {
     Aesthetic,
   },
   data() {
-    return { primaryBlue, aesthetics, addAestheticSelected: null }
+    return { primaryBlue, addAestheticSelected: null }
   },
   computed: {
     ...mapGetters({
-      geometry: 'geometries/geometry',
+      selectedGeometry: 'geometries/selectedGeometry',
     }),
     currentAesthetics() {
-      return Object.keys(this.geometry.aesthetics)
+      return Object.keys(this.selectedGeometry.aesthetics)
+    },
+    aesthetics() {
+      const unselectedAesthetics = aesthetics.filter(
+        a => !this.currentAesthetics.includes(a.name)
+      )
+      return unselectedAesthetics
     },
   },
   methods: {

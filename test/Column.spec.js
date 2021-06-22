@@ -1,6 +1,6 @@
 import { createLocalVue, shallowMount } from '@vue/test-utils'
-import Column from '~/components/Column.vue'
-import { columnProperties } from '~/constants/aesthetics'
+import Column from '~/components/DraggableAesthetic.vue'
+import { aestheticOptions } from '~/constants/aesthetics'
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import Vuex from 'vuex'
@@ -38,10 +38,10 @@ describe('Column', () => {
   })
 
   test('renders right number of Options', () => {
-    expect(wrapper.findAll('option').length).toBe(columnProperties.length)
+    expect(wrapper.findAll('option').length).toBe(aestheticOptions.length)
   })
 
-  test('columnProperties is correct', () => {
-    expect(wrapper.vm.columnProperties).toStrictEqual(columnProperties)
+  test('aestheticOptions is correct', () => {
+    expect(wrapper.vm.aestheticOptions).toStrictEqual(aestheticOptions)
   })
 })

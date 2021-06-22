@@ -1,7 +1,7 @@
 <template>
   <img
     :class="[loadingClass, position]"
-    src="/ui/loading.svg"
+    :src="src"
     width="48"
     height="48"
     alt=""
@@ -19,6 +19,13 @@ export default {
     loadingClass: {
       type: String,
       default: 'loading',
+    },
+  },
+  computed: {
+    src() {
+      return process.env.NODE_ENV === 'development'
+        ? '/ui/loading.svg'
+        : 'ui/loading.svg'
     },
   },
 }

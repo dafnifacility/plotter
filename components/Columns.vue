@@ -10,9 +10,9 @@
       <v-expansion-panels class="pb-2" />
       <draggable
         v-model="columns"
-        :group="{ name: 'aesthetics', pull: 'clone', put: true }"
+        :group="{ name: 'aesthetics', pull: 'clone', put: false }"
         :sort="false"
-        tag="v-expansion-panels"
+        tag="v-card"
         :component-data="getComponentData()"
       >
         <Column
@@ -20,7 +20,6 @@
           :key="column.name"
           :name="column.name"
           :index="i"
-          type="column"
         />
       </draggable>
 
@@ -80,7 +79,8 @@
 </template>
 
 <script>
-import { mapMutations, mapState } from 'vuex'
+import { mapActions, mapMutations, mapState } from 'vuex'
+import _ from 'lodash'
 import Column from '~/components/Column'
 import draggable from 'vuedraggable'
 import { primaryBlue } from '~/static/js/colours'
@@ -97,29 +97,24 @@ export default {
   computed: {
     ...mapState({
       getColumnsInDataFile: state => state.dataset.columnsInDataFile,
-      getColumns: state => state.dataset.columns,
+      columns: state => state.dataset.columns,
       filter: state => state.dataset.filter,
     }),
     columnsInDataFile() {
       const cols = this.getColumnsInDataFile.map(c => {
         return c.name
       })
-      return cols
-    },
-    columns: {
-      get() {
-        return this.getColumns
-      },
-      set(value) {
-        this.setColumns(value)
-      },
+      const unselectedCols = cols.filter(
+        col => !this.columns.find(c => c.name === col)
+      )
+      return unselectedCols
     },
     filterExpression: {
       get() {
         return this.filter
       },
       set(value) {
-        this.setFilter(value)
+        this.debouncedSetFilter(value)
       },
     },
   },
@@ -127,9 +122,13 @@ export default {
     ...mapMutations({
       addCalculateField: 'dataset/addCalculateField',
       addColumn: 'dataset/addColumn',
-      setColumns: 'dataset/setColumns',
+    }),
+    ...mapActions({
       setFilter: 'dataset/setFilter',
     }),
+    debouncedSetFilter: _.debounce(function (value) {
+      this.setFilter(value)
+    }, 500),
     getComponentData() {
       return {
         attrs: {
@@ -153,17 +152,3 @@ export default {
   },
 }
 </script>
-
-<style>
-.list-group {
-  min-height: 20px;
-}
-
-.list-group-item {
-  cursor: move;
-}
-
-.footer-item {
-  opacity: 50%;
-}
-</style>

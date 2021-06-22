@@ -19,6 +19,9 @@
   "plugins": [
     "vue"
   ],
+  "ignorePatterns": [
+    "node_modules/"
+  ],
   // add your custom rules here
   "rules": {
     "prettier/prettier": [

@@ -20,6 +20,13 @@
   border: 0 !important;
 }
 
+.row {
+  margin-right: -12px !important;
+  margin-left: -12px !important;
+  margin-top: 0px !important;
+  margin-bottom: 0px !important;
+}
+
 .status {
   display: inline-block;
   content: ' ';
@@ -61,6 +68,14 @@ code {
   font-weight: 400;
 }
 
+.break {
+  word-break: break-word;
+}
+
+.nowrap {
+  white-space: nowrap;
+}
+
 .primary-button {
   color: $color-white !important;
   background-color: $color-primary-purple !important;
@@ -89,12 +104,54 @@ code {
 
 .pill {
   display: inline-flex;
+  white-space: nowrap;
   padding: 2px 10px;
   border-radius: 20px;
-  border: 1px solid $color-primary-orange;
-  background-color: $color-white;
+  background-color: $color-primary-orange;
   &--full-access {
-    border: 1px solid $color-primary-green;
+    background-color: $color-primary-green;
+  }
+}
+
+.label-type {
+  line-height: 1 !important;
+  &::before {
+      display: inline-flex;
+      content: "";
+      width: 10px;
+      height: 10px;
+      margin-right: 4px;
+      border-radius: 50%;
+  }
+  &--grey {
+    background-color: $color-grey-light;
+    &::before {
+      background-color: $color-grey;
+    }
+  }
+  &--orange {
+    background-color: lighten($color-primary-orange, 45%);
+    &::before {
+      background-color: $color-primary-orange;
+    }
+  }
+  &--green {
+    background-color: lighten($color-primary-green, 45%);
+    &::before {
+      background-color: $color-primary-green;
+    }
+  }
+  &--blue {
+    background-color: lighten($color-primary-blue, 40%);
+    &::before {
+      background-color: $color-primary-blue;
+    }
+  }
+  &--purple {
+    background-color: lighten($color-primary-purple, 40%);
+    &::before {
+      background-color: $color-primary-purple;
+    }
   }
 }
 
@@ -116,5 +173,26 @@ code {
     .v-icon {
       color: $color-primary-green !important;
     }
+  }
+}
+
+.white-space {
+  white-space: nowrap;
+}
+
+table.roles {
+  border-collapse: collapse;
+  thead tr:last-child {
+    border-bottom: 3px solid $color-primary-blue;
+  }
+  tbody tr {
+    border-bottom: 1px solid #e0e0e0;
+    &:nth-child(even) { 
+      background-color: #fafafa;
+    }
+  }
+  th,
+  td {
+    padding: 16px 8px;
   }
 }

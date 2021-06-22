@@ -1,6 +1,10 @@
-import { backendsPromise, visualisationApiUrl } from '~/api/backends/'
+import {
+  backendsPromise,
+  instanceID,
+  visualisationApiUrl,
+} from '~/api/backends/'
 import axios from 'axios'
-import { instanceId } from '~/constants/localUUIDs'
+import { downloadFileFromMinio } from '~/api/minio'
 
 const stateFileName = 'state.json'
 const builderId = 'a734e3e7-ca10-41f2-9638-a19710d6430d'
@@ -11,7 +15,7 @@ export async function setupSyncStore() {
 
 export async function getInstance() {
   await backendsPromise
-  return axios.get(`${visualisationApiUrl}/instances/${instanceId}`)
+  return axios.get(`${visualisationApiUrl}/instances/${instanceID}`)
 }
 
 function getStateFileUrl(listOfFiles) {
@@ -25,7 +29,7 @@ function getStateFileUrl(listOfFiles) {
 export async function getPresignedURLforGET() {
   await backendsPromise
   const response = await axios.get(
-    `${visualisationApiUrl}/instances/${instanceId}/state-sync`
+    `${visualisationApiUrl}/instances/${instanceID}/state-sync`
   )
   return getStateFileUrl(response.data)
 }
@@ -33,7 +37,7 @@ export async function getPresignedURLforGET() {
 export async function getPresignedURLforPUT() {
   await backendsPromise
   const response = await axios.post(
-    `${visualisationApiUrl}/instances/${instanceId}/state-sync`,
+    `${visualisationApiUrl}/instances/${instanceID}/state-sync`,
     {
       files: [stateFileName],
     }
@@ -45,12 +49,7 @@ export async function downloadPlot(plotId) {
   await backendsPromise
   const response = await axios.get(`${visualisationApiUrl}/plots/${plotId}`)
   const presignedUrl = response.data.presigned_urls[0].presigned_url
-  const getResponse = await axios.get(presignedUrl, {
-    headers: {
-      'Content-Type': 'image/png',
-    },
-  })
-  return getResponse.data
+  return await downloadFileFromMinio(presignedUrl)
 }
 
 export async function uploadPlot(plotTitle, plotDescription, filename, file) {
@@ -60,7 +59,7 @@ export async function uploadPlot(plotTitle, plotDescription, filename, file) {
     title: plotTitle,
     description: plotDescription,
     files: [filename],
-    visualisation_instance: instanceId,
+    visualisation_instance: instanceID,
   })
   const presignedUrl = postResponse.data.presigned_urls[0].presigned_url
   plotId = postResponse.data.id
@@ -81,12 +80,7 @@ export async function downloadTemplate(templateId) {
     `${visualisationApiUrl}/templates/${templateId}`
   )
   const presignedUrl = response.data.presigned_urls[0].presigned_url
-  const getResponse = await axios.get(presignedUrl, {
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  })
-  return getResponse
+  return await downloadFileFromMinio(presignedUrl)
 }
 
 export async function uploadTemplate(

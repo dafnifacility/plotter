@@ -1,32 +1,50 @@
+import { backendsPromise, nidMinioUrl, nivsMinioUrl } from '~/api/backends/'
 import axios from 'axios'
-import { backendsPromise } from '~/api/backends/'
+
+export function replaceMinioUrl(presignedUrl, replacementUrl) {
+  if (!replacementUrl) return presignedUrl
+
+  const dafniUrl = 'dafni.rl.ac.uk'
+  const dafniIndex = presignedUrl.indexOf(dafniUrl)
+  const indexToSlice = dafniIndex + dafniUrl.length
+  const presignedUrlMinusHost = presignedUrl.slice(indexToSlice)
+  return replacementUrl.concat(presignedUrlMinusHost)
+}
 
 export async function uploadState(presignedUrl, state) {
   await backendsPromise
-  return await axios.put(presignedUrl, JSON.stringify(state), {
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  })
+  return await axios.put(
+    replaceMinioUrl(presignedUrl, nivsMinioUrl),
+    JSON.stringify(state),
+    {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }
+  )
 }
 
 export async function downloadState(presignedUrl) {
   await backendsPromise
-  const response = await axios.get(presignedUrl, {
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  })
+  const response = await axios.get(
+    replaceMinioUrl(presignedUrl, nivsMinioUrl),
+    {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }
+  )
   return response.data
 }
 
-export async function downloadFile(presignedUrl) {
+export async function downloadFileFromMinio(presignedUrl) {
   await backendsPromise
-  const response = await axios.get(presignedUrl)
+  const response = await axios.get(replaceMinioUrl(presignedUrl, nidMinioUrl))
   return response.data
 }
 
 export default {
+  replaceMinioUrl,
   uploadState,
   downloadState,
 }

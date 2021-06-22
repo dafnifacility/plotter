@@ -16,7 +16,7 @@
           <span>{{ aesthetic.text }}</span>
         </v-tooltip>
       </v-col>
-      <v-col>
+      <v-col class="py-0">
         <draggable
           v-model="aesMap"
           :group="{ name: 'aesthetics', put: true }"
@@ -24,7 +24,7 @@
           tag="v-expansion-panels"
           :component-data="getComponentData()"
         >
-          <Column
+          <DraggableAesthetic
             v-for="(column, i) in aesMap"
             :key="column.name"
             :name="column.name"
@@ -47,17 +47,17 @@
 </template>
 
 <script>
-import { mapGetters, mapMutations } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 import { aesthetics } from '~/constants/aesthetics'
-import Column from './Column'
 import draggable from 'vuedraggable'
+import DraggableAesthetic from './DraggableAesthetic'
 import { primaryBlue } from '~/static/js/colours'
 
 export default {
   name: 'Aesthetic',
   components: {
     draggable,
-    Column,
+    DraggableAesthetic,
   },
   props: {
     name: {
@@ -70,7 +70,7 @@ export default {
   },
   computed: {
     ...mapGetters({
-      geometry: 'geometries/geometry',
+      selectedGeometry: 'geometries/selectedGeometry',
     }),
     aesthetic() {
       return aesthetics.filter(x => {
@@ -79,16 +79,16 @@ export default {
     },
     aesMap: {
       get() {
-        return this.geometry.aesthetics[this.name]
+        return this.selectedGeometry.aesthetics[this.name]
       },
       set(value) {
-        this.updateAesthetics([this.name, value])
+        this.updateAesthetic({ name: this.name, value })
       },
     },
   },
   methods: {
-    ...mapMutations({
-      updateAesthetics: 'geometries/updateAesthetics',
+    ...mapActions({
+      updateAesthetic: 'geometries/updateAesthetic',
     }),
     getComponentData() {
       return {

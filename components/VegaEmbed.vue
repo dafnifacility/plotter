@@ -5,9 +5,9 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex'
+import { mapActions, mapMutations, mapState } from 'vuex'
+import _ from 'lodash'
 import axios from 'axios'
-import embed from 'vega-embed'
 import { uploadPlot } from '~/api/nivs'
 
 export default {
@@ -25,19 +25,9 @@ export default {
     }
   },
   computed: {
-    ...mapGetters({
-      getVegaSpec: 'vegaSpec',
+    ...mapState({
+      authenticated: state => state.auth.authenticated,
     }),
-    vegaSpec() {
-      // sync to backend everytime we need to regenerate the spec
-      this.uploadState()
-      return this.getVegaSpec
-    },
-  },
-  watch: {
-    vegaSpec(v) {
-      if (v) this.draw()
-    },
   },
   async mounted() {
     window.addEventListener('resize', this.handleResize)
@@ -48,29 +38,22 @@ export default {
     window.removeEventListener('resize', this.handleResize)
   },
   methods: {
+    ...mapMutations({
+      setVegaSpecWidth: 'setVegaSpecWidth',
+      setVegaSpecHeight: 'setVegaSpecHeight',
+    }),
     ...mapActions({
-      uploadState: 'uploadState',
+      refreshVegaEmbed: 'refreshVegaEmbed',
     }),
     // whenever the document is resized, re-set the 'fullHeight' variable
-    handleResize(event) {
+    handleResize: _.debounce(function () {
       this.width = this.$refs.box.clientWidth
       this.draw()
-    },
+    }, 1000),
     async draw() {
-      if (!this.vegaSpec) return
-
-      this.vegaSpec.width = 0.7 * this.width
-      this.vegaSpec.height = 0.55 * this.width
-
-      const embedOptions = {
-        actions: false,
-      }
-      try {
-        const res = await embed('#viz', this.vegaSpec, embedOptions)
-        return res.finalize()
-      } catch (error) {
-        console.error('ERROR in vega-embed: ', error)
-      }
+      this.setVegaSpecWidth(0.7 * this.width)
+      this.setVegaSpecHeight(0.55 * this.width)
+      await this.refreshVegaEmbed()
     },
     async uploadPlot(title, description, filename) {
       try {
