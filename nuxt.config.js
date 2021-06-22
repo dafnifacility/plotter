@@ -45,7 +45,13 @@ export default {
         content: process.env.npm_package_description || '',
       },
     ],
-    link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.png' }],
+    link: [
+      {
+        rel: 'icon',
+        type: 'image/x-icon',
+        href: process.env.NODE_ENV === 'development' ? '/favicon.png' : './favicon.png',
+      }
+    ],
   },
   /*
    ** Global CSS
