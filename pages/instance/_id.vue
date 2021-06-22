@@ -17,9 +17,6 @@
       </v-col>
       <v-col cols="12" lg="7">
         <PlotView />
-        <!-- <v-col>
-          <Spec />
-        </v-col> -->
       </v-col>
     </v-row>
     <transition name="fade">
@@ -35,7 +32,6 @@ import Columns from '~/components/Columns'
 import Geometries from '~/components/Geometries'
 import overlay from '~/components/overlay/Overlay'
 import PlotView from '~/components/PlotView'
-// import Spec from '~/components/Spec'
 
 export default {
   name: 'Homepage',
@@ -45,7 +41,6 @@ export default {
     Geometries,
     overlay,
     PlotView,
-    // Spec,
   },
   computed: {
     ...mapState({
