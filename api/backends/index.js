@@ -18,6 +18,7 @@ function useDefaultAPIUrls() {
     'https://dafni-dss-dssauth-review-dev-o2yn5p.staging.dafni.rl.ac.uk'
   discoveryApiUrl =
     'https://dafni-search-and-discovery-api-review-dev-4jxwt5.staging.dafni.rl.ac.uk'
+  // Don't need to replace the urls locally because CORS isn't an issue
   nivsMinioUrl = null
   nidMinioUrl = null
   instanceID = 'b57525e7-0a5a-43da-b489-741c18c9f6d8'

@@ -37,7 +37,7 @@ export async function downloadState(presignedUrl) {
   return response.data
 }
 
-export async function downloadFile(presignedUrl) {
+export async function downloadFileFromMinio(presignedUrl) {
   await backendsPromise
   const response = await axios.get(replaceMinioUrl(presignedUrl, nidMinioUrl))
   return response.data

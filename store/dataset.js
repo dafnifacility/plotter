@@ -1,6 +1,6 @@
 import * as CSV from 'csv-string'
 import { aestheticOptions } from '~/constants/aesthetics'
-import { downloadFile } from '~/api/minio'
+import { downloadFileFromMinio } from '~/api/minio'
 import modes from '~/constants/modes'
 
 export const state = () => {
@@ -232,7 +232,9 @@ export const actions = {
       return
 
     try {
-      const data = await downloadFile(state.csvFiles[state.csvIndex].url)
+      const data = await downloadFileFromMinio(
+        state.csvFiles[state.csvIndex].url
+      )
       const csvData = CSV.parse(data)
       const columnNames = csvData[0]
       const columns = columnNames.map((columnName, i) => {
@@ -259,7 +261,9 @@ export const actions = {
       return
 
     try {
-      const data = await downloadFile(state.topojsonFiles[state.geoIndex].url)
+      const data = await downloadFileFromMinio(
+        state.topojsonFiles[state.geoIndex].url
+      )
       if ('objects' in data) {
         const object = Object.keys(data.objects)[0]
         const properties = data.objects[object].geometries[0].properties
@@ -298,7 +302,9 @@ export const actions = {
     if (state.geoIndex === null || state.geoIndex >= state.geojsonFiles.length)
       return
     try {
-      const data = await downloadFile(state.geojsonFiles[state.geoIndex].url)
+      const data = await downloadFileFromMinio(
+        state.geojsonFiles[state.geoIndex].url
+      )
       if ('features' in data) {
         const properties = data.features[0].properties
         const propertyNames = Object.keys(properties)

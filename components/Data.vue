@@ -128,7 +128,7 @@
 <script>
 import { mapActions, mapMutations, mapState } from 'vuex'
 import { aggregateOps } from '~/constants/aggregate'
-import { downloadFile } from '~/api/minio'
+import { downloadFileFromMinio } from '~/api/minio'
 import fileDownload from 'js-file-download'
 import modes from '~/constants/modes'
 import { primaryBlue } from '~/static/js/colours'
@@ -288,7 +288,7 @@ export default {
         filename = this.geojsonFiles[this.geojsonIndex].filename
       }
 
-      const res = await downloadFile(urlString)
+      const res = await downloadFileFromMinio(urlString)
       // topojson or geojson files will be objects
       if (typeof res === 'object' && res !== null) {
         fileDownload(JSON.stringify(res, null, 2), filename)
