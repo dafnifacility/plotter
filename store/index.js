@@ -3,6 +3,23 @@ import { downloadState, replaceMinioUrl, uploadState } from '~/api/minio'
 import embed from 'vega-embed'
 import modes from '~/constants/modes'
 import { setupSyncStore } from '~/api/nivs'
+import Vue from 'vue'
+
+function getLoader() {
+  const obj = {
+    actions: false,
+  }
+  if (process.env.NODE_ENV !== 'development') {
+    obj.loader = {
+      http: {
+        headers: {
+          Authorization: `Bearer ${Vue.prototype.$keycloak.token}`,
+        },
+      },
+    }
+  }
+  return obj
+}
 
 function vegaMark(geometry) {
   const nonNullOptions = Object.fromEntries(
@@ -265,9 +282,7 @@ export const actions = {
   async refreshVegaEmbed({ state, dispatch }) {
     try {
       await dispatch('uploadState')
-      const res = await embed('#viz', state.vegaSpec, {
-        actions: false,
-      })
+      const res = await embed('#viz', state.vegaSpec, getLoader())
       return res.finalize()
     } catch (error) {
       console.error('ERROR in vega-embed: ', error)
