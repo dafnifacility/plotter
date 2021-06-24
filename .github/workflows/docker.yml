@@ -4,6 +4,7 @@ on:
   push:
     branches:
     - master
+    - rose/send-auth-from-vega
     tags: ["v*"]
 
 jobs:
