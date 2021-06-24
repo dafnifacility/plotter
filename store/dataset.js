@@ -210,7 +210,7 @@ export const actions = {
     commit('setFilter', newState.filter)
   },
   async loadData({ state, dispatch }) {
-    await dispatch('discovery/getDatasetsAndPopulateFileLists', null, {
+    await dispatch('nid/getDatasetsAndPopulateFileLists', null, {
       root: true,
     })
     if (state.mode === modes.csv) {

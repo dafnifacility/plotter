@@ -1,5 +1,5 @@
 import { getInstance } from '~/api/nivs'
-import { getMetadataForDatasets } from '~/api/discovery'
+import { getMetadataForDatasets } from '~/api/nid'
 
 export const state = () => ({
   instanceGetError: null,

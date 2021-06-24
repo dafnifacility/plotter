@@ -1,5 +1,5 @@
 {
-  "visualisationApiUrl":"https://dafni-nivs-api.staging.dafni.rl.ac.uk",
+  "visualisationApiUrl": "https://dafni-nivs-api.staging.dafni.rl.ac.uk",
   "dssauthUrl": "https://dafni-dss-api.staging.dafni.rl.ac.uk",
-  "discoveryApiUrl": "https://dafni-search-and-discovery-api.staging.dafni.rl.ac.uk"
+  "nidApiUrl": "https://dafni-nid-api-review-dev-4jxwt5.staging.dafni.rl.ac.uk"
 }
