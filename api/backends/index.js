@@ -17,7 +17,7 @@ function useDefaultAPIUrls() {
   dssauthUrl =
     'https://dafni-dss-dssauth-review-dev-o2yn5p.staging.dafni.rl.ac.uk'
   nidApiUrl =
-    'https://dafni-nid-api-review-dev-4jxwt5.staging.dafni.rl.ac.uk'
+    'https://dafni-nid-api-review-dev-4jxwt5.staging.dafni.rl.ac.uk/nid'
   // Don't need to replace the urls locally because CORS isn't an issue
   nivsMinioUrl = null
   nidMinioUrl = null

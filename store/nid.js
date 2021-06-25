@@ -1,23 +1,19 @@
 import { getInstance } from '~/api/nivs'
-import { getMetadataForDatasets } from '~/api/nid'
+import { getUrlsForDatasets } from '~/api/nid'
 
 export const state = () => ({
   instanceGetError: null,
   metadataGetError: null,
   datasetIds: null,
-  datasetMetadata: null,
-  fileData: null,
+  datasetUrlResponse: null,
 })
 
 export const mutations = {
   setDatasetIds(state, di) {
     state.datasetIds = di
   },
-  setDatasetMetadata(state, dm) {
-    state.datasetMetadata = dm
-  },
-  setFileData(state, fd) {
-    state.fileData = fd
+  setDatasetUrlResponse(state, dur) {
+    state.datasetUrlResponse = dur
   },
   setInstanceError(state, err) {
     state.instanceGetError = err
@@ -39,42 +35,29 @@ export const actions = {
       commit('setInstanceError', `Error getting Instance data from NIVS. ${e}`)
     }
   },
-  async getDatasetMetadata({ state, commit }) {
+  async getDatasetUrls({ state, commit }) {
     try {
-      const response = await getMetadataForDatasets(state.datasetIds)
-      commit('setDatasetMetadata', response.data)
+      const response = await getUrlsForDatasets(state.datasetIds)
+      commit('setDatasetUrlResponse', response.data)
     } catch (e) {
       console.error(e)
       commit('setMetadataError', `Error getting datasets from database. ${e}`)
     }
   },
-  getFileDataFromMetadata({ state, commit }) {
-    let fileData = []
-    for (const id of state.datasetIds) {
-      const files = state.datasetMetadata[id]['dcat:distribution']
-      fileData = fileData.concat(
-        files.map(f => {
-          return {
-            filename: f['spdx:fileName'],
-            url: f['dcat:downloadURL'],
-            type: f['dcat:mediaType'],
-          }
-        })
-      )
-    }
-    commit('setFileData', fileData)
-  },
-  populateFilesByType({ state, commit }) {
+  getFileUrlsAndPopulateFilesByType({ state, commit }) {
     const csvFiles = []
     const topoFiles = []
     const geoFiles = []
-    for (const file of state.fileData) {
-      if (file.filename.endsWith('csv')) {
-        csvFiles.push(file)
-      } else if (file.filename.endsWith('topojson')) {
-        topoFiles.push(file)
-      } else if (file.filename.endsWith('geojson')) {
-        geoFiles.push(file)
+    for (const dataset of state.datasetUrlResponse) {
+      const files = dataset.files_with_urls
+      for (const file of files) {
+        if (file.file.endsWith('csv')) {
+          csvFiles.push(file)
+        } else if (file.file.endsWith('topojson')) {
+          topoFiles.push(file)
+        } else if (file.file.endsWith('geojson')) {
+          geoFiles.push(file)
+        }
       }
     }
     commit('dataset/setCsvFiles', csvFiles, { root: true })
@@ -83,8 +66,7 @@ export const actions = {
   },
   async getDatasetsAndPopulateFileLists({ dispatch }) {
     await dispatch('getDatasetIds')
-    await dispatch('getDatasetMetadata')
-    await dispatch('getFileDataFromMetadata')
-    await dispatch('populateFilesByType')
+    await dispatch('getDatasetUrls')
+    await dispatch('getFileUrlsAndPopulateFilesByType')
   },
 }

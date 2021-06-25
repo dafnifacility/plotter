@@ -1,3 +1,10 @@
+const colorOption = {
+  value: 'color',
+  text: 'Color',
+  default: '#4682b4',
+  type: 'textBox',
+}
+
 export const geometries = [
   {
     value: 'arc',
@@ -9,16 +16,17 @@ export const geometries = [
     options: [
       {
         value: 'innerRadius',
-        vegaKey: ['innerRadius'],
+        text: 'Inner radius',
         default: null,
         type: 'textBox',
       },
       {
         value: 'outerRadius',
-        vegaKey: ['outerRadius'],
+        text: 'Outer radius',
         default: null,
         type: 'textBox',
       },
+      colorOption,
     ],
   },
   {
@@ -28,7 +36,7 @@ export const geometries = [
     description:
       'Area graphs represent multiple data elements as a single area shape. Area marks are often used to show change over time, using either a single area or stacked areas',
     defaultAesthetics: ['x', 'y', 'color'],
-    options: [],
+    options: [colorOption],
   },
   {
     value: 'bar',
@@ -37,7 +45,7 @@ export const geometries = [
     description:
       'Bar marks are useful in many visualizations, including bar charts, stacked bar charts, and timelines',
     defaultAesthetics: ['x', 'y', 'color'],
-    options: [],
+    options: [colorOption],
   },
   {
     value: 'boxPlot',
@@ -46,7 +54,7 @@ export const geometries = [
     description:
       'A box plot summarizes a distribution of quantitative values using a set of summary statistics. The median tick in the box represents the median. The lower and upper parts of the box represent the first and third quartile respectively',
     defaultAesthetics: ['x', 'y', 'color'],
-    options: [],
+    options: [colorOption],
   },
   {
     value: 'circle',
@@ -55,7 +63,7 @@ export const geometries = [
     description:
       'A circle mark is similar to point mark, except that (1) the shape value is always set to circle (2) they are filled by default',
     defaultAesthetics: ['x', 'y', 'size', 'color'],
-    options: [],
+    options: [colorOption],
   },
   {
     value: 'errorband',
@@ -64,7 +72,7 @@ export const geometries = [
     description:
       'An error band summarizes an error range of quantitative values using a set of summary statistics, representing by area. Error band in Vega-Lite can either be used to aggregate raw data or directly visualize aggregated data',
     defaultAesthetics: ['x', 'y', 'color', 'x2', 'y2'],
-    options: [],
+    options: [colorOption],
   },
   {
     value: 'errorbar',
@@ -73,7 +81,7 @@ export const geometries = [
     description:
       'An error bar summarizes an error range of quantitative values using a set of summary statistics, representing by rules (and optional end ticks)',
     defaultAesthetics: ['x', 'y', 'color', 'x2', 'y2'],
-    options: [],
+    options: [colorOption],
   },
   {
     value: 'geoshape',
@@ -83,15 +91,16 @@ export const geometries = [
       'Represents an arbitrary shapes whose geometry is determined by specified TopoJSON/GeoJSON shape data that is projected from geographical coordinates to pixels',
     defaultAesthetics: ['shape', 'color'],
     options: [
+      colorOption,
       {
         value: 'strokeWidth',
-        vegaKey: ['outerRadius'],
+        text: 'Stroke width',
         default: 1,
         type: 'textBox',
       },
       {
         value: 'filled',
-        vegaKey: ['filled'],
+        text: 'Filled',
         default: false,
         type: 'checkBox',
       },
@@ -104,7 +113,7 @@ export const geometries = [
     description:
       'The line mark represents the data points stored in a field with a line connecting all of these points. The line mark represents multiple data element as a single line, akin to area and trail',
     defaultAesthetics: ['x', 'y', 'color'],
-    options: [],
+    options: [colorOption],
   },
   {
     value: 'point',
@@ -113,7 +122,7 @@ export const geometries = [
     description:
       'A point mark represents each data point with a symbol. Point marks are commonly used in visualizations like scatterplots',
     defaultAesthetics: ['x', 'y', 'size', 'color'],
-    options: [],
+    options: [colorOption],
   },
   {
     value: 'rect',
@@ -122,7 +131,7 @@ export const geometries = [
     description:
       'The rect mark represents an arbitrary rectangle. This can be used to create heatmaps or to show ranges on other plots',
     defaultAesthetics: ['x', 'y', 'size', 'color'],
-    options: [],
+    options: [colorOption],
   },
   {
     value: 'rule',
@@ -131,7 +140,7 @@ export const geometries = [
     description:
       'The rule mark represents each data point as a line segment. It can be used in two ways. First, as a line segment that spans the complete width or height of a view. Second, a rule can be used to draw a line segment between two positions',
     defaultAesthetics: ['x', 'y', 'color', 'x2', 'y2'],
-    options: [],
+    options: [colorOption],
   },
   {
     value: 'square',
@@ -140,7 +149,7 @@ export const geometries = [
       'Square marks are similar to point marks, except that (1) the shape value is always set to square (2) they are filled by default',
     icon: 'mdi-square',
     defaultAesthetics: ['x', 'y', 'size', 'color'],
-    options: [],
+    options: [colorOption],
   },
   {
     value: 'text',
@@ -149,7 +158,7 @@ export const geometries = [
     description:
       'A text mark represents each data point with a text instead of a point',
     defaultAesthetics: ['text', 'x', 'y', 'color'],
-    options: [],
+    options: [colorOption],
   },
   {
     value: 'tick',
@@ -158,7 +167,7 @@ export const geometries = [
     description:
       'The tick mark represents each data point as a short line. This is a useful mark for displaying the distribution of values in a field',
     defaultAesthetics: ['x', 'y'],
-    options: [],
+    options: [colorOption],
   },
   {
     value: 'trail',
@@ -167,6 +176,6 @@ export const geometries = [
       'The trail mark represents the data points stored in a field with a line connecting all of these points. Trail is similar to the line mark but a trail can have variable widths determined by backing data',
     icon: 'mdi-chart-line-stacked',
     defaultAesthetics: ['x', 'y', 'size', 'color'],
-    options: [],
+    options: [colorOption],
   },
 ]

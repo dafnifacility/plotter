@@ -3,7 +3,7 @@
     <v-text-field
       v-if="option.type === 'textBox'"
       v-model="optionValue"
-      :label="option.value"
+      :label="option.text"
       :clearable="option.optional"
       :hint="option.hint"
       dense
@@ -11,7 +11,7 @@
     <v-checkbox
       v-if="option.type === 'checkBox'"
       v-model="optionValue"
-      :label="option.value"
+      :label="option.text"
       :hint="option.hint"
       persistent-hint
       dense
