@@ -17,7 +17,7 @@
         "
         v-model="csvIndex"
         :items="csvFiles"
-        item-text="filename"
+        item-text="file"
         item-value="index"
         label="csv file"
       >
@@ -31,7 +31,7 @@
         v-if="mode == modes.topojson"
         v-model="topojsonIndex"
         :items="topojsonFiles"
-        item-text="filename"
+        item-text="file"
         item-value="index"
         label="topojson file"
       >
@@ -45,7 +45,7 @@
         v-if="mode == modes.geojson"
         v-model="geojsonIndex"
         :items="geojsonFiles"
-        item-text="filename"
+        item-text="file"
         item-value="index"
         label="geojson file"
       >
@@ -69,7 +69,7 @@
         v-if="mode == modes.csvTopojson"
         v-model="topojsonIndex"
         :items="topojsonFiles"
-        item-text="filename"
+        item-text="file"
         item-value="index"
         label="topojson file"
       >
@@ -83,7 +83,7 @@
         v-if="mode == modes.csvGeojson"
         v-model="geojsonIndex"
         :items="geojsonFiles"
-        item-text="filename"
+        item-text="file"
         item-value="index"
         label="geojson file"
       >
@@ -279,13 +279,13 @@ export default {
       let filename = ''
       if (type === modes.csv) {
         urlString = this.csvFiles[this.csvIndex].url
-        filename = this.csvFiles[this.csvIndex].filename
+        filename = this.csvFiles[this.csvIndex].file
       } else if (type === modes.topojson) {
         urlString = this.topojsonFiles[this.topojsonIndex].url
-        filename = this.topojsonFiles[this.topojsonIndex].filename
+        filename = this.topojsonFiles[this.topojsonIndex].file
       } else if (type === modes.geojson) {
         urlString = this.geojsonFiles[this.geojsonIndex].url
-        filename = this.geojsonFiles[this.geojsonIndex].filename
+        filename = this.geojsonFiles[this.geojsonIndex].file
       }
 
       const res = await downloadFileFromMinio(urlString)

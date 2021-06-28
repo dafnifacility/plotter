@@ -3,7 +3,7 @@ import axios from 'axios'
 /* eslint-disable */
 export let visualisationApiUrl = process.env.visualisationApiUrl
 export let dssauthUrl = process.env.dssauthUrl
-export let discoveryApiUrl = process.env.discoveryApiUrl
+export let nidApiUrl = process.env.nidApiUrl
 export let nivsMinioUrl = process.env.nivsMinioUrl
 export let nidMinioUrl = process.env.nidMinioUrl
 export let environment = process.env.environment
@@ -16,8 +16,8 @@ function useDefaultAPIUrls() {
     'https://dafni-nivs-api-review-dev-4jxwt5.staging.dafni.rl.ac.uk'
   dssauthUrl =
     'https://dafni-dss-dssauth-review-dev-o2yn5p.staging.dafni.rl.ac.uk'
-  discoveryApiUrl =
-    'https://dafni-search-and-discovery-api-review-dev-4jxwt5.staging.dafni.rl.ac.uk'
+  nidApiUrl =
+    'https://dafni-nid-api-review-dev-4jxwt5.staging.dafni.rl.ac.uk/nid'
   // Don't need to replace the urls locally because CORS isn't an issue
   nivsMinioUrl = null
   nidMinioUrl = null
@@ -34,7 +34,7 @@ async function backends() {
     const response = await axios.get('./backends/backends.json')
     visualisationApiUrl = response.data.visualisationApiUrl
     dssauthUrl = response.data.dssauthUrl
-    discoveryApiUrl = response.data.discoveryApiUrl
+    nidApiUrl = response.data.nidApiUrl
     nivsMinioUrl = response.data.nivsMinioUrl
     nidMinioUrl = response.data.nidMinioUrl
     environment = response.data.node_env

@@ -120,7 +120,14 @@ export const mutations = {
 }
 
 export const actions = {
-  removeAesthetic({ commit, dispatch }, { aesthetic, index }) {
+  removeAesthetic({ commit, dispatch, state }, { aesthetic, index }) {
+    const aesList = state.geometries[state.geometryIndex].aesthetics
+    const oldValue = aesList[aesthetic][0]
+    if (oldValue.calculate) {
+      // If the existing aesthetic has a calculate field we need to delete
+      // the transform as well as the aesthetic
+      dispatch('removeTransform', aesthetic, { root: true })
+    }
     commit('removeAestheticColumn', { aesthetic, index })
     dispatch('updateEncoding', { name: aesthetic, value: null }, { root: true })
   },
@@ -163,7 +170,7 @@ export const actions = {
       // when diff length is 0 this means a user has moved the draggable
       // from one aesthetic to another this should leave the original
       // aesthetic empty
-      if (oldValue.calculate) {
+      if (oldValue[0].calculate) {
         // If the existing aesthetic has a calculate field we need to delete
         // the transform as well as the aesthetic
         dispatch('removeTransform', name, { root: true })

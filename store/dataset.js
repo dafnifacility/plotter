@@ -135,6 +135,39 @@ function guessColumnType(data) {
 }
 
 export const actions = {
+  async setCsvFiles({ commit, state, dispatch }, files) {
+    commit('setCsvFiles', files)
+    await dispatch(
+      'setVegaSpecData',
+      {
+        type: 'csv',
+        index: state.csvIndex,
+      },
+      { root: true }
+    )
+  },
+  async setGeojsonFiles({ commit, state, dispatch }, files) {
+    commit('setGeojsonFiles', files)
+    await dispatch(
+      'setVegaSpecData',
+      {
+        type: 'geojson',
+        index: state.geoIndex,
+      },
+      { root: true }
+    )
+  },
+  async setTopojsonFiles({ commit, state, dispatch }, files) {
+    commit('setTopojsonFiles', files)
+    await dispatch(
+      'setVegaSpecData',
+      {
+        type: 'topojson',
+        index: state.geoIndex,
+      },
+      { root: true }
+    )
+  },
   setMode({ commit }, mode) {
     commit('setMode', mode)
     if (mode === modes.topojson || mode === modes.csvTopojson) {
@@ -210,7 +243,7 @@ export const actions = {
     commit('setFilter', newState.filter)
   },
   async loadData({ state, dispatch }) {
-    await dispatch('discovery/getDatasetsAndPopulateFileLists', null, {
+    await dispatch('nid/getDatasetsAndPopulateFileLists', null, {
       root: true,
     })
     if (state.mode === modes.csv) {

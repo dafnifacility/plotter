@@ -4,6 +4,7 @@ on:
   push:
     branches:
     - master
+    - rose/use-nid-not-snd
     tags: ["v*"]
 
 jobs:
