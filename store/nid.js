@@ -44,7 +44,7 @@ export const actions = {
       commit('setMetadataError', `Error getting datasets from database. ${e}`)
     }
   },
-  getFileUrlsAndPopulateFilesByType({ state, commit }) {
+  async getFileUrlsAndPopulateFilesByType({ state, dispatch }) {
     const csvFiles = []
     const topoFiles = []
     const geoFiles = []
@@ -60,9 +60,15 @@ export const actions = {
         }
       }
     }
-    commit('dataset/setCsvFiles', csvFiles, { root: true })
-    commit('dataset/setTopojsonFiles', topoFiles, { root: true })
-    commit('dataset/setGeojsonFiles', geoFiles, { root: true })
+    if (csvFiles.length > 0) {
+      await dispatch('dataset/setCsvFiles', csvFiles, { root: true })
+    }
+    if (topoFiles.length > 0) {
+      await dispatch('dataset/setTopojsonFiles', topoFiles, { root: true })
+    }
+    if (geoFiles.length > 0) {
+      await dispatch('dataset/setGeojsonFiles', geoFiles, { root: true })
+    }
   },
   async getDatasetsAndPopulateFileLists({ dispatch }) {
     await dispatch('getDatasetIds')
