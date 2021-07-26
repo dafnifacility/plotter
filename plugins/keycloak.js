@@ -58,17 +58,14 @@ function tokenInterceptor() {
     if (config && config.url.includes('geonames')) {
       return config
     }
-    console.log('===== config.url ======', config.url)
     if (
       config &&
       process.env.NODE_ENV === 'development' &&
       config.url.includes('minio')
     ) {
-      console.log('Setting withCredentials true')
       config.withCredentials = true
       return config
     }
-    console.log('Setting Authz header')
     const token = Vue.prototype.$keycloak ? Vue.prototype.$keycloak.token : ''
     if (token) {
       config.headers.Authorization = `Bearer ${Vue.prototype.$keycloak.token}`
