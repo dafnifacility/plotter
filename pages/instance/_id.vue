@@ -46,19 +46,7 @@ export default {
     ...mapState({
       loading: state => state.loading,
       authenticated: state => state.auth.authenticated,
-      getUrl: state => state.dataset.url,
     }),
-    url: {
-      get() {
-        return this.getUrl
-      },
-      async set(value) {
-        this.setLoading(true)
-        this.setUrl(value)
-        await this.loadData()
-        this.setLoading(false)
-      },
-    },
   },
   watch: {
     authenticated() {
@@ -71,11 +59,9 @@ export default {
   methods: {
     ...mapMutations({
       setLoading: 'setLoading',
-      setUrl: 'dataset/setUrl',
     }),
     ...mapActions({
       loadStore: 'loadStore',
-      loadData: 'dataset/loadData',
     }),
     async initialiseApp() {
       if (this.authenticated) {

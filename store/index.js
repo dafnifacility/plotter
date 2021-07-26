@@ -266,11 +266,11 @@ export const actions = {
   async setVegaSpecData({ state, commit, dispatch }, { type, index }) {
     await backendsPromise
     let data = {}
-    if (type === 'csv') {
+    if (index !== null && type === 'csv') {
       data = vegaDataCsv(state.dataset.csvFiles[index].url)
-    } else if (type === 'geojson') {
+    } else if (index !== null && type === 'geojson') {
       data = vegaDataGeoJson(state.dataset.geojsonFiles[index].url)
-    } else if (type === 'topojson') {
+    } else if (index !== null && type === 'topojson') {
       data = vegaDataTopoJson(
         state.dataset.topojsonFiles[index].url,
         state.dataset.topojsonObject

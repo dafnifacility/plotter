@@ -26,7 +26,7 @@ export default {
     keycloakRealm: process.env.KEYCLOAK_REALM,
     keycloakClient: process.env.KEYCLOAK_CLIENT,
     INSTANCE_ID:
-      process.env.INSTANCE_ID || 'b57525e7-0a5a-43da-b489-741c18c9f6d8',
+      process.env.INSTANCE_ID || '2133fb7b-1b28-4ef5-9e9c-1fc11e0ce24b',
   },
 
   /*
@@ -49,8 +49,11 @@ export default {
       {
         rel: 'icon',
         type: 'image/x-icon',
-        href: process.env.NODE_ENV === 'development' ? '/favicon.png' : './favicon.png',
-      }
+        href:
+          process.env.NODE_ENV === 'development'
+            ? '/favicon.png'
+            : './favicon.png',
+      },
     ],
   },
   /*

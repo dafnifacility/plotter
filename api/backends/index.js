@@ -21,7 +21,7 @@ function useDefaultAPIUrls() {
   // Don't need to replace the urls locally because CORS isn't an issue
   nivsMinioUrl = null
   nidMinioUrl = null
-  instanceID = 'b57525e7-0a5a-43da-b489-741c18c9f6d8'
+  instanceID = '2133fb7b-1b28-4ef5-9e9c-1fc11e0ce24b'
 }
 
 if (appMode !== 'production') {

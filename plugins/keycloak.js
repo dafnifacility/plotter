@@ -55,10 +55,14 @@ function dafniWideLogin() {
  */
 function tokenInterceptor() {
   setRequestInterceptor(config => {
-    if (config.url.includes('geonames')) {
+    if (config && config.url.includes('geonames')) {
       return config
     }
-    if (config.url.includes('minio') || config.url.includes('nims-io')) {
+    if (
+      config &&
+      process.env.NODE_ENV === 'development' &&
+      config.url.includes('minio')
+    ) {
       config.withCredentials = true
       return config
     }
