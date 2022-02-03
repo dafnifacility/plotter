@@ -2,15 +2,15 @@
 <html lang="invalid"><head><meta charset="UTF-8"><title>Login</title><script>
   (function(){
     const settings = {
-      keycloakUrl: '{{env "KEYCLOAK_ENDPOINT"}}',
-      keycloakRealm: '{{env "KEYCLOAK_REALM"}}',
-      keycloakClientId: '{{env "KEYCLOAK_CLIENT_ALT"}}',
+      keycloakUrl: 'https://keycloak.secure.dafni.rl.ac.uk/auth/',
+      keycloakRealm: 'Production',
+      keycloakClientId: 'dafni-main',
 
-      cookieName: '{{env "KEYCLOAK_LOGIN_COOKIE_NAME"}}',
-      cookieDomain: '{{env "KEYCLOAK_LOGIN_COOKIE_DOMAIN"}}',
+      cookieName: '__Secure-dafni',
+      cookieDomain: '.secure.dafni.rl.ac.uk',
       cookieExpirationHours: 2,
 
-      redirectDomainCheck: '{{env "KEYCLOAK_LOGIN_REDIRECT_CHECK"}}'
+      redirectDomainCheck: 'dafni.rl.ac.uk'
     }
 
     const keycloakScript = document.createElement('script')

@@ -13,15 +13,15 @@ const appMode = process.env.NODE_ENV
 
 function useDefaultAPIUrls() {
   visualisationApiUrl =
-    'https://dafni-nivs-api-review-dev-4jxwt5.staging.dafni.rl.ac.uk'
+    'https://dafni-nivs-api.secure.dafni.rl.ac.uk'
   dssauthUrl =
-    'https://dafni-dss-dssauth-review-dev-o2yn5p.staging.dafni.rl.ac.uk'
+    'https://dafni-dss-dssauth.secure.dafni.rl.ac.uk'
   nidApiUrl =
-    'https://dafni-nid-api-review-dev-4jxwt5.staging.dafni.rl.ac.uk/nid'
+    'https://dafni-nid-api.secure.dafni.rl.ac.uk/nid'
   // Don't need to replace the urls locally because CORS isn't an issue
-  nivsMinioUrl = null
-  nidMinioUrl = null
-  instanceID = '2133fb7b-1b28-4ef5-9e9c-1fc11e0ce24b'
+  nivsMinioUrl = 'https://fwd.secure.dafni.rl.ac.uk/nivsstore'
+  nidMinioUrl = 'https://fwd.secure.dafni.rl.ac.uk/nidminio'
+  instanceID = '0aac6c3d-cf17-4bbe-8d23-d2ae1d633d7d'
 }
 
 if (appMode !== 'production') {

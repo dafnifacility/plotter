@@ -58,14 +58,14 @@ function tokenInterceptor() {
     if (config && config.url.includes('geonames')) {
       return config
     }
-    if (
-      config &&
-      process.env.NODE_ENV === 'development' &&
-      config.url.includes('minio')
-    ) {
-      config.withCredentials = true
-      return config
-    }
+    // if (
+    //   config &&
+    //   process.env.NODE_ENV === 'development' &&
+    //   config.url.includes('minio')
+    // ) {
+    //   config.withCredentials = true
+    //   return config
+    // }
     const token = Vue.prototype.$keycloak ? Vue.prototype.$keycloak.token : ''
     if (token) {
       config.headers.Authorization = `Bearer ${Vue.prototype.$keycloak.token}`
@@ -85,10 +85,9 @@ function tokenInterceptor() {
 async function getKeycloakSettings(context) {
   let keycloakConfig = {
     url:
-      context.env.keycloakUrl ||
-      'https://keycloak.staging.dafni.rl.ac.uk/auth/',
-    realm: context.env.keycloakRealm || 'testrealm',
-    clientId: context.env.keycloakClient || 'testclient',
+      context.env.keycloakUrl || 'https://keycloak.secure.dafni.rl.ac.uk/auth/',
+    realm: context.env.keycloakRealm || 'Production',
+    clientId: context.env.keycloakClient || 'dafni-main',
   }
 
   try {

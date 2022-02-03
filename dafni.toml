@@ -2,9 +2,9 @@
 disableBackendsPrefix=true
 
 [backends]
-VISUALISATION_API_URL="https://dafni-nivs-api-review-dev-4jxwt5.staging.dafni.rl.ac.uk"
+VISUALISATION_API_URL="https://dafni-nivs-api.secure.dafni.rl.ac.uk"
 NID_URL="https://dafni-nid-api-review-dev-4jxwt5.staging.dafni.rl.ac.uk"
-DSS_AUTH="https://dafni-dss-dssauth-review-dev-o2yn5p.staging.dafni.rl.ac.uk"
+DSS_AUTH="https://dafni-dss-dssauth.secure.dafni.rl.ac.uk"
 NODE_ENV="dev"
 
 KEYCLOAK_ENDPOINT="https://keycloak.staging.dafni.rl.ac.uk/auth/"
