@@ -1,0 +1,4 @@
+#!/bin/bash
+
+
+docker run -it --publish 5001:5001 --env INSTANCE_ID='0aac6c3d-cf17-4bbe-8d23-d2ae1d633d7d' --env NID_MINIO_URL="https://fwd.secure.dafni.rl.ac.uk/nidminio" --env NIVS_MINIO_URL="https://fwd.secure.dafni.rl.ac.uk/nivsstore" --env VISUALISATION_API_URL="https://dafni-nivs-api.secure.dafni.rl.ac.uk" --env NID_URL="https://dafni-nid-api.secure.dafni.rl.ac.uk/nid" --env DSS_AUTH="https://dafni-dss-dssauth.secure.dafni.rl.ac.uk" --env NODE_ENV="production" --env KEYCLOAK_ENDPOINT="https://keycloak.secure.dafni.rl.ac.uk/auth/" --env KEYCLOAK_REALM="Production" --env KEYCLOAK_CLIENT="dafni-main" --env KEYCLOAK_CLIENT_ALT="dafni" --env KEYCLOAK_LOGIN_COOKIE_NAME="__Secure-dafni" --env KEYCLOAK_LOGIN_COOKIE_DOMAIN=".secure.dafni.rl.ac.uk" --env KEYCLOAK_LOGIN_REDIRECT_CHECK="dafni.rl.ac.uk" plotter
