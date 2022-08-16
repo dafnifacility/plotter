@@ -6,7 +6,7 @@ log
 uri path_regexp /instance/[a-f0-9\-]{36} /
 root * /srv
 file_server {
-  hide .git Caddyfile README.md
+  # hide .git dafni.toml Caddyfile vault-secrets README.md
 }
 respond /healthz 204
 @backends {
@@ -17,15 +17,5 @@ handle @backends {
   header Cache-Control public,max-age=10800
   templates {
     mime application/json
-  }
-}
-@keycloak {
-  path */keycloak/login.html
-  path */keycloak/test/test.html
-}
-handle @keycloak {
-  header Cache-Control public,max-age=7200
-  templates {
-    mime text/html
   }
 }
