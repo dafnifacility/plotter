@@ -22,7 +22,6 @@ function getStateFileUrl(listOfFiles) {
 }
 
 export async function getPresignedURLforGET() {
-  console.log('GET STATE SYNC')
   const response = await axios.get(
     `${visualisationApiUrl}/instances/${instanceID}/state-sync`
   )
@@ -30,7 +29,6 @@ export async function getPresignedURLforGET() {
 }
 
 export async function getPresignedURLforPUT() {
-  console.log('STATE SYNC')
   const response = await axios.post(
     `${visualisationApiUrl}/instances/${instanceID}/state-sync`,
     {

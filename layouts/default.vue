@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <v-navigation-drawer
-      v-if="authenticated && hasUserRole"
+      v-if="authenticated"
       v-model="drawerRight"
       width="240"
       app

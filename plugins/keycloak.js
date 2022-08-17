@@ -116,7 +116,6 @@ function authRefreshError(kc, context) {
 function keycloakReady(kc, context) {
   context.store.commit('auth/keycloakReady', true)
   if (kc.authenticated) {
-    console.log('AUTHENTICATED')
     setRequestInterceptor(keycloakInternalFns.tokenInterceptor)
     const roles =
       (kc.tokenParsed.realm_access && kc.tokenParsed.realm_access.roles) || []
