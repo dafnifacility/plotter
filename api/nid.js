@@ -1,9 +1,8 @@
-import { backendsPromise, nidApiUrl } from '~/api/backends/'
 import axios from 'axios'
+import { nidApiUrl } from '~/api/backends/'
 
 export async function getUrlsForDatasets(ids) {
-  await backendsPromise
-  return axios.post(`${nidApiUrl}/version/batch/`, {
+  return await axios.post(`${nidApiUrl}/version/batch/`, {
     version_uuids: ids,
   })
 }

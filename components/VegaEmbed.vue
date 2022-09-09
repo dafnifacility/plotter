@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import { mapActions, mapMutations, mapState } from 'vuex'
+import { mapActions, mapMutations } from 'vuex'
 import _ from 'lodash'
 import axios from 'axios'
 import { uploadPlot } from '~/api/nivs'
@@ -23,11 +23,6 @@ export default {
     return {
       width: 0,
     }
-  },
-  computed: {
-    ...mapState({
-      authenticated: state => state.auth.authenticated,
-    }),
   },
   async mounted() {
     window.addEventListener('resize', this.handleResize)

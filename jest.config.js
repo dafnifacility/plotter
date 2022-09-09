@@ -16,4 +16,15 @@ module.exports = {
     '<rootDir>/pages/**/*.vue',
   ],
   forceExit: !!process.env.CI,
+
+  testPathIgnorePatterns: [
+    '<rootDir>/architecture/',
+    '<rootDir>/assets/',
+    '<rootDir>/coverage/',
+    '<rootDir>/dist/',
+    '<rootDir>/glossary-of-terms/',
+    '<rootDir>/node_modules/',
+    '<rootDir>/release-notes/',
+    '<rootDir>/tests/',
+  ],
 }

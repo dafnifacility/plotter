@@ -1,5 +1,5 @@
-import { backendsPromise, nidMinioUrl } from '~/api/backends'
-import { downloadState, replaceMinioUrl, uploadState } from '~/api/minio'
+import { downloadFileFromMinio, downloadState, uploadState } from '~/api/minio'
+import { backendsPromise } from '~/api/backends'
 import embed from 'vega-embed'
 import modes from '~/constants/modes'
 import { setupSyncStore } from '~/api/nivs'
@@ -53,9 +53,10 @@ function vegaEncoding(aesthetic, mode) {
   return encoding
 }
 
-function vegaDataTopoJson(URL, geoFeature) {
+async function vegaDataTopoJson(URL, geoFeature) {
+  const data = await downloadFileFromMinio(URL)
   return {
-    url: replaceMinioUrl(URL, nidMinioUrl),
+    values: data,
     format: {
       type: 'topojson',
       feature: geoFeature,
@@ -63,18 +64,20 @@ function vegaDataTopoJson(URL, geoFeature) {
   }
 }
 
-function vegaDataGeoJson(URL) {
+async function vegaDataGeoJson(URL) {
+  const data = await downloadFileFromMinio(URL)
   return {
-    url: replaceMinioUrl(URL, nidMinioUrl),
+    values: data,
     format: {
       property: 'features',
     },
   }
 }
 
-function vegaDataCsv(URL) {
+async function vegaDataCsv(URL) {
+  const data = await downloadFileFromMinio(URL)
   return {
-    url: replaceMinioUrl(URL, nidMinioUrl),
+    values: data,
     name: 'table',
     format: {
       type: 'csv',
@@ -267,11 +270,11 @@ export const actions = {
     await backendsPromise
     let data = {}
     if (index !== null && type === 'csv') {
-      data = vegaDataCsv(state.dataset.csvFiles[index].url)
+      data = await vegaDataCsv(state.dataset.csvFiles[index].url)
     } else if (index !== null && type === 'geojson') {
-      data = vegaDataGeoJson(state.dataset.geojsonFiles[index].url)
+      data = await vegaDataGeoJson(state.dataset.geojsonFiles[index].url)
     } else if (index !== null && type === 'topojson') {
-      data = vegaDataTopoJson(
+      data = await vegaDataTopoJson(
         state.dataset.topojsonFiles[index].url,
         state.dataset.topojsonObject
       )

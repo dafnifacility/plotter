@@ -1,8 +1,4 @@
-import {
-  backendsPromise,
-  instanceID,
-  visualisationApiUrl,
-} from '~/api/backends/'
+import { instanceID, visualisationApiUrl } from '~/api/backends/'
 import axios from 'axios'
 import { downloadFileFromMinio } from '~/api/minio'
 
@@ -14,8 +10,7 @@ export async function setupSyncStore() {
 }
 
 export async function getInstance() {
-  await backendsPromise
-  return axios.get(`${visualisationApiUrl}/instances/${instanceID}`)
+  return await axios.get(`${visualisationApiUrl}/instances/${instanceID}`)
 }
 
 function getStateFileUrl(listOfFiles) {
@@ -27,7 +22,6 @@ function getStateFileUrl(listOfFiles) {
 }
 
 export async function getPresignedURLforGET() {
-  await backendsPromise
   const response = await axios.get(
     `${visualisationApiUrl}/instances/${instanceID}/state-sync`
   )
@@ -35,7 +29,6 @@ export async function getPresignedURLforGET() {
 }
 
 export async function getPresignedURLforPUT() {
-  await backendsPromise
   const response = await axios.post(
     `${visualisationApiUrl}/instances/${instanceID}/state-sync`,
     {
@@ -46,14 +39,12 @@ export async function getPresignedURLforPUT() {
 }
 
 export async function downloadPlot(plotId) {
-  await backendsPromise
   const response = await axios.get(`${visualisationApiUrl}/plots/${plotId}`)
   const presignedUrl = response.data.presigned_urls[0].presigned_url
   return await downloadFileFromMinio(presignedUrl)
 }
 
 export async function uploadPlot(plotTitle, plotDescription, filename, file) {
-  await backendsPromise
   let plotId = null
   const postResponse = await axios.post(`${visualisationApiUrl}/plots`, {
     title: plotTitle,
@@ -75,7 +66,6 @@ export async function uploadPlot(plotTitle, plotDescription, filename, file) {
 }
 
 export async function downloadTemplate(templateId) {
-  await backendsPromise
   const response = await axios.get(
     `${visualisationApiUrl}/templates/${templateId}`
   )
@@ -89,7 +79,6 @@ export async function uploadTemplate(
   filename,
   template
 ) {
-  await backendsPromise
   let templateId = null
   const response = await axios.post(`${visualisationApiUrl}/templates/`, {
     title: templateTitle,

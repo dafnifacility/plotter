@@ -45,15 +45,9 @@ export default {
   computed: {
     ...mapState({
       loading: state => state.loading,
-      authenticated: state => state.auth.authenticated,
     }),
   },
-  watch: {
-    authenticated() {
-      this.initialiseApp()
-    },
-  },
-  created() {
+  mounted() {
     this.initialiseApp()
   },
   methods: {
@@ -64,11 +58,9 @@ export default {
       loadStore: 'loadStore',
     }),
     async initialiseApp() {
-      if (this.authenticated) {
-        this.setLoading(true)
-        await this.loadStore()
-        this.setLoading(false)
-      }
+      this.setLoading(true)
+      await this.loadStore()
+      this.setLoading(false)
     },
   },
 }

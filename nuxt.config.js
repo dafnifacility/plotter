@@ -21,14 +21,6 @@ export default {
    */
   target: 'static',
 
-  env: {
-    keycloakUrl: process.env.KEYCLOAK_ENDPOINT_TEST,
-    keycloakRealm: process.env.KEYCLOAK_REALM,
-    keycloakClient: process.env.KEYCLOAK_CLIENT,
-    INSTANCE_ID:
-      process.env.INSTANCE_ID || '2133fb7b-1b28-4ef5-9e9c-1fc11e0ce24b',
-  },
-
   /*
    ** Headers of the page
    ** See https://nuxtjs.org/api/configuration-head
@@ -56,6 +48,24 @@ export default {
       },
     ],
   },
+
+  /**
+   * Set up Environment variables
+   * - Keycloak ones used in initial Selenium testing.
+   */
+  env: {
+    keycloakUrl: process.env.KEYCLOAK_ENDPOINT_TEST,
+    keycloakRealm: process.env.KEYCLOAK_REALM,
+    keycloakClient: process.env.KEYCLOAK_CLIENT,
+    INSTANCE_ID:
+      process.env.INSTANCE_ID || '2133fb7b-1b28-4ef5-9e9c-1fc11e0ce24b',
+  },
+
+  /*
+   ** Customize the progress-bar color
+   */
+  loading: { color: '#4E77A0' },
+
   /*
    ** Global CSS
    */
@@ -78,17 +88,17 @@ export default {
    ** Nuxt.js dev-modules
    */
   buildModules: [
-    // Doc: https://github.com/nuxt-community/eslint-module
-    '@nuxtjs/eslint-module',
-    '@nuxtjs/vuetify',
-  ],
-  /*
-   ** Nuxt.js modules
-   */
-  modules: [
     // Doc: https://axios.nuxtjs.org/usage
     '@nuxtjs/axios',
+    '@nuxtjs/vuetify',
+    '@nuxtjs/eslint-module',
   ],
+
+  //  Check for secure cookie on each route change
+  router: {
+    middleware: 'authenticated',
+  },
+
   /*
    ** Axios module configuration
    ** See https://axios.nuxtjs.org/options

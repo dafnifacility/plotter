@@ -1,6 +1,7 @@
 <template>
   <v-app>
     <v-navigation-drawer
+      v-if="authenticated"
       v-model="drawerRight"
       width="240"
       app
@@ -60,7 +61,7 @@
         :text="spinnerText"
       />
     </transition>
-    <v-main>
+    <v-main v-if="authenticated">
       <nuxt />
     </v-main>
   </v-app>
