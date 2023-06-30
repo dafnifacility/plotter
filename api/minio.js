@@ -1,4 +1,4 @@
-import { nidMinioUrl, nivsMinioUrl } from '~/api/backends/'
+import { nidMinioUrl } from '~/api/backends/'
 import axios from 'axios'
 
 export function replaceMinioUrl(presignedUrl, replacementUrl) {
@@ -13,7 +13,7 @@ export function replaceMinioUrl(presignedUrl, replacementUrl) {
 
 export async function uploadState(presignedUrl, state) {
   return await axios.put(
-    replaceMinioUrl(presignedUrl, nivsMinioUrl),
+    replaceMinioUrl(presignedUrl, nidMinioUrl),
     JSON.stringify(state),
     {
       headers: {
@@ -25,7 +25,7 @@ export async function uploadState(presignedUrl, state) {
 
 export async function downloadState(presignedUrl) {
   const response = await axios.get(
-    replaceMinioUrl(presignedUrl, nivsMinioUrl),
+    replaceMinioUrl(presignedUrl, nidMinioUrl),
     {
       headers: {
         'Content-Type': 'application/json',
