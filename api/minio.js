@@ -24,14 +24,11 @@ export async function uploadState(presignedUrl, state) {
 }
 
 export async function downloadState(presignedUrl) {
-  const response = await axios.get(
-    replaceMinioUrl(presignedUrl, nidMinioUrl),
-    {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    }
-  )
+  const response = await axios.get(replaceMinioUrl(presignedUrl, nidMinioUrl), {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
   return response.data
 }
 
