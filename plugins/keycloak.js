@@ -81,7 +81,7 @@ async function getKeycloakSettings(context) {
     clientId: context.env.keycloakClient || 'testclient',
   }
   try {
-    const response = await axios.get('/backends/keycloak.json')
+    const response = await axios.get('./backends/keycloak.json')
     if (response.status === 200) {
       keycloakConfig = {
         url: response.data.url,

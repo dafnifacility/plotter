@@ -54,7 +54,7 @@ export default {
    * - Keycloak ones used in initial Selenium testing.
    */
   env: {
-    keycloakUrl: process.env.KEYCLOAK_ENDPOINT_TEST,
+    keycloakUrl: process.env.KEYCLOAK_ENDPOINT,
     keycloakRealm: process.env.KEYCLOAK_REALM,
     keycloakClient: process.env.KEYCLOAK_CLIENT,
     INSTANCE_ID:
