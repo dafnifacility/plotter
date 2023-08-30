@@ -6,7 +6,7 @@ log
 uri path_regexp /instance/[a-f0-9\-]{36} /
 root * /srv
 file_server {
-  # hide .git dafni.toml Caddyfile vault-secrets README.md
+  hide .git dafni.toml Caddyfile vault-secrets README.md
 }
 respond /healthz 204
 @backends {
