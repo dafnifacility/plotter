@@ -50,7 +50,7 @@ export const actions = {
     const geoFiles = []
     for (const dataset of state.datasetUrlResponse) {
       const files = dataset.urls
-      for (const [fileName, fileUrl] of Object.values(files)) {
+      for (const [fileName, fileUrl] of Object.entries(files)) {
         if (fileName.endsWith('csv')) {
           csvFiles.push({ file: fileName, url: fileUrl })
         } else if (fileName.endsWith('topojson')) {

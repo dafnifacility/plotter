@@ -1,5 +1,5 @@
-import { nidMinioUrl } from '~/api/backends/'
 import axios from 'axios'
+import { nidMinioUrl } from '~/api/backends/'
 
 export function replaceMinioUrl(presignedUrl, replacementUrl) {
   if (!replacementUrl) return presignedUrl
