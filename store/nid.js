@@ -49,14 +49,14 @@ export const actions = {
     const topoFiles = []
     const geoFiles = []
     for (const dataset of state.datasetUrlResponse) {
-      const files = dataset.files_with_urls
-      for (const file of files) {
-        if (file.file.endsWith('csv')) {
-          csvFiles.push(file)
-        } else if (file.file.endsWith('topojson')) {
-          topoFiles.push(file)
-        } else if (file.file.endsWith('geojson')) {
-          geoFiles.push(file)
+      const files = dataset.urls
+      for (const [fileName, fileUrl] of Object.values(files)) {
+        if (fileName.endsWith('csv')) {
+          csvFiles.push({ file: fileName, url: fileUrl })
+        } else if (fileName.endsWith('topojson')) {
+          topoFiles.push({ file: fileName, url: fileUrl })
+        } else if (fileName.endsWith('geojson')) {
+          geoFiles.push({ file: fileName, url: fileUrl })
         }
       }
     }
