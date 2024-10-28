@@ -138,7 +138,10 @@ function initError(error, err, context) {
  * Make axios use the currently active JWT in all its calls.
  */
 function tokenInterceptor(config) {
-  if (config.url.includes('geonames')) {
+  if (
+    config.url.includes('geonames') ||
+    config.url.includes('s3.echo.stfc.ac.uk')
+  ) {
     return config
   }
   if (config.url.includes('minio') || config.url.includes('nims-io')) {
