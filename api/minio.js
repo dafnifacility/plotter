@@ -2,7 +2,7 @@ import axios from 'axios'
 
 export async function uploadState(presignedUrl, state) {
   return await axios.put(presignedUrl, JSON.stringify(state), {
-    headers: { 'Content-Type': 'application/json', },
+    headers: { 'Content-Type': 'application/json', }
   })
 }
 
