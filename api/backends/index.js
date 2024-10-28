@@ -4,7 +4,6 @@ import axios from 'axios'
 export let visualisationApiUrl = process.env.visualisationApiUrl
 export let dssauthUrl = process.env.dssauthUrl
 export let nidApiUrl = process.env.nidApiUrl
-export let nidMinioUrl = process.env.nidMinioUrl
 export let environment = process.env.environment
 export let instanceID = process.env.INSTANCE_ID
 
@@ -17,8 +16,6 @@ function useDefaultAPIUrls() {
     'https://dafni-dss-dssauth-review-dev-o2yn5p.staging.dafni.rl.ac.uk'
   nidApiUrl =
     'https://dafni-nid-api-review-dev-4jxwt5.staging.dafni.rl.ac.uk/nid'
-  // Don't need to replace the urls locally because CORS isn't an issue
-  nidMinioUrl = null
   instanceID = '2133fb7b-1b28-4ef5-9e9c-1fc11e0ce24b'
 }
 
@@ -33,7 +30,6 @@ async function backends() {
     visualisationApiUrl = response.data.visualisationApiUrl
     dssauthUrl = response.data.dssauthUrl
     nidApiUrl = response.data.nidApiUrl
-    nidMinioUrl = response.data.nidMinioUrl
     environment = response.data.node_env
     instanceID = response.data.instanceID
   } catch (error) {
