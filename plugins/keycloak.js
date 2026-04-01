@@ -3,7 +3,7 @@
  * (Based on https://github.com/dsb-norge/vue-keycloak-js)
  */
 import axios from 'axios'
-import { checkUserRoleOrRedirect } from '../js/authenticated'
+import { checkUserRoleOrRedirect } from '../static/js/authenticated'
 import Keycloak from 'keycloak-js/lib/keycloak'
 import { setRequestInterceptor } from './axios'
 import Vue from 'vue'
@@ -126,7 +126,6 @@ export default async (context, inject) => {
   // Also inject into Nuxt context
   inject('keycloak', Vue.prototype.$keycloak)
 }
-
 
 /**
  * Get keycloak settings.
@@ -251,7 +250,6 @@ function getCookieString(token, expiration) {
 // Exporting like this so that we can test the functions. In order to spy on the functions
 // they must be called as `keycloakInternalFns.initKeycloak`
 export const keycloakInternalFns = {
-  initKeycloak,
   authRefreshError,
   authRefreshSuccess,
   keycloakReady,

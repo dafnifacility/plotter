@@ -125,7 +125,7 @@ export default {
   build: {
     extractCSS: process.env.NODE_ENV === 'development',
     publicPath: process.env.NODE_ENV === 'development' ? '/_nuxt' : './_nuxt/',
-    transpile: ['keycloak-js'],
+    transpile: ['keycloak-js', 'vega', 'vega-lite', 'vega-embed'],
     extend(config) {
       // Run ESLint on save
       config.module.rules.push({

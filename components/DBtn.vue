@@ -92,7 +92,9 @@ export default {
     opacity: 0 !important;
   }
 }
-.theme--dark.v-btn.v-btn--disabled:not(.v-btn--flat):not(.v-btn--text):not(.v-btn--outlined) {
+.theme--dark.v-btn.v-btn--disabled:not(.v-btn--flat):not(.v-btn--text):not(
+    .v-btn--outlined
+  ) {
   color: $color-grey-faded-dark !important;
   background-color: $color-grey-faded-light !important;
 }
