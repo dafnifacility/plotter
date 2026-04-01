@@ -3,22 +3,16 @@
  * (Based on https://github.com/dsb-norge/vue-keycloak-js)
  */
 import axios from 'axios'
-import { checkUserRoleOrRedirect } from '../static/js/authenticated'
+import { checkUserRoleOrRedirect } from '../js/authenticated'
+import Keycloak from 'keycloak-js/lib/keycloak'
 import { setRequestInterceptor } from './axios'
 import Vue from 'vue'
-import VueKeyCloak from '@dsb-norge/vue-keycloak-js'
 
 // Number of minutes before the cookie expires (this is double the token
 // refresh time just in case the token refresh takes a while)
 const cookieExpirationMinutes = 10
 let cookieDomain = 'localhost'
 let cookieName = 'dafnicookie'
-
-/**
- * Connect and login to Keycloak.
- * @param context The Vue context
- */
-export default initKeycloak
 
 /**
  * Get the currently logged in user details
@@ -42,27 +36,97 @@ export function getUserDetails(fill = {}) {
   return null
 }
 
-// ============== internal functions below here ==============
+function setKeycloakState(keycloakState, authenticated) {
+  keycloakState.ready = true
+  keycloakState.authenticated = authenticated
+  keycloakState.token = keycloak.token
+  keycloakState.tokenParsed = keycloak.tokenParsed
+  keycloakState.id = keycloak.subject
+  keycloakState.email = keycloak.tokenParsed?.email
+  keycloakState.userName = keycloak.tokenParsed?.preferred_username
+  keycloakState.firstName = keycloak.tokenParsed?.given_name
+  keycloakState.lastName = keycloak.tokenParsed?.family_name
+  keycloakState.accountManagement = keycloak.accountManagement
+  keycloakState.logout = keycloak.logout
+}
 
-// Configures Vue to use VueKeyCloak package
-async function initKeycloak(context) {
+let keycloak = null
+
+const KeycloakPlugin = {
+  install(Vue, options = {}) {
+    // Make reactive state
+    const keycloakState = Vue.observable({
+      ready: false,
+      authenticated: false,
+      token: null,
+      tokenParsed: null,
+      userName: null,
+    })
+
+    // Provide $keycloak
+    Vue.prototype.$keycloak = keycloakState
+
+    // Initialise Keycloak
+    keycloak = new Keycloak({
+      url: options.url,
+      realm: options.realm,
+      clientId: options.clientId,
+    })
+
+    keycloak
+      .init({
+        onLoad: options.onLoad || 'login-required', // works correctly in KC 26
+        checkLoginIframe: false, // KC 26 compatibility fix
+        pkceMethod: 'S256',
+        silentCheckSsoRedirectUri: options.silentCheckSsoRedirectUri,
+      })
+      .then(authenticated => {
+        setKeycloakState(keycloakState, authenticated)
+        keycloakReady(keycloak, options.context)
+        authRefreshSuccess(keycloak, options.context)
+        // Token refresh timer
+        setInterval(() => {
+          keycloak
+            .updateToken(30)
+            .then(refreshed => {
+              if (refreshed) {
+                setKeycloakState(keycloakState, authenticated)
+                authRefreshSuccess(keycloak, options.context)
+              }
+            })
+            .catch(() => {
+              authRefreshError(keycloak, options.context)
+            })
+        }, 10000)
+
+        if (!authenticated) {
+          keycloak.login()
+        }
+      })
+      .catch(err => {
+        console.error('Keycloak init failed', err)
+      })
+  },
+}
+
+export default async (context, inject) => {
   const keycloakConfig = await keycloakInternalFns.getKeycloakSettings(context)
-  Vue.use(VueKeyCloak, {
-    config: keycloakConfig,
-    init: {
-      onLoad: '',
-      checkLoginIframe: false,
-      enableLogging: process.env.NODE_ENV === 'development',
-    },
+  Vue.use(KeycloakPlugin, {
+    ...keycloakConfig,
+    checkLoginIframe: false,
+    onLoad: 'login-required',
     logout: {
       redirectUri: window.location.origin,
     },
-    onAuthRefreshSuccess: kc => authRefreshSuccess(kc, context),
-    onAuthRefreshError: kc => authRefreshError(kc, context),
-    onReady: kc => keycloakReady(kc, context),
-    onInitError: (error, err) => initError(error, err, context),
+    silentCheckSsoRedirectUri:
+      process.browser && `${window.location.origin}/silent-check-sso.html`,
+    context,
   })
+
+  // Also inject into Nuxt context
+  inject('keycloak', Vue.prototype.$keycloak)
 }
+
 
 /**
  * Get keycloak settings.
@@ -74,11 +138,9 @@ async function initKeycloak(context) {
  */
 async function getKeycloakSettings(context) {
   let keycloakConfig = {
-    url:
-      context.env.keycloakUrl ||
-      'https://keycloak.staging.dafni.rl.ac.uk/auth/',
-    realm: context.env.keycloakRealm || 'testrealm',
-    clientId: context.env.keycloakClient || 'testclient',
+    url: context.env.keycloakUrl || 'https://keycloak.staging.dafni.rl.ac.uk/',
+    realm: context.env.keycloakRealm || 'Staging',
+    clientId: context.env.keycloakClient || 'dafni-main',
   }
   try {
     const response = await axios.get('./backends/keycloak.json')
