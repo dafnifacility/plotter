@@ -1,4 +1,4 @@
-FROM node:13-alpine AS builder
+FROM node:20-alpine AS builder
 ENV DEPLOY_ENV=DOCKER
 WORKDIR /app
 COPY . .
