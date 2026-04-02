@@ -6,7 +6,9 @@ const stateFileName = 'state.json'
 const builderId = 'a734e3e7-ca10-41f2-9638-a19710d6430d'
 
 export async function setupSyncStore() {
-  return await Promise.all([getPresignedURLforGET(), getPresignedURLforPUT()])
+  const getUrl = await getPresignedURLforGET()
+  const putUrl = await getPresignedURLforPUT()
+  return [getUrl, putUrl]
 }
 
 export async function getInstance() {
